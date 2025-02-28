@@ -14,8 +14,5 @@ export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable, {
   name: gamesSelectSchema.shape.name,
 });
-export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
-  id: gamesSelectSchema.shape.id,
-  name: gamesInsertSchema.shape.name,
-});
+export const gamesUpdateSchema = createUpdateSchema(gamesTable, gamesSelectSchema.shape);
 

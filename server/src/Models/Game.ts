@@ -24,5 +24,4 @@ export default class GameModel {
   static list() {
     return db.select().from(gamesTable);
   }
-
 }

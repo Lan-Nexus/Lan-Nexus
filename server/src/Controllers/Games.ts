@@ -2,9 +2,10 @@
 import { gamesInsertSchema, gamesSelectSchema, gamesUpdateSchema } from '../db/schema.js';
 import { Request, Response } from 'express';
 import GameModel from '../Models/Game.js';
+import { Controller } from './Controller.js';
 
 
-export default class GamesController {
+export default class GamesController extends Controller {
 
   public async read(req: Request, res: Response) {
     try {

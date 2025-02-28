@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import apiRouter from './Routers/api'
+import './db'
 dotenv.config()
 
 const app = express()

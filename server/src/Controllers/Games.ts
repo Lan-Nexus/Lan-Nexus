@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
+import { gamesTable } from '../db/schema';
+import { db } from '../db';
+ 
 export default {
 
-  create:(req: Request, res: Response) => { 
+  create: async (req: Request, res: Response) => { 
+    await db.insert(gamesTable).values({ name: 'Hello World!' });
     res.send('Hello World!')
   },
 
@@ -23,8 +27,11 @@ export default {
     res.send(id)
   },
 
-  list:(req: Request, res: Response) => {
-      res.send('Hello World!')
+  list: async (req: Request, res: Response) => {
+      console.log('Fetching games from the database...');
+      const games = await db.select().from(gamesTable);
+      console.log('Games fetched:', games);
+      res.json(games);
   },
 }
 

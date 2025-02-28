@@ -12,17 +12,22 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "mysql2": "^3.12.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",
     "@types/koa": "^2.15.0",
     "@types/node": "^22.13.5",
+    "drizzle-kit": "^0.30.5",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }
 }

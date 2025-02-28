@@ -1,33 +1,28 @@
-import { gamesTable} from '../db/schema.js';
-import { NewGame,Game} from '../db/schema.js';
+import { gamesTable } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { db } from '../db.js';
 
 export default class GameModel {
-  static async create(game: NewGame): Promise<void>{
-   db.insert(gamesTable).values(game);
+  static async create(game: typeof gamesTable.$inferInsert) {
+    const newGame = await db.insert(gamesTable).values(game).$returningId();
+    const item = await db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, newGame[0].id) });
+    return item;
   }
 
-  static async read(id: number): Promise<Game | undefined> {
-    const result = await db
-      .select()
-      .from(gamesTable)
-      .where(eq(gamesTable.id, id))
-      .limit(1);
-    
-    return result[0];
+  static async read(id: typeof gamesTable.$inferSelect.id) {
+    return db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });
   }
 
-  static async update(id: number, game: Game): Promise<void> {
-    await db.update(gamesTable).set(game).where(eq(gamesTable.id, id));
+  static update(id: number, game: typeof gamesTable.$inferSelect) {
+    return db.update(gamesTable).set(game).where(eq(gamesTable.id, id));
   }
 
-  static async delete() {
-    await db.delete().from(gamesTable).where(eq(gamesTable.id, id));
+  static async delete(id: typeof gamesTable.$inferSelect.id) {
+    await db.delete(gamesTable).where(eq(gamesTable.id, id));
   }
 
-  static async list(): Promise<Game[]> {
-    return await db.select().from(gamesTable);
+  static list() {
+    return db.select().from(gamesTable);
   }
 
 }

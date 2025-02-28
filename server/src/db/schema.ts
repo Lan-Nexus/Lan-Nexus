@@ -1,6 +1,6 @@
 import { serial, mysqlTable, text } from "drizzle-orm/mysql-core";
 import { z } from 'zod';
-import { 
+import {
   createSelectSchema,
   createInsertSchema,
   createUpdateSchema,
@@ -12,19 +12,11 @@ export const gamesTable = mysqlTable("games", {
 });
 
 export const gamesSelectSchema = createSelectSchema(gamesTable);
-export const gamesInsertSchema = createInsertSchema(gamesTable);
-//export const gamesUpdateSchema = createUpdateSchema(gamesTable);
-export const gamesUpdateSchema = z.object({
-  id: z.number(),
-  name: z.string()
+export const gamesInsertSchema = createInsertSchema(gamesTable, {
+  name: gamesSelectSchema.shape.name,
 });
-
-
-export const gameIdSchema = z.object({
-  id: z.number().int().positive()
+export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
+  id: gamesSelectSchema.shape.id,
+  name: gamesInsertSchema.shape.name,
 });
-
-export type Game = z.infer<typeof gamesSelectSchema>;
-export type NewGame = z.infer<typeof gamesInsertSchema>;
-export type GameUpdate = z.infer<typeof gamesUpdateSchema>;
 

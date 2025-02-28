@@ -13,7 +13,7 @@ export default class GameModel {
     return db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });
   }
 
-  static update(id: number, game: typeof gamesTable.$inferSelect) {
+  static update(id: typeof gamesTable.$inferSelect.id, game: typeof gamesTable.$inferSelect) {
     return db.update(gamesTable).set(game).where(eq(gamesTable.id, id));
   }
 

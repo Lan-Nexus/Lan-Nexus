@@ -1,7 +1,7 @@
 
 import { gamesInsertSchema, gameIdSchema,gamesUpdateSchema } from '../db/schema.js';
 import { Request, Response } from 'express';
-import GameNodel from '../Models/Game.js';
+import GameModel from '../Models/Game.js';
 
 
 export default class GamesController {
@@ -18,14 +18,14 @@ export default class GamesController {
       return;
     }
 
-    await GameNodel.create(data);
+    await GameModel.create(data);
 
     res.send(data);
   }
 
   public async read(req: Request, res: Response) {
 
-    const data = await GameNodel.read(Number(req.params.id));
+    const data = await GameModel.read(Number(req.params.id));
 
     res.send(data);
   }
@@ -37,26 +37,18 @@ export default class GamesController {
       return res.status(400).send('Invalid id');
     }
 
-    const data = await gamesUpdateSchema.parseAsync({
-      ...req.body,
-      id: req.params.id
-    }).catch((error) => {
+    try {
+      const data = await gamesUpdateSchema.parseAsync({
+        ...req.body,
+        id: req.params.id
+      });
+      
+      // At this point, data is guaranteed to have the correct shape
+      await GameModel.update(id, data);
+      res.send('Update Game');
+    } catch (error) {
       res.status(400).send(error);
-      return;
-    });
-
-    if (!data) {
-      res.status(400).send('Invalid data');
-      return;
     }
-
-     if (!data.id || !data.name) {
-      return res.status(400).send('Missing required fields');
-    }
-     
-    await GameNodel.update(id,data);
-
-    res.send('Update Game');
   }
 
   public delete(req: Request, res: Response) {

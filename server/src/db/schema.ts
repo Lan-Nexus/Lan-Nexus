@@ -1,5 +1,4 @@
 import { serial, mysqlTable, text } from "drizzle-orm/mysql-core";
-import { z } from 'zod';
 import {
   createSelectSchema,
   createInsertSchema,

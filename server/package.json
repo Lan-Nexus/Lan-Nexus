@@ -1,19 +1,28 @@
 {
-  "name": "server",
+  "name": "lan-launcher-server",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start":"node server.js"
+    "dev": "ts-node-dev --respawn --watch src src/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "type": "commonjs",
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "nodemon": "^3.1.9"
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/koa": "^2.15.0",
+    "@types/node": "^22.13.5",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
   }
 }

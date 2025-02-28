@@ -5,16 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --watch src src/"
+    "dev": "tsc-watch --onSuccess \"node --inspect dist/index.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.40.0",
+    "drizzle-zod": "^0.7.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mysql2": "^3.12.0",
@@ -24,9 +25,8 @@
     "@types/ejs": "^3.1.5",
     "@types/koa": "^2.15.0",
     "@types/node": "^22.13.5",
-    "drizzle-kit": "^0.30.5",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
+    "drizzle-kit": "^0.18.1",
+    "tsc-watch": "^6.2.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }

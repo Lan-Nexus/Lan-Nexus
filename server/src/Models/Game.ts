@@ -22,12 +22,12 @@ export default class GameModel {
     await db.update(gamesTable).set(game).where(eq(gamesTable.id, id));
   }
 
-  static delete() {
-    console.log('Delete Game');
+  static async delete() {
+    await db.delete().from(gamesTable).where(eq(gamesTable.id, id));
   }
 
-  static list() {
-    console.log('List Games');
+  static async list(): Promise<Game[]> {
+    return await db.select().from(gamesTable);
   }
 
 }

@@ -37,26 +37,35 @@ export default class GamesController {
       return res.status(400).send('Invalid id');
     }
 
-    try {
-      const data = await gamesUpdateSchema.parseAsync({
-        ...req.body,
-        id: req.params.id
-      });
+    const data = await gamesUpdateSchema.parseAsync({
+      ...req.body,
+      id: req.params.id
+    });
       
-      // At this point, data is guaranteed to have the correct shape
-      await GameModel.update(id, data);
-      res.send('Update Game');
-    } catch (error) {
-      res.status(400).send(error);
+    await GameModel.update(id, data);
+    res.send(data);
+  }
+
+  public async delete(req: Request, res: Response) {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).send('Invalid id');
     }
+
+    if (!await GameModel.read(id)) {
+      return res.status(404).send('Game not found');
+    }
+
+    await GameModel.delete(id);
+
+    res.status(204).send();
   }
 
-  public delete(req: Request, res: Response) {
-    res.send('Delete Game');
-  }
+  public async list(req: Request, res: Response) {
+    const data = await GameModel.list();
 
-  public list(req: Request, res: Response) {
-    res.send('List Games');
+    res.send(data);
   }
 
 }

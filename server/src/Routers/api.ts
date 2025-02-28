@@ -1,14 +1,15 @@
 import express from 'express';
 import gamesController from '../Controllers/Games.js';
+import Router from './Router.js';
 
 const router = express.Router();
 
-router.post('/games', gamesController.create);
-router.get('/games/:id', gamesController.read);
-router.post('/games/:id', gamesController.update);
-router.delete('/games/:id', gamesController.delete);
-router.get('/games', gamesController.list);
-
+const r = new Router(router)
+  .get('/games', gamesController, 'list')
+  .get('/games/:id', gamesController, 'read')
+  .post('/games', gamesController, 'create')
+  .put('/games/:id', gamesController, 'update')
+  .delete('/games/:id', gamesController, 'delete');
 
 
 export default router;

@@ -13,7 +13,12 @@ export const gamesTable = mysqlTable("games", {
 
 export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable);
-export const gamesUpdateSchema = createUpdateSchema(gamesTable);
+//export const gamesUpdateSchema = createUpdateSchema(gamesTable);
+export const gamesUpdateSchema = z.object({
+  id: z.number(),
+  name: z.string()
+});
+
 
 export const gameIdSchema = z.object({
   id: z.number().int().positive()

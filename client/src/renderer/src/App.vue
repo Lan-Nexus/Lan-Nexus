@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { ref, computed } from "vue";
+
+import TopNav from "./components/TopNav.vue";
 
 </script>
 
 <template>
-  <div class="container">
-    <h1>{{ message }}</h1>
-  </div>
-  <div class="actions">
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
+  <div class="flex flex-col h-full w-full overflow-hidden">
+    <TopNav />
+    <div class="flex h-full w-full mt-16 sm:mt-20 bg-base-100">
+      <router-view />
     </div>
   </div>
-  <Versions />
 </template>

@@ -15,7 +15,8 @@ export default class GamesController extends Controller {
 
       const results = await GameModel.read(id);
       if (results == void 0) {
-        return res.status(404).send({ message: 'Game not found' });
+        res.status(404).send({ message: 'Game not found' });
+        return
       }
 
       res.send(results);
@@ -64,7 +65,8 @@ export default class GamesController extends Controller {
 
       const results = await GameModel.read(id);
       if (results == void 0) {
-        return res.status(404).send('Game not found');
+        res.status(404).send('Game not found');
+        return
       }
 
       await GameModel.delete(id);

@@ -1,10 +1,4 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-
-createApp(App).mount('#app')
-
-
-window.functions = new Proxy(
+export default new Proxy(
   {},
   {
     get: function (target, prop, receiver) {
@@ -33,4 +27,3 @@ window.functions = new Proxy(
     },
   }
 );
-

@@ -1,5 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 import { Controller } from '../Controllers/Controller.js';
+import { ResourceController } from '../Controllers/ResourceController.js';
 
 type routerHandlerGet = 'list' | 'read';
 type routerHandlerPost = 'create';
@@ -16,7 +17,7 @@ export default class Router<T extends Controller> {
   }
 
   private makeOrFindObject<T extends Controller>(ObjectClass: new () => T) {
-    if (!(ObjectClass.prototype instanceof Controller)) {
+    if (!(ObjectClass.prototype instanceof Controller || ObjectClass.prototype instanceof ResourceController)) {
       throw new Error(`ObjectClass must be a subclass of Controller`);
     }
 

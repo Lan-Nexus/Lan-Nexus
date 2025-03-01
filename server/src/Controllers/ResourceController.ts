@@ -1,8 +1,9 @@
 import { Controller } from "./Controller.js";
 import { Request, Response } from "express";
 import { ZodObject, ZodSchema } from "zod";
+import { StatusCodes,ReasonPhrases } from "http-status-codes";
 
-export abstract class ResourceController {
+export abstract class ResourceController extends Controller {
   protected model: any;
   protected SelectSchema: any;
   protected InsertSchema: ZodSchema;
@@ -14,6 +15,7 @@ export abstract class ResourceController {
     InsertSchema: ZodSchema,
     UpdateSchema: ZodSchema,
   ) {
+    super();
     this.model = model;
     this.SelectSchema = SelectSchema;
     this.InsertSchema = InsertSchema;
@@ -28,13 +30,13 @@ export abstract class ResourceController {
 
       const results = await this.model.read(id);
       if (results == void 0) {
-        res.status(404).send({ message: "Game not found" });
+        this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
 
       res.send(results);
     } catch (error) {
-      res.status(400).send(error);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
   }
 
@@ -50,7 +52,7 @@ export abstract class ResourceController {
 
       res.send(results);
     } catch (error) {
-      res.status(400).send(error);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
   }
 
@@ -65,7 +67,7 @@ export abstract class ResourceController {
 
       res.send(data);
     } catch (error) {
-      res.status(400).send(error);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
   }
 
@@ -77,15 +79,15 @@ export abstract class ResourceController {
 
       const results = await this.model.read(id);
       if (results == void 0) {
-        res.status(404).send("Game not found");
+        this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
 
       await this.model.delete(id);
 
-      res.status(204).send();
+      this.sendStatus(res, StatusCodes.NO_CONTENT);
     } catch (error) {
-      res.status(400).send(error);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
   }
 }

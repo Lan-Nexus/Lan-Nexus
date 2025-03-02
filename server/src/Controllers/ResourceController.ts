@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ZodObject, ZodSchema } from "zod";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import Model from "../Models/Model.js";
 
 export abstract class ResourceController {
   protected model: any;
@@ -9,7 +10,7 @@ export abstract class ResourceController {
   protected UpdateSchema: ZodSchema;
 
   constructor(
-    model: any,
+    model: Model,
     SelectSchema: ZodSchema,
     InsertSchema: ZodSchema,
     UpdateSchema: ZodSchema,
@@ -50,6 +51,7 @@ export abstract class ResourceController {
 
       res.send(results);
     } catch (error) {
+      console.log(error);
       this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
   }

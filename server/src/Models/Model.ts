@@ -5,15 +5,15 @@ export default class Model {
     throw new Error('Method not implemented.');
   }
 
-  static async read(id: number): Promise<any> {
+  static async read(id: any): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
-  static async update(id: number, data: any): Promise<any> {
+  static async update(id: any, data: any): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
-  static async delete(id: number): Promise<any> {
+  static async delete(id: any): Promise<any> {
     throw new Error('Method not implemented.');
   }
 

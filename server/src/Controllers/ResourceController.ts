@@ -1,9 +1,8 @@
-import { Controller } from "./Controller.js";
 import { Request, Response } from "express";
 import { ZodObject, ZodSchema } from "zod";
-import { StatusCodes,ReasonPhrases } from "http-status-codes";
+import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
-export abstract class ResourceController extends Controller {
+export abstract class ResourceController {
   protected model: any;
   protected SelectSchema: any;
   protected InsertSchema: ZodSchema;
@@ -15,7 +14,6 @@ export abstract class ResourceController extends Controller {
     InsertSchema: ZodSchema,
     UpdateSchema: ZodSchema,
   ) {
-    super();
     this.model = model;
     this.SelectSchema = SelectSchema;
     this.InsertSchema = InsertSchema;
@@ -89,5 +87,10 @@ export abstract class ResourceController extends Controller {
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST);
     }
+  }
+
+  sendStatus(res: Response, status: StatusCodes): void {
+    const statusString: string = StatusCodes[status];
+    res.status(status).send(ReasonPhrases[statusString as keyof typeof ReasonPhrases]);
   }
 }

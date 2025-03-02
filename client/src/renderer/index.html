@@ -3,13 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Electron</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
-    />
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: https://placehold.co;">
+
   </head>
-  <body class="h-screen m-0 p-0 ">
+  <body class="h-screen m-0 p-0">
     <div id="app" class="h-full"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

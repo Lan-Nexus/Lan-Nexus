@@ -8,14 +8,14 @@ type routerHandlerDelete = 'delete';
 
 export default class Router<T extends ResourceController> {
   #router: ExpressRouter;
-  #objects: any = {};
+  #objects: Record<string, T>;
 
   constructor(router: ExpressRouter) {
     this.#router = router;
-    this.#objects = {} as Record<string, T>;
+    this.#objects = {};
   }
 
-  #makeOrFindObject<T extends ResourceController>(ObjectClass: new () => T) {
+  #makeOrFindObject(ObjectClass: new () => T) {
     if (!(ObjectClass.prototype instanceof ResourceController)) {
       throw new Error(`ObjectClass must be a subclass of Controller`);
     }
@@ -29,34 +29,27 @@ export default class Router<T extends ResourceController> {
     return this.#objects[objName];
   }
 
-  public get<T extends ResourceController>(path: string, object: new () => T, requestHandler: routerHandlerGet) {
-    const obj = this.#makeOrFindObject<T>(object);
+  public get(path: string, object: new () => T, requestHandler: routerHandlerGet) {
+    const obj = this.#makeOrFindObject(object as new () => T);
     this.#router.get(path, (req, res) => obj[requestHandler](req, res))
     return this;
   }
 
-  public post<T extends ResourceController>(path: string, object: new () => T, requestHandler: routerHandlerPost) {
-    const obj = this.#makeOrFindObject<T>(object);
+  public post(path: string, object: new () => T, requestHandler: routerHandlerPost) {
+    const obj = this.#makeOrFindObject(object as new () => T);
     this.#router.post(path, (req, res) => obj[requestHandler](req, res))
     return this;
   }
 
-  public put<T extends ResourceController>(path: string, object: new () => T, requestHandler: routerHandlerPut) {
-    const obj = this.#makeOrFindObject<T>(object);
+  public put(path: string, object: new () => T, requestHandler: routerHandlerPut) {
+    const obj = this.#makeOrFindObject(object as new () => T);
     this.#router.put(path, (req, res) => obj[requestHandler](req, res))
     return this;
   }
 
-  public delete<T extends ResourceController>(path: string, object: new () => T, requestHandler: routerHandlerDelete) {
-    const obj = this.#makeOrFindObject<T>(object);
+  public delete(path: string, object: new () => T, requestHandler: routerHandlerDelete) {
+    const obj = this.#makeOrFindObject(object as new () => T);
     this.#router.delete(path, (req, res) => obj[requestHandler](req, res))
     return this;
   }
-
-  public all<T extends ResourceController>(path: string, object: new () => T, requestHandler: string) {
-    const obj = this.#makeOrFindObject<T>(object);
-    this.#router.all(path, (req, res) => obj[requestHandler](req, res))
-    return this;
-  }
-
 }

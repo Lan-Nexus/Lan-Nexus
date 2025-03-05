@@ -6,7 +6,7 @@ import { z } from "zod";
 import SteamModel from "../Models/Steam.js";
 import { ResourceController } from "./ResourceController.js";
 
-export default class GamesController extends ResourceController {
+export default class SteamController extends ResourceController {
     constructor() {
         super(
             SteamModel,

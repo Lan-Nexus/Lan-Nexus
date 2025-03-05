@@ -1,8 +1,8 @@
 import Model from './Model.js';
 import { gamesTable } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
 import { db } from '../db.js';
 import axios from 'axios';
+import type { steamOwnedGame, SteamResponseAppDetails, SteamResponseOwnGames } from '../types/Steam.js';
 
 export default class SteamModel extends Model {
 
@@ -21,9 +21,14 @@ export default class SteamModel extends Model {
         return db.insert(gamesTable).values(gameData).$returningId();
     }
 
+    static list(): Promise<steamOwnedGame[]> {
+        return this.#getOwnedGames();
+    }
+
     static async read(id: undefined): Promise<void> {
         throw new Error('Method not implemented.');
     }
+
 
     static async update(id: undefined, data: undefined): Promise<void> {
         throw new Error('Method not implemented.');
@@ -33,12 +38,8 @@ export default class SteamModel extends Model {
         throw new Error('Method not implemented.');
     }
 
-    static list(): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
-
-    static async #getSteamGameIcon(appID: number) {
-        const response = await axios.get(
+    static async #getOwnedGames() {
+        const response = await axios.get<SteamResponseOwnGames>(
             `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
             params: {
                 key: process.env.STEAM_API_KEY,
@@ -50,20 +51,19 @@ export default class SteamModel extends Model {
         if (!response.data.response.games) {
             throw new Error('Game not found');
         }
+        return response.data.response.games;
+    }
+
+    static async #getSteamGameIcon(appID: number) {
+        const ownGames = await this.#getOwnedGames()
         console.log('response', appID);
-        const filter = response.data.response.games.filter((game: any) => game.appid === appID);
+        const filter = ownGames.filter((game: any) => game.appid === appID);
         console.log('filter', filter);
         return `http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`;
     }
 
-    static async #getSteamGameData(appID: number): Promise<{
-        steam_appid: number,
-        name: string,
-        header_image: string
-        background_raw: string,
-        detailed_description: string,
-    }> {
-        const response = await axios.get(`http://store.steampowered.com/api/appdetails?appids=${appID}`);
+    static async #getSteamGameData(appID: number) {
+        const response = await axios.get<SteamResponseAppDetails>(`http://store.steampowered.com/api/appdetails?appids=${appID}`);
         if (!response.data[appID].success) {
             throw new Error('Game not found');
         }

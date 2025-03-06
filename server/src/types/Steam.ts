@@ -8,7 +8,7 @@ export type steamOwnedGame = {
 
 export type SteamResponseOwnGames = {
     "response": {
-        "game_count": 1076,
+        "game_count": number,
         "games": steamOwnedGame[],
     }
 }
@@ -21,7 +21,7 @@ export type SteamResponseAppDetails = {
             "name": string,
             "steam_appid": number,
             "required_age": number,
-            "is_free": false,
+            "is_free": boolean,
             "detailed_description": string,
             "about_the_game": string,
             "short_description": string,
@@ -70,7 +70,7 @@ export type SteamResponseAppDetails = {
                         "option_text": string,
                         "option_description": string,
                         "can_get_free_license": string,
-                        "is_free_license": false,
+                        "is_free_license": boolean,
                         "price_in_cents_with_discount": number
                     }[],
                 }
@@ -93,13 +93,11 @@ export type SteamResponseAppDetails = {
                 "id": string,
                 "description": string
             }[],
-            "screenshots": [
-                {
-                    "id": number,
-                    "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/0000000132.600x338.jpg?t=1729702322",
-                    "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/0000000132.1920x1080.jpg?t=1729702322"
-                },
-            ],
+            "screenshots": {
+                "id": number,
+                "path_thumbnail": string
+                "path_full": string
+            }[],
             "recommendations": {
                 "total": number
             },
@@ -109,7 +107,7 @@ export type SteamResponseAppDetails = {
             },
             "support_info": {
                 "url": string,
-                "email": ""
+                "email": string
             },
             "background": string,
             "background_raw": string,

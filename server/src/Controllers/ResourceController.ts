@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ZodObject, ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import Model from "../Models/Model.js";
 
 export abstract class ResourceController {
   protected model: any;
@@ -9,7 +10,7 @@ export abstract class ResourceController {
   protected UpdateSchema: ZodSchema;
 
   constructor(
-    model: any,
+    model: Model,
     SelectSchema: ZodSchema,
     InsertSchema: ZodSchema,
     UpdateSchema: ZodSchema,

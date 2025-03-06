@@ -30,8 +30,11 @@ const selectedGame = computed(() => {
             class="h-12 w-12"
           />
           <h1 class="text-2xl">{{ selectedGame?.name }}</h1>
+          <span class="badge" :class="selectedGame.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
+            {{ selectedGame.type }}
+          </span>
         </div>
-        <ActionBar />
+        <ActionBar/>
         <div class="mt-4 flex flex-row gap-4">
           <p class="mt-2 w-2/3">
             {{ selectedGame?.description }}

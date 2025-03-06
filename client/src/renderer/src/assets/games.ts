@@ -7,6 +7,7 @@ export default [
     icon: 'https://placehold.co/500x500/red/white',
     banner: 'https://placehold.co/1000x500/red/white',
     boxArt: 'https://placehold.co/300x400/red/white',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -40,6 +41,7 @@ export default [
     icon: 'https://placehold.co/500x500/blue/white',
     banner: 'https://placehold.co/1000x500/blue/white',
     boxArt: 'https://placehold.co/300x400/blue/white',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -73,6 +75,7 @@ export default [
     icon: 'https://placehold.co/500x500/green/white',
     banner: 'https://placehold.co/1000x500/green/white',
     boxArt: 'https://placehold.co/300x400/green/white',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -106,6 +109,7 @@ export default [
     icon: 'https://placehold.co/500x500/yellow/black',
     banner: 'https://placehold.co/1000x500/yellow/black',
     boxArt: 'https://placehold.co/300x400/yellow/black',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -139,6 +143,7 @@ export default [
     icon: 'https://placehold.co/500x500/purple/white',
     banner: 'https://placehold.co/1000x500/purple/white',
     boxArt: 'https://placehold.co/300x400/purple/white',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -172,6 +177,7 @@ export default [
     icon: 'https://placehold.co/500x500/orange/black',
     banner: 'https://placehold.co/1000x500/orange/black',
     boxArt: 'https://placehold.co/300x400/orange/black',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -205,6 +211,7 @@ export default [
     icon: 'https://placehold.co/500x500/cyan/black',
     banner: 'https://placehold.co/1000x500/cyan/black',
     boxArt: 'https://placehold.co/300x400/cyan/black',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -238,6 +245,7 @@ export default [
     icon: 'https://placehold.co/500x500/lime/black',
     banner: 'https://placehold.co/1000x500/lime/black',
     boxArt: 'https://placehold.co/300x400/lime/black',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -271,6 +279,7 @@ export default [
     icon: 'https://placehold.co/500x500/pink/black',
     banner: 'https://placehold.co/1000x500/pink/black',
     boxArt: 'https://placehold.co/300x400/pink/black',
+    type: 'zip',
     selectedArchive: 1,
     archives: [
       {
@@ -304,30 +313,8 @@ export default [
     icon: 'https://placehold.co/500x500/teal/white',
     banner: 'https://placehold.co/1000x500/teal/white',
     boxArt: 'https://placehold.co/300x400/teal/white',
-    selectedArchive: 1,
-    archives: [
-      {
-        id: 1,
-        name: 'archive1',
-        version: '1.0',
-        os: 'windows',
-        isInstalled: true,
-      },
-      {
-        id: 2,
-        name: 'archive2',
-        version: '1.0',
-        os: 'linux',
-        isInstalled: false,
-      },
-      {
-        id: 3,
-        name: 'archive3',
-        version: '1.0',
-        os: 'mac',
-        isInstalled: false,
-      },
-    ],
+    type: 'steam',
+
   },
 ];
 

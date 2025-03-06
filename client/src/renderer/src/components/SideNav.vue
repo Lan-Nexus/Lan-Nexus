@@ -31,6 +31,8 @@ const isSelectedGame = (gameId: string): boolean => {
         >
           {{ game.name }}
         </h2>
+        <span class="badge" :class="game.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
+          {{ game.type }}</span>
       </div>
     </div>
   </div>

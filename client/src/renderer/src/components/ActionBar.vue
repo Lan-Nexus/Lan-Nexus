@@ -6,7 +6,7 @@ const gameStore = useGameStore()
 
 <template>
   <div class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center">
-    <select class="select select-bordered w-64" v-model="gameStore.selectedGame.selectedArchive">
+    <select class="select select-bordered w-64" v-model="gameStore.selectedGame.selectedArchive" v-if="gameStore.selectedGame.type === 'zip'">
       <option disabled value="">Select an archive</option>
       <option
         v-for="archive in gameStore.selectedGame.archives"
@@ -16,8 +16,17 @@ const gameStore = useGameStore()
         {{ archive.name }} => {{ archive.version }} ({{ archive.os }})
       </option>
     </select>
+    <div
+        v-if="gameStore.selectedGame.type !== 'zip'"
+    ></div>
+    <button
+        class="btn btn-warning"
+        v-if="gameStore.selectedGame.type !== 'zip'"
+    >
+      Launch in {{ gameStore.selectedGame.type }}
+    </button>
 
-    <div class="flex gap-2">
+    <div class="flex gap-2" v-if="gameStore.selectedGame.type === 'zip'">
       <button
         class="btn btn-error w-24"
         v-if="gameStore.selectedArchive.isInstalled"

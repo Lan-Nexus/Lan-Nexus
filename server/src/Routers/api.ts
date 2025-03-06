@@ -13,7 +13,8 @@ new Router<gamesController>(router)
   .delete('/games/:id', gamesController, 'delete');
 
 new Router<steamController>(router)
-  .get('/steam', steamController, 'list') // Corrected from gamesController to steamController
+  .get('/steam', steamController, 'list')
   .get('/steam/:id', steamController, 'read')
+  .post('/steam', steamController, 'create')
 
 export default router;

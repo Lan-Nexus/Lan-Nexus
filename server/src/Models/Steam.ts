@@ -8,7 +8,7 @@ export default class SteamModel extends Model {
 
     static async create(data: { appID: number }) {
         console.log('data', data);
-        const [game, icon] = await Promise.all([this.#getSteamGameData(data.appID), this.#getSteamGameIcon(data.appID)])
+        const [game, icon] = await Promise.all([this.#getSteamGameData(data.appID), this.#getSteamGameIcon(data.appID)]);
         const gameData = {
             gameID: game.steam_appid.toString(),
             name: game.name,
@@ -56,17 +56,17 @@ export default class SteamModel extends Model {
 
     static async #getSteamGameIcon(appID: number) {
         const ownGames = await this.#getOwnedGames()
-        console.log('response', appID);
         const filter = ownGames.filter((game: any) => game.appid === appID);
-        console.log('filter', filter);
         return `http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`;
     }
 
     static async #getSteamGameData(appID: number) {
         const response = await axios.get<SteamResponseAppDetails>(`http://store.steampowered.com/api/appdetails?appids=${appID}`);
+        console.log(response.data);
         if (!response.data[appID].success) {
             throw new Error('Game not found');
         }
-        return response.data[appID].data;
+        console.log(response.data[appID].data);
+        return response.data[appID.toString()].data;
     }
 }

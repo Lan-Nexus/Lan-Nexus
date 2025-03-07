@@ -35,7 +35,7 @@ export abstract class ResourceController {
 
       res.send(results);
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
@@ -51,7 +51,7 @@ export abstract class ResourceController {
 
       res.send(results);
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
@@ -66,7 +66,7 @@ export abstract class ResourceController {
 
       res.send(data);
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
@@ -86,12 +86,13 @@ export abstract class ResourceController {
 
       this.sendStatus(res, StatusCodes.NO_CONTENT);
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
-  sendStatus(res: Response, status: StatusCodes): void {
+  sendStatus(res: Response, status: StatusCodes,error?: any): void {
     const statusString: string = StatusCodes[status];
-    res.status(status).send(ReasonPhrases[statusString as keyof typeof ReasonPhrases]);
+    const reason: string = ReasonPhrases[statusString as keyof typeof ReasonPhrases]
+    res.status(status).send({ status: statusString, reason, error });
   }
 }

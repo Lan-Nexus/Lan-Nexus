@@ -7,12 +7,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=example
-      - DB_NAME=mydatabase
-      - DATABASE_URL=mysql://root:example@db:3306/mydatabase # Constructed DATABASE_URL
     depends_on:
       - db
     volumes:

@@ -16,10 +16,10 @@ const selectedGame = computed(() => {
     <SideNav />
     <div class="flex flex-col flex-1" v-if="selectedGame">
       <img
-        v-if="selectedGame.banner"
-        :src="selectedGame.banner"
-        alt="game banner"
-        class="h-48 w-full object-cover"
+        v-if="selectedGame.headerImage"
+        :src="selectedGame.headerImage"
+        alt="game"
+        class="w-full object-cover"
       />
       <div class="p-4">
         <div class="flex gap-4 items-center pb-4">
@@ -36,15 +36,8 @@ const selectedGame = computed(() => {
         </div>
         <ActionBar/>
         <div class="mt-4 flex flex-row gap-4">
-          <p class="mt-2 w-2/3">
-            {{ selectedGame?.description }}
+          <p class="mt-2 w-2/3" v-html="selectedGame?.description">
           </p>
-          <img
-            v-if="selectedGame.boxArt"
-            :src="selectedGame.boxArt"
-            alt="game screenshot"
-            class="w-1/3 object-cover h-auto"
-          />
         </div>
       </div>
     </div>

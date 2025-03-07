@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import gamesdata from '../assets/games.js'
+import axios from 'axios'
 
 export const useGameStore = defineStore('game', () => {
-  const games = ref(gamesdata)
-
-  console.log(games.value)
+  const games = ref([])
 
   const selectedGameId = ref(1)
 
@@ -38,5 +36,27 @@ export const useGameStore = defineStore('game', () => {
     archive.isInstalled = false
   }
 
-  return { games, selectedGame, selectedArchive, selectGame, installArchive, uninstallArchive }
+  function loadGames(){
+    axios.get('http://localhost:3000/api/games').then((response) => {
+      games.value = response.data
+    })
+  }
+
+  function play(){
+    if(selectedGame.value.type === 'steam'){
+      document.location.href = `steam://launch/${selectedGame.value.id}/dialog`
+    }
+  }
+
+  loadGames();
+
+  return {
+    games,
+    selectedGame,
+    selectedArchive,
+    selectGame,
+    installArchive,
+    uninstallArchive,
+    play
+  }
 })

@@ -22,6 +22,7 @@ const gameStore = useGameStore()
     <button
         class="btn btn-warning"
         v-if="gameStore.selectedGame.type !== 'zip'"
+        @click="gameStore.play"
     >
       Launch in {{ gameStore.selectedGame.type }}
     </button>

@@ -44,7 +44,7 @@ export const useGameStore = defineStore('game', () => {
 
   function play(){
     if(selectedGame.value.type === 'steam'){
-      document.location.href = `steam://launch/${selectedGame.value.id}`
+      document.location.href = `steam://run/${selectedGame.value.id}`
     }
   }
 
@@ -57,6 +57,7 @@ export const useGameStore = defineStore('game', () => {
     selectGame,
     installArchive,
     uninstallArchive,
-    play
+    play,
+    reload: loadGames
   }
 })

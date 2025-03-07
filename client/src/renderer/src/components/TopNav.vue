@@ -9,6 +9,9 @@ import {
   faSignal,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useGameStore } from "../stores/useGameStore.ts";
+
+const gameStore = useGameStore();
 
 </script>
 <template>
@@ -44,28 +47,10 @@ import {
     </button>
     <div class="flex-grow"></div>
 
-    <div  class="text-warning p-4">
-      <div
-        class="tooltip tooltip-bottom tooltip-warning"
-        data-tip="You are offline"
-      >
-        <font-awesome-icon :icon="faExclamationTriangle" class="text-2xl" />
-      </div>
-    </div>
-
-    <div class="p-4 text-success">
-      <div class="tooltip tooltip-bottom" data-tip="You are online">
-        <font-awesome-icon :icon="faSignal" class="text-2xl" />
-      </div>
-    </div>
-
     <button
       class="btn btn-ghost text-neutral-content"
     >
-
-      <font-awesome-icon :icon="faArrowsRotate" class="text-2xl"/>
+      <font-awesome-icon :icon="faArrowsRotate" class="text-2xl" @click="gameStore.reload" />
     </button>
-      <div class="badge badge-outline badge-lg badge-accent">
-      </div>
   </div>
 </template>

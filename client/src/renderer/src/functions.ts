@@ -2,7 +2,7 @@ export default new Proxy(
   {},
   {
     get: function (target, prop, receiver) {
-      return (args) => {
+      return (...args) => {
         return new Promise((resolve, reject) => {
           window.electron.ipcRenderer.send('function', {
             functionName: prop,

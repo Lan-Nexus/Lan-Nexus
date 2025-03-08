@@ -26,12 +26,13 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@tailwindcss/vite": "^4.0.11",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "electron-updater": "^6.3.9",
     "pinia": "^3.0.1",
     "tailwindcss": "^4.0.9",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "yauzl": "^3.2.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "3.0.0",

@@ -8,5 +8,5 @@ export default async (progressCallback,gameName,func,args = []) => {
 
   const file = await import(`${gameDir}/lanLauncher.mjs`);
 
-  return file[func](gameDir,...args);
+  return file[func](progressCallback,gameDir,...args);
 }

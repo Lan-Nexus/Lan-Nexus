@@ -35,19 +35,24 @@ export const useGameStore = defineStore('game', () => {
     const safeName = game.name.replaceAll(' ', '-')
     const archiveFile = safeName + '/' + archive.name
 
+    progressStore.active = true;
+
     try {
       await functions.download(progressStore.setProgress,archive.file, archiveFile + '.zip')
       await functions.unzip(progressStore.setProgress,archiveFile + '.zip', archiveFile)
       await functions.run(progressStore.setProgress,archiveFile,'install');
-      //await functions.clearTemp(progressStore.setProgress)
+      await functions.clearTemp(progressStore.setProgress)
     } catch (error) {
       console.error(error)
+    }finally{
+      progressStore.active = false;
     }
 
     archive.isInstalled = true
   }
 
   async function uninstallArchive(archiveName: string) {
+    progressStore.active = false;
     const game = games.value.find((game) => game.id === selectedGameId.value)
     const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
 
@@ -59,6 +64,8 @@ export const useGameStore = defineStore('game', () => {
       await functions.removeGame(progressStore.setProgress,archiveFile);
     } catch (error) {
       console.error(error)
+    }finally{
+      progressStore.active = false;
     }
 
     archive.isInstalled = false

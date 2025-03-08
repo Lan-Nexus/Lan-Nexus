@@ -70,7 +70,12 @@ app.on('window-all-closed', () => {
   }
 })
 
+
+
 ipcMain.on('function', async (event, arg) => {
+
+    const progressCallback = (...args) => event.reply('function-progress', ...args);
+
     const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '')
     if (safeFunctionName !== arg.functionName || safeFunctionName.length === 0 || safeFunctionName.length > 100) {
         event.reply('function-error', 'Invalid function name');
@@ -86,7 +91,7 @@ ipcMain.on('function', async (event, arg) => {
 
     console.log('function called', safeFunctionName);
     try {
-        const result = await func.default(...arg.args);
+        const result = await func.default(progressCallback,...arg.args);
         console.log('function result', result);
         event.reply('function-reply', result);
     }catch(e) {

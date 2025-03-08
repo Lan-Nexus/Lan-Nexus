@@ -1,28 +1,39 @@
 import axios from 'axios';
 import fs from 'fs';
+import path from 'path';
 
-const tempDir =  __dirname + '/../../temp';
+const tempDir = path.join(__dirname, '../../temp');
 
-export default async function download(url, filename) {
-    console.log('Downloading ' + url + ' to ' + tempDir + '/' + filename);
-    const subDir = tempDir + '/' + filename.split('/').slice(0, -1).join('/');
+export default async function download(progressCallback, url, filename) {
 
-    if(!fs.existsSync(tempDir)){
-        fs.mkdirSync(tempDir);
-    }
+  progressCallback(0,'Downloading');
 
-    if(!fs.existsSync(subDir)){
-        fs.mkdirSync(subDir);
-    }
+  console.log('Downloading ' + url + ' to ' + path.join(tempDir, filename));
+  const subDir = path.join(tempDir, filename.split('/').slice(0, -1).join('/'));
 
-    const response = await axios.get(url, {
-        responseType: 'arraybuffer',
-    });
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir);
+  }
 
-    if (!fs.existsSync(tempDir)) {
-        fs.mkdirSync(tempDir);
-    }
+  if (!fs.existsSync(subDir)) {
+    fs.mkdirSync(subDir, { recursive: true });
+  }
 
-    fs.writeFileSync(tempDir + '/' + filename, response.data);
+  const headResponse = await axios.head(url);
+  const totalLength = parseInt(headResponse.headers['content-length'], 10) || 0;
+
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer',
+    onDownloadProgress: (progressEvent) => {
+      if (totalLength && progressCallback) {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / totalLength
+        );
+        progressCallback(percentCompleted, 'Downloading');
+      }
+    },
+  });
+
+  fs.writeFileSync(path.join(tempDir, filename), response.data);
 }
 

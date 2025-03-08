@@ -3,11 +3,13 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import functions from '../functions.js'
 import gameslocal from '../assets/games.js'
+import { useProgressStore } from './useProgress'
 
 export const useGameStore = defineStore('game', () => {
   const games = ref([])
 
   const selectedGameId = ref(1)
+  const progressStore = useProgressStore()
 
   const selectedGame = computed(() => {
     const game = games.value.find((game) => game.id === selectedGameId.value)
@@ -34,10 +36,10 @@ export const useGameStore = defineStore('game', () => {
     const archiveFile = safeName + '/' + archive.name
 
     try {
-      await functions.download(archive.file, archiveFile + '.zip')
-      await functions.unzip(archiveFile + '.zip', archiveFile)
-      await functions.run(archiveFile,'install');
-      await functions.clearTemp()
+      await functions.download(progressStore.setProgress,archive.file, archiveFile + '.zip')
+      await functions.unzip(progressStore.setProgress,archiveFile + '.zip', archiveFile)
+      await functions.run(progressStore.setProgress,archiveFile,'install');
+      //await functions.clearTemp(progressStore.setProgress)
     } catch (error) {
       console.error(error)
     }
@@ -49,8 +51,12 @@ export const useGameStore = defineStore('game', () => {
     const game = games.value.find((game) => game.id === selectedGameId.value)
     const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
 
+    const safeName = game.name.replaceAll(' ', '-')
+    const archiveFile = safeName + '/' + archive.name
+
     try {
-      await functions.run(archive.name,'uninstall');
+      await functions.run(progressStore.setProgress,archiveFile,'uninstall');
+      await functions.removeGame(progressStore.setProgress,archiveFile);
     } catch (error) {
       console.error(error)
     }
@@ -75,7 +81,7 @@ export const useGameStore = defineStore('game', () => {
       const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
       const safeName = game.name.replaceAll(' ', '-')
       const archiveFile = safeName + '/' + archive.name
-      await functions.run(archiveFile,'play');
+      await functions.run(progressStore.setProgress,archiveFile,'play');
     }
   }
 

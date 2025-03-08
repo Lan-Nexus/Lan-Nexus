@@ -2,7 +2,7 @@ export default new Proxy(
   {},
   {
     get: function (target, prop, receiver) {
-      return (...args) => {
+      return (progressCallback,...args) => {
         return new Promise((resolve, reject) => {
           window.electron.ipcRenderer.send('function', {
             functionName: prop,
@@ -22,6 +22,15 @@ export default new Proxy(
               reject(arg);
             }
           );
+
+          window.electron.ipcRenderer.on(
+            'function-progress',
+            (event, ...arg) => {
+                console.log('Progress:', arg);
+                progressCallback(...arg);
+            }
+          );
+
         });
       };
     },

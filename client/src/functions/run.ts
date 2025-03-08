@@ -1,6 +1,6 @@
 import path from 'path';
 
-export default async (gameName,func,args = []) => {
+export default async (progressCallback,gameName,func,args = []) => {
 
   let gameDir = path.join(__dirname, '../../games');
 

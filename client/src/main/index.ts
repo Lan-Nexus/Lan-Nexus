@@ -70,14 +70,28 @@ app.on('window-all-closed', () => {
   }
 })
 
-import test from '../functions/test';
 
-const allowedFunctions = {test};
 
 ipcMain.on('function', async (event, arg) => {
-    console.log('function called', arg.functionName);
+
+    const progressCallback = (...args) => event.reply('function-progress', ...args);
+
+    const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '')
+    if (safeFunctionName !== arg.functionName || safeFunctionName.length === 0 || safeFunctionName.length > 100) {
+        event.reply('function-error', 'Invalid function name');
+        return;
+    }
+
+    const func = await import(`../functions/${safeFunctionName}.ts`);
+
+    if (!func) {
+        event.reply('function-error', 'Function not found');
+        return
+    }
+
+    console.log('function called', safeFunctionName);
     try {
-        const result = await allowedFunctions[arg.functionName](arg.args);
+        const result = await func.default(progressCallback,...arg.args);
         console.log('function result', result);
         event.reply('function-reply', result);
     }catch(e) {

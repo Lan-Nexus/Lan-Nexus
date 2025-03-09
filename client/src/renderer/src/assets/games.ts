@@ -1,9 +1,9 @@
 export default [
   {
     id: 1,
-    name: 'The Witcher 3: Wild Hunt',
+    name: 'openTTD',
     description:
-      'A story-driven open world adventure set in a dark fantasy universe.',
+      'OpenTTD is an open-source simulation game based upon the popular Microprose game "Transport Tycoon Deluxe", written by Chris Sawyer. It attempts to mimic the original game as closely as possible while extending it with new features.',
     icon: 'https://placehold.co/500x500/red/white',
     banner: 'https://placehold.co/1000x500/red/white',
     boxArt: 'https://placehold.co/300x400/red/white',
@@ -16,6 +16,7 @@ export default [
         version: '1.32',
         os: 'windows',
         isInstalled: true,
+        file: 'http://localhost:3000/files/openttd-14.1-linux-generic-amd64.zip'
       },
       {
         id: 2,
@@ -23,6 +24,7 @@ export default [
         version: '1.32',
         os: 'linux',
         isInstalled: false,
+        file: 'http://localhost:3000/files/openttd-14.1-linux-generic-amd64.zip'
       },
       {
         id: 3,
@@ -30,6 +32,7 @@ export default [
         version: '1.32',
         os: 'mac',
         isInstalled: false,
+        file: 'http://localhost:3000/files/openttd-14.1-linux-generic-amd64.zip'
       },
     ],
   },

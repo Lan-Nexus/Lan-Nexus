@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
+import functions from '../functions.js'
+import gameslocal from '../assets/games.js'
+import { useProgressStore } from './useProgress'
 
 export const useGameStore = defineStore('game', () => {
   const games = ref([])
 
   const selectedGameId = ref(1)
+  const progressStore = useProgressStore()
 
   const selectedGame = computed(() => {
     const game = games.value.find((game) => game.id === selectedGameId.value)
@@ -24,27 +28,67 @@ export const useGameStore = defineStore('game', () => {
     selectedGameId.value = id
   }
 
-  function installArchive(archiveName: string) {
+  async function installArchive(archiveName: string) {
     const game = games.value.find((game) => game.id === selectedGameId.value)
-    const archive = game.archives.find((archive) => archive.name === archiveName)
+    const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
+
+    const safeName = game.name.replaceAll(' ', '-')
+    const archiveFile = safeName + '/' + archive.name
+
+    progressStore.active = true;
+
+    try {
+      await functions.download(progressStore.setProgress,archive.file, archiveFile + '.zip')
+      await functions.unzip(progressStore.setProgress,archiveFile + '.zip', archiveFile)
+      await functions.run(progressStore.setProgress,archiveFile,'install');
+      await functions.clearTemp(progressStore.setProgress)
+    } catch (error) {
+      console.error(error)
+    }finally{
+      progressStore.active = false;
+    }
+
     archive.isInstalled = true
   }
 
-  function uninstallArchive(archiveName: string) {
+  async function uninstallArchive(archiveName: string) {
+    progressStore.active = false;
     const game = games.value.find((game) => game.id === selectedGameId.value)
-    const archive = game.archives.find((archive) => archive.name === archiveName)
+    const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
+
+    const safeName = game.name.replaceAll(' ', '-')
+    const archiveFile = safeName + '/' + archive.name
+
+    try {
+      await functions.run(progressStore.setProgress,archiveFile,'uninstall');
+      await functions.removeGame(progressStore.setProgress,archiveFile);
+    } catch (error) {
+      console.error(error)
+    }finally{
+      progressStore.active = false;
+    }
+
     archive.isInstalled = false
   }
 
   function loadGames(){
+    games.value = gameslocal;
+    return;
     axios.get('http://localhost:3000/api/games').then((response) => {
       games.value = response.data
     })
   }
 
-  function play(){
+  async function play(){
     if(selectedGame.value.type === 'steam'){
       document.location.href = `steam://run/${selectedGame.value.id}`
+    }
+    if(selectedGame.value.type === 'zip'){
+      const game = games.value.find((game) => game.id === selectedGameId.value)
+      const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
+      const safeName = game.name.replaceAll(' ', '-')
+      const archiveFile = safeName + '/' + archive.name
+      await functions.run(progressStore.setProgress,archiveFile,'play');
     }
   }
 

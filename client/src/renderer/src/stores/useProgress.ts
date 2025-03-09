@@ -1,10 +1,25 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 export const useProgressStore = defineStore('progress', () => {
   const active = ref(true);
-  const progress = ref(20);
+  const progress = ref(0);
   const message = ref('Loading...');
 
-  return { active,progress, message };
+  watch(progress, (value) => {
+    console.log('Progress:', value);
+  })
+
+
+  const setProgress = (amount, msg) => {
+    console.log('Setting progress:', amount);
+    console.log('Setting message:', msg);
+    progress.value = Number(amount);
+    if(msg){
+      message.value = msg;
+    }
+  }
+
+
+  return { active,progress, message, setProgress };
 });

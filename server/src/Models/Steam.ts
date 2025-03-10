@@ -7,14 +7,16 @@ import type { steamOwnedGame, SteamResponseAppDetails, SteamResponseOwnGames } f
 export default class SteamModel extends Model {
 
     static async create(data: { appID: number }) {
-        console.log('data', data);
-        const [game, icon] = await Promise.all([this.#getSteamGameData(data.appID), this.#getSteamGameIcon(data.appID)]);
+        const [game, icon] = await Promise.all([this.#getGameData(data.appID), this.#getIcon(data.appID)]);
+        const [logo, header, libraryHero, library600x900] = await this.#getAllImages(data.appID);
         const gameData = {
             gameID: game.steam_appid.toString(),
             name: game.name,
             icon: icon,
-            headerImage: game.header_image,
-            bannerImage: game.background_raw,
+            logo: logo,
+            headerImage: header,
+            imageCard: library600x900,
+            heroImage: libraryHero,
             description: game.detailed_description,
             type: 'steam',
         };
@@ -38,6 +40,14 @@ export default class SteamModel extends Model {
         throw new Error('Method not implemented.');
     }
 
+    static #getAllImages(appID: number) {
+        const logo = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/logo.png`);
+        const header = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/header.jpg`);
+        const libraryHero = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_hero.jpg`);
+        const library600x900 = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_600x900.jpg`);
+        return Promise.all([logo, header, libraryHero, library600x900]);
+    }
+
     static async #getOwnedGames() {
         const response = await axios.get<SteamResponseOwnGames>(
             `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
@@ -54,19 +64,30 @@ export default class SteamModel extends Model {
         return response.data.response.games;
     }
 
-    static async #getSteamGameIcon(appID: number) {
+    static async #getIcon(appID: number) {
         const ownGames = await this.#getOwnedGames()
         const filter = ownGames.filter((game: any) => game.appid === appID);
-        return `http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`;
+        if (filter.length === 0) {
+            return null;
+        }
+        return this.#getImageAsBase64(`http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`);
     }
 
-    static async #getSteamGameData(appID: number) {
+    static async #getGameData(appID: number) {
         const response = await axios.get<SteamResponseAppDetails>(`http://store.steampowered.com/api/appdetails?appids=${appID}`);
-        console.log(response.data);
         if (!response.data[appID].success) {
             throw new Error('Game not found');
         }
-        console.log(response.data[appID].data);
         return response.data[appID.toString()].data;
+    }
+
+    static async #getImageAsBase64(imageUrl: string) {
+        try {
+            const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+            const buffer = Buffer.from(response.data, 'binary');
+            return buffer.toString('base64');
+        } catch (e) {
+            return null;
+        }
     }
 }

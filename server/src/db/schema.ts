@@ -1,4 +1,4 @@
-import { serial, mysqlTable, text, varchar, int } from "drizzle-orm/mysql-core";
+import { serial, mysqlTable, text, varchar, int, mediumtext } from "drizzle-orm/mysql-core";
 import {
   createSelectSchema,
   createInsertSchema,
@@ -17,9 +17,11 @@ export const gamesTable = mysqlTable("games", {
   gameID: varchar('game_id', { length: 255 }).unique().notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text().notNull(),
-  icon: varchar('icon', { length: 255 }).notNull(),
-  headerImage: varchar('header_image', { length: 255 }).notNull(),
-  bannerImage: varchar('banner_image', { length: 255 }).notNull(),
+  icon: mediumtext('icon'),
+  logo: mediumtext('logo'),
+  headerImage: mediumtext('headerImage'),
+  imageCard: mediumtext('imageCard'),
+  heroImage: mediumtext('heroImage'),
   type: varchar('type', { length: 255 }).notNull(),
 });
 

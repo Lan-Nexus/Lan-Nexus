@@ -15,17 +15,23 @@ const selectedGame = computed(() => {
   <div class="flex flex-col h-full w-full overflow-hidden flex flex-row">
     <SideNav />
     <div class="flex flex-col flex-1" v-if="selectedGame">
+      <div class="w-full h-60 relative">
       <img
-        v-if="selectedGame.headerImage"
-        :src="selectedGame.headerImage"
+        v-if="selectedGame.heroImage"
+        :src="'data:image/jpeg;base64,' + selectedGame.heroImage"
         alt="game"
         class="w-full object-cover"
       />
-      <div class="p-4">
+      <img
+        v-if="selectedGame.logo"
+        :src="'data:image/jpeg;base64,' + selectedGame.logo"
+        class="top-1/2 absolute w-1/3"
+      </div>
+      <div class="p-4 pt-52">
         <div class="flex gap-4 items-center pb-4">
           <img
             v-if="selectedGame.icon"
-            :src="selectedGame.icon"
+            :src="'data:image/jpeg;base64,' + selectedGame.icon"
             alt="game icon"
             class="h-12 w-12"
           />

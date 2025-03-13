@@ -72,8 +72,6 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function loadGames(){
-    games.value = gameslocal;
-    return;
     axios.get('http://localhost:3000/api/games').then((response) => {
       games.value = response.data
     })

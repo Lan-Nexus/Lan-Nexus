@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import SideNav from '../components/SideNav.vue'
-import ActionBar from '../components/ActionBar.vue'
-import { useGameStore } from '../stores/useGameStore'
+import { computed } from 'vue';
+import SideNav from '../components/SideNav.vue';
+import ActionBar from '../components/ActionBar.vue';
+import { useGameStore } from '../stores/useGameStore';
 
-const gameStore = useGameStore()
+const gameStore = useGameStore();
 
+gameStore.loadGames();
 const selectedGame = computed(() => {
-  return gameStore.selectedGame
-})
+  return gameStore.selectedGame;
+});
 </script>
 
 <template>
-  <div class="flex flex-col h-full w-full overflow-hidden flex flex-row">
+  <div class="flex flex-col h-full w-full flex flex-row">
     <SideNav />
-    <div class="flex flex-col flex-1" v-if="selectedGame">
+    <div class="flex flex-col flex-1" style="height: 87vh; overflow: overlay" v-if="selectedGame">
       <div class="w-full h-60 relative">
         <img
           v-if="selectedGame.heroImage"
@@ -46,7 +47,7 @@ const selectedGame = computed(() => {
         </div>
         <ActionBar />
         <div class="mt-4 flex flex-row gap-4">
-          <p class="mt-2 w-2/3">{{ selectedGame?.description }}></p>
+          <div v-html="selectedGame?.description"></div>
         </div>
       </div>
     </div>

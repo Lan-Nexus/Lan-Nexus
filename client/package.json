@@ -5,6 +5,7 @@
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
+  "type": "module",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -25,7 +26,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
-    "@tailwindcss/vite": "^4.0.11",
+    "@tailwindcss/vite": "^4.0.14",
     "axios": "^1.8.2",
     "electron-updater": "^6.3.9",
     "pinia": "^3.0.1",

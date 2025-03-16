@@ -11,6 +11,8 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'win32' ? { icon } : {}),
+
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -70,33 +72,34 @@ app.on('window-all-closed', () => {
   }
 })
 
-
-
 ipcMain.on('function', async (event, arg) => {
+  const progressCallback = (...args) => event.reply('function-progress', ...args);
 
-    const progressCallback = (...args) => event.reply('function-progress', ...args);
+  const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '')
+  if (
+    safeFunctionName !== arg.functionName ||
+    safeFunctionName.length === 0 ||
+    safeFunctionName.length > 100
+  ) {
+    event.reply('function-error', 'Invalid function name');
+    return;
+  }
 
-    const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '')
-    if (safeFunctionName !== arg.functionName || safeFunctionName.length === 0 || safeFunctionName.length > 100) {
-        event.reply('function-error', 'Invalid function name');
-        return;
-    }
+  const func = await import(`../functions/${safeFunctionName}.ts`);
 
-    const func = await import(`../functions/${safeFunctionName}.ts`);
+  if (!func) {
+    event.reply('function-error', 'Function not found');
+    return
+  }
 
-    if (!func) {
-        event.reply('function-error', 'Function not found');
-        return
-    }
-
-    console.log('function called', safeFunctionName);
-    try {
-        const result = await func.default(progressCallback,...arg.args);
-        console.log('function result', result);
-        event.reply('function-reply', result);
-    }catch(e) {
-        console.error(e);
-        event.reply('function-error', e);
-    }
+  console.log('function called', safeFunctionName);
+  try {
+    const result = await func.default(progressCallback, ...arg.args);
+    console.log('function result', result);
+    event.reply('function-reply', result);
+  } catch (e) {
+    console.error(e);
+    event.reply('function-error', e);
+  }
 });
 

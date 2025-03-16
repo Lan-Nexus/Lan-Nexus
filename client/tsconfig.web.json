@@ -13,6 +13,8 @@
       "@renderer/*": [
         "src/renderer/src/*"
       ]
-    }
+    },
+    "moduleResolution": "node16",
+    "module": "node16"
   }
 }

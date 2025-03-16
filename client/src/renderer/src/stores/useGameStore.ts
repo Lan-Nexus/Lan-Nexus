@@ -3,10 +3,20 @@ import axios from 'axios'
 import functions from '../functions.js'
 import { useProgressStore } from './useProgress.js'
 
+type gameState = {
+  description: string,
+  gameID: string,
+  id: number,
+  name: string,
+  selectedArchive: number,
+  type: string,
+  archives: unknown[]
+}
+
 export const useGameStore = defineStore('game', {
   state: () => ({
-    games: [],
-    selectedGameId: 1,
+    games: [] as gameState[],
+    selectedGameId: 1
   }),
   getters: {
     selectedGame: (state) => {
@@ -35,9 +45,9 @@ export const useGameStore = defineStore('game', {
     },
     async installArchive(archiveName) {
       const game = this.games.find((game) => game.id === this.selectedGameId)
-      const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
+      const archive = game!.archives.find((archive) => archive.id === game!.selectedArchive)
 
-      const safeName = game.name.replaceAll(' ', '-')
+      const safeName = game!.name.replaceAll(' ', '-')
       const archiveFile = safeName + '/' + archive.name
 
       const progressStore = useProgressStore()
@@ -60,6 +70,9 @@ export const useGameStore = defineStore('game', {
       const progressStore = useProgressStore()
       progressStore.active = false
       const game = this.games.find((game) => game.id === this.selectedGameId)
+      if (game === undefined) {
+        return
+      }
       const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
 
       const safeName = game.name.replaceAll(' ', '-')
@@ -83,13 +96,13 @@ export const useGameStore = defineStore('game', {
     },
     async play() {
       const selectedGame = this.selectedGame
-      if (selectedGame.type === 'steam') {
-        document.location.href = `steam://run/${selectedGame.id}`
+      if (selectedGame && selectedGame.type === 'steam') {
+        document.location.href = `steam://run/${selectedGame.gameID}`
       }
-      if (selectedGame.type === 'zip') {
+      if (selectedGame && selectedGame.type === 'zip') {
         const game = this.games.find((game) => game.id === this.selectedGameId)
-        const archive = game.archives.find((archive) => archive.id === game.selectedArchive)
-        const safeName = game.name.replaceAll(' ', '-')
+        const archive = game!.archives.find((archive) => archive.id === game.selectedArchive)
+        const safeName = game!.name.replaceAll(' ', '-')
         const archiveFile = safeName + '/' + archive.name
         await functions.run(useProgressStore().setProgress, archiveFile, 'play')
       }

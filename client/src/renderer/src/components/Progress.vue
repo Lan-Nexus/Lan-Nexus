@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useProgressStore } from '../stores/useProgress.ts'
+import { useProgressStore } from '../stores/useProgress.js';
 
-const progressStore = useProgressStore()
+const progressStore = useProgressStore();
 </script>
 
 <template>

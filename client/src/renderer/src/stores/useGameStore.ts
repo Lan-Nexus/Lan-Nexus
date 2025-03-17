@@ -9,6 +9,8 @@ type archives = {
   name: string;
   file: string;
   isInstalled: boolean;
+  version: string;
+  os: string;
 };
 
 type gameState = {
@@ -18,6 +20,9 @@ type gameState = {
   name: string;
   selectedArchive: number;
   type: string;
+  heroImage: string;
+  logo: string;
+  icon: string;
   archives: archives[];
 };
 
@@ -50,6 +55,9 @@ export const useGameStore = defineStore('game', {
   actions: {
     selectGame(id) {
       this.selectedGameId = id;
+    },
+    reload() {
+      this.loadGames();
     },
     async installArchive() {
       const game = this.games.find((game) => game.id === this.selectedGameId);

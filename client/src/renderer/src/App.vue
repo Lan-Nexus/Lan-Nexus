@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import Progress from "./components/Progress.vue";
+import Progress from './components/Progress.vue';
 
-
-import TopNav from "./components/TopNav.vue";
-
+import TopNav from './components/TopNav.vue';
 </script>
 
 <template>

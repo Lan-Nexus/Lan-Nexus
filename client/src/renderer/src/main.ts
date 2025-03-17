@@ -1,20 +1,22 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import App from './App.vue'
-import {router} from './router'
-import './assets/style.css'
+declare global {
+  interface Window {
+    functions: unknown;
+  }
+}
 
-createApp(App)
-  .use(createPinia())
-  .use(router)
-  .mount('#app')
+import App from './App.vue';
+import { router } from './router';
+import './assets/style.css';
 
+createApp(App).use(createPinia()).use(router).mount('#app');
 
 window.functions = new Proxy(
   {},
   {
-    get: function (target, prop, receiver) {
+    get: function (_target, prop) {
       return (args) => {
         return new Promise((resolve, reject) => {
           window.electron.ipcRenderer.send('function', {
@@ -22,22 +24,15 @@ window.functions = new Proxy(
             args: args,
           });
 
-          window.electron.ipcRenderer.once(
-            'function-reply',
-            (event, arg) => {
-              resolve(arg);
-            }
-          );
+          window.electron.ipcRenderer.once('function-reply', (_event, arg) => {
+            resolve(arg);
+          });
 
-          window.electron.ipcRenderer.once(
-            'function-error',
-            (event, arg) => {
-              reject(arg);
-            }
-          );
+          window.electron.ipcRenderer.once('function-error', (_event, arg) => {
+            reject(arg);
+          });
         });
       };
     },
   }
 );
-

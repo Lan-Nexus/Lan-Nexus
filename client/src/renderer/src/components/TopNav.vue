@@ -1,26 +1,16 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faCog,
-  faArrowsRotate,
-  faHome,
-  faGamepad,
-  faExclamationTriangle,
-  faSignal,
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCog, faArrowsRotate, faHome, faGamepad } from '@fortawesome/free-solid-svg-icons';
 
-import { useGameStore } from "../stores/useGameStore.ts";
+import { useGameStore } from '../stores/useGameStore.js';
 
 const gameStore = useGameStore();
-
 </script>
 <template>
   <div
     class="flex justify-between items-center bg-base-content shadow-lg absolute w-full pe-4 gap-4"
   >
-    <h1 class="text-4xl font-bold text-center p-4 text-primary-content">
-      Lan-Launch
-    </h1>
+    <h1 class="text-4xl font-bold text-center p-4 text-primary-content">Lan-Launch</h1>
     <div class="flex-grow"></div>
     <button
       class="btn"
@@ -47,9 +37,7 @@ const gameStore = useGameStore();
     </button>
     <div class="flex-grow"></div>
 
-    <button
-      class="btn btn-ghost text-neutral-content"
-    >
+    <button class="btn btn-ghost text-neutral-content">
       <font-awesome-icon :icon="faArrowsRotate" class="text-2xl" @click="gameStore.reload" />
     </button>
   </div>

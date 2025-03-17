@@ -18,22 +18,22 @@ const selectedGame = computed(() => {
     <div v-if="selectedGame" class="flex flex-col flex-1" style="height: 88vh; overflow: overlay">
       <div class="parallax">
         <div class="parallax__layer parallax__layer--back">
-          <div class="w-full relative">
+          <div class="w-full">
             <img
               v-if="selectedGame.heroImage"
               :src="'data:image/jpeg;base64,' + selectedGame.heroImage"
               alt="game"
               class="w-full"
             />
-            <img
-              v-if="selectedGame.logo"
-              :src="'data:image/jpeg;base64,' + selectedGame.logo"
-              class="absolute bottom-5 left-5"
-            />
           </div>
         </div>
         <div class="parallax__layer parallax__layer--base">
-          <div class="dynamic-margin bg-base-200">
+          <div class="dynamic-margin bg-base-200 relative">
+            <img
+              v-if="selectedGame.logo"
+              :src="'data:image/jpeg;base64,' + selectedGame.logo"
+              class="absolute md:-top-15 -top-8 left-5 w-1/2"
+            />
             <ActionBar />
             <div class="mt-4 flex flex-row gap-4">
               <div v-html="selectedGame?.description"></div>

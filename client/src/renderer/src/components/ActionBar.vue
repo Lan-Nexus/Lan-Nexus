@@ -23,9 +23,9 @@ function updateShadow() {
   if (actionBarPanel.value) {
     const t = actionBarPanel.value.getBoundingClientRect();
     if (t.y == height) {
-      actionBarPanel.value.classList.add('shadow-sm');
+      actionBarPanel.value.classList.add('shadow-md');
     } else {
-      actionBarPanel.value.classList.remove('shadow-sm');
+      actionBarPanel.value.classList.remove('shadow-md');
     }
   }
 }

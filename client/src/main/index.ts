@@ -1,18 +1,25 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 
-function createWindow(): void {
-  // Create the browser window.
+let iconPath: Promise<string>;
+if (process.platform == 'linux') {
+  iconPath = import('../../resources/icon.png?asset').then((module) => module.default);
+} else if (process.platform == 'win32') {
+  iconPath = import('../../resources/icon.ico?asset').then((module) => module.default);
+} else if (process.platform == 'darwin') {
+  iconPath = import('../../resources/icon.icns?asset').then((module) => module.default);
+}
+
+async function createWindow() {
+  const icon = await iconPath;
+  console.log(icon);
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    ...(process.platform === 'win32' ? { icon } : {}),
-
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false

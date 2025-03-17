@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useProgressStore = defineStore('progress', {
   state: () => {
     return {
-      active: true,
+      active: false,
       progress: 0,
       message: 'Loading...',
     };

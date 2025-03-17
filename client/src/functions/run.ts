@@ -1,6 +1,6 @@
 import path from 'path';
 
-export default async (progressCallback,gameName,func,args = []) => {
+export default async (progressCallback, gameName, func, args = []) => {
 
   let gameDir = path.join(__dirname, '../../games');
 
@@ -8,5 +8,5 @@ export default async (progressCallback,gameName,func,args = []) => {
 
   const file = await import(`${gameDir}/lanLauncher.mjs`);
 
-  return file[func](progressCallback,gameDir,...args);
-}
+  return file[func](progressCallback, gameDir, ...args);
+};

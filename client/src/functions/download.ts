@@ -6,7 +6,7 @@ const tempDir = path.join(__dirname, '../../temp');
 
 export default async function download(progressCallback, url, filename) {
 
-  progressCallback(0,'Downloading');
+  progressCallback(0, 'Downloading');
 
   console.log('Downloading ' + url + ' to ' + path.join(tempDir, filename));
   const subDir = path.join(tempDir, filename.split('/').slice(0, -1).join('/'));
@@ -26,9 +26,7 @@ export default async function download(progressCallback, url, filename) {
     responseType: 'arraybuffer',
     onDownloadProgress: (progressEvent) => {
       if (totalLength && progressCallback) {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / totalLength
-        );
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / totalLength);
         progressCallback(percentCompleted, 'Downloading');
       }
     },

@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-export default async (progressCallback,gameName) => {
+export default async (progressCallback, gameName) => {
 
   progressCallback(0);
 

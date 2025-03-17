@@ -17,7 +17,7 @@ export default async function unzip(progressCallback, filename, gameName) {
   const zipBuffer = await fs.promises.readFile(path.join(tempDir, filename));
 
   // Get an approximate entry count first to track progress
-  const countZipfile = await openZip(zipBuffer, { lazyEntries: true });
+  const countZipfile = await openZip(zipBuffer);
   let totalEntries = 0;
 
   await new Promise((resolve, reject) => {
@@ -32,10 +32,10 @@ export default async function unzip(progressCallback, filename, gameName) {
   });
 
   // Now open the zip file again for actual extraction
-  const zipfile = await openZip(zipBuffer, { lazyEntries: true });
+  const zipfile = await openZip(zipBuffer);
 
   return new Promise((resolve, reject) => {
-    const entries = [];
+    const entries: string[] = [];
     let processedEntries = 0;
 
     // Call with 0% at start

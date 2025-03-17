@@ -6,10 +6,10 @@ export const useProgressStore = defineStore('progress', {
       active: true,
       progress: 0,
       message: 'Loading...'
-    }
+    };
   },
   actions: {
-    setProgress(amount, msg) {
+    setProgress(amount: string, msg: string) {
       console.log('Setting progress:', amount);
       console.log('Setting message:', msg);
       this.progress = Number(amount);

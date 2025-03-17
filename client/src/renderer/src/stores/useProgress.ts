@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useProgressStore = defineStore('progress', {
   state: () => {
     return {
       active: true,
       progress: 0,
-      message: 'Loading...'
+      message: 'Loading...',
     };
   },
   actions: {
@@ -16,6 +16,6 @@ export const useProgressStore = defineStore('progress', {
       if (msg) {
         this.message = msg;
       }
-    }
-  }
-})
+    },
+  },
+});

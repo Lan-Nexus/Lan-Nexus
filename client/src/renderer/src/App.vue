@@ -7,7 +7,7 @@ import TopNav from './components/TopNav.vue';
 <template>
   <div class="flex flex-col h-full w-full overflow-hidden">
     <TopNav />
-    <div class="flex h-full w-full mt-16 sm:mt-20 bg-base-100">
+    <div class="flex h-full w-full mt-18 bg-base-100">
       <router-view />
     </div>
     <Progress />

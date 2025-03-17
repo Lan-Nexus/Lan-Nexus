@@ -17,6 +17,9 @@ async function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
+    minWidth: 640,
+    minHeight: 670,
+    title: 'demo',
     show: false,
     autoHideMenuBar: true,
     icon: icon,
@@ -25,6 +28,7 @@ async function createWindow() {
       sandbox: false,
     },
   });
+
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();

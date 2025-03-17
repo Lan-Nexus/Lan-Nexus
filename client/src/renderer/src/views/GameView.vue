@@ -15,7 +15,7 @@ const selectedGame = computed(() => {
 <template>
   <div class="flex flex-col h-full w-full flex flex-row">
     <SideNav />
-    <div v-if="selectedGame" class="flex flex-col flex-1" style="height: 87vh; overflow: overlay">
+    <div v-if="selectedGame" class="flex flex-col flex-1" style="height: 88vh; overflow: overlay">
       <div class="parallax">
         <div class="parallax__layer parallax__layer--back">
           <div class="w-full relative">
@@ -33,7 +33,7 @@ const selectedGame = computed(() => {
           </div>
         </div>
         <div class="parallax__layer parallax__layer--base">
-          <div class="dynmaic-margin bg-base-200">
+          <div class="dynamic-margin bg-base-200">
             <ActionBar />
             <div class="mt-4 flex flex-row gap-4">
               <div v-html="selectedGame?.description"></div>
@@ -46,7 +46,7 @@ const selectedGame = computed(() => {
 </template>
 
 <style scoped>
-.dynmaic-margin {
+.dynamic-margin {
   margin: 32% 0;
 }
 .parallax {

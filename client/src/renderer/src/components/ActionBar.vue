@@ -1,11 +1,41 @@
 <script lang="ts" setup>
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useGameStore } from '../stores/useGameStore.js';
 
+const actionBarPanel = useTemplateRef<HTMLElement>('actionBarPanel');
 const gameStore = useGameStore();
+const height = 72;
+
+onMounted(() => {
+  if (actionBarPanel.value) {
+    console.log();
+    actionBarPanel.value.closest('.parallax')?.addEventListener('scroll', updateShadow);
+  }
+});
+
+onUnmounted(() => {
+  if (actionBarPanel.value) {
+    actionBarPanel.value.closest('.parallax')?.removeEventListener('scroll', updateShadow);
+  }
+});
+
+function updateShadow() {
+  if (actionBarPanel.value) {
+    const t = actionBarPanel.value.getBoundingClientRect();
+    if (t.y == height) {
+      actionBarPanel.value.classList.add('shadow-sm');
+    } else {
+      actionBarPanel.value.classList.remove('shadow-sm');
+    }
+  }
+}
 </script>
 
 <template>
-  <div class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center">
+  <div
+    ref="actionBarPanel"
+    class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center sticky top-0 z-10 bg-base-200"
+  >
     <select
       v-if="gameStore.selectedGame?.type === 'zip'"
       v-model="gameStore.selectedGame.selectedArchive"

@@ -1,24 +1,41 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import SideNav from '../components/SideNav.vue';
 import ActionBar from '../components/ActionBar.vue';
 import { useGameStore } from '../stores/useGameStore';
 
 const gameStore = useGameStore();
+const height = ref('220px');
+const heroImageElement = useTemplateRef<HTMLElement>('heroImageElement');
 
 gameStore.loadGames();
 const selectedGame = computed(() => {
   return gameStore.selectedGame;
+});
+
+function updateHeight() {
+  if (heroImageElement.value) {
+    height.value = heroImageElement.value.clientHeight / 2 + 'px';
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateHeight);
+});
+
+onUnmounted(() => {
+  window.addEventListener('resize', updateHeight);
 });
 </script>
 
 <template>
   <div class="flex flex-col h-full w-full flex flex-row">
     <SideNav />
+
     <div v-if="selectedGame" class="flex flex-col flex-1" style="height: 88vh; overflow: overlay">
-      <div class="parallax">
+      <div class="parallax relative">
         <div class="parallax__layer parallax__layer--back">
-          <div class="w-full">
+          <div ref="heroImageElement" class="w-full">
             <img
               v-if="selectedGame.heroImage"
               :src="'data:image/jpeg;base64,' + selectedGame.heroImage"
@@ -27,13 +44,15 @@ const selectedGame = computed(() => {
             />
           </div>
         </div>
+        <div class="relative w-full logo">
+          <img
+            v-if="selectedGame.logo"
+            :src="'data:image/jpeg;base64,' + selectedGame.logo"
+            class="absolute -bottom-1/5 left-5 w-1/2"
+          />
+        </div>
         <div class="parallax__layer parallax__layer--base">
-          <div class="dynamic-margin bg-base-200 relative">
-            <img
-              v-if="selectedGame.logo"
-              :src="'data:image/jpeg;base64,' + selectedGame.logo"
-              class="absolute md:-top-15 -top-8 left-5 w-1/2"
-            />
+          <div class="dynamic-margin bg-base-200">
             <ActionBar />
             <div class="mt-4 flex flex-row gap-4">
               <div v-html="selectedGame?.description"></div>
@@ -46,6 +65,10 @@ const selectedGame = computed(() => {
 </template>
 
 <style scoped>
+.logo {
+  height: v-bind(height);
+}
+
 .dynamic-margin {
   margin: 32% 0;
 }

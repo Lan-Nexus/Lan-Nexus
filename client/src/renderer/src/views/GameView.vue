@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import SideNav from '../components/SideNav.vue';
 import ActionBar from '../components/ActionBar.vue';
 import { useGameStore } from '../stores/useGameStore';
 
 const gameStore = useGameStore();
-const height = ref('220px');
+const height = ref('0px');
 const heroImageElement = useTemplateRef<HTMLElement>('heroImageElement');
 
 gameStore.loadGames();
@@ -21,6 +21,10 @@ function updateHeight() {
 
 onMounted(() => {
   window.addEventListener('resize', updateHeight);
+});
+
+watch(selectedGame, async () => {
+  updateHeight();
 });
 
 onUnmounted(() => {

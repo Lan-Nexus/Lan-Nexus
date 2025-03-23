@@ -8,7 +8,6 @@ const height = 72;
 
 onMounted(() => {
   if (actionBarPanel.value) {
-    console.log();
     actionBarPanel.value.closest('.parallax')?.addEventListener('scroll', updateShadow);
   }
 });

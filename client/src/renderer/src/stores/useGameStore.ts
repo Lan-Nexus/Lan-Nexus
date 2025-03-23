@@ -13,7 +13,7 @@ type archives = {
   os: string;
 };
 
-type gameState = {
+export type gameState = {
   description: string;
   gameID: string;
   id: number;
@@ -21,6 +21,7 @@ type gameState = {
   selectedArchive: number;
   type: string;
   heroImage: string;
+  headerImage: string;
   logo: string;
   icon: string;
   archives: archives[];
@@ -29,13 +30,12 @@ type gameState = {
 export const useGameStore = defineStore('game', {
   state: () => ({
     games: [] as gameState[],
-    selectedGameId: 1,
+    selectedGameId: -1,
   }),
   getters: {
     selectedGame: (state) => {
       const game = state.games.find((game) => game.id === state.selectedGameId);
       if (game) {
-        console.log(game.name);
         return game;
       }
       return void 0;

@@ -2,6 +2,7 @@
 import type { gameState } from '@renderer/stores/useGameStore';
 import ActionBar from '../components/ActionBar.vue';
 import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
+import { serverBaseAddress } from '../utils/server.js';
 
 const model = defineModel<gameState>();
 const height = ref('0px');
@@ -51,13 +52,13 @@ onUnmounted(() => {
           <img
             v-if="model.heroImage"
             :onload="updateHeight"
-            :src="'data:image/jpeg;base64,' + model.heroImage"
+            :src="serverBaseAddress + model.heroImage"
             alt="game"
             class="w-full"
           />
           <img
             v-else-if="model.headerImage"
-            :src="'data:image/jpeg;base64,' + model.headerImage"
+            :src="serverBaseAddress + model.headerImage"
             alt="game"
             class="w-full"
           />
@@ -68,7 +69,7 @@ onUnmounted(() => {
         <img
           v-if="model.logo"
           :onload="getLogoSize"
-          :src="'data:image/jpeg;base64,' + model.logo"
+          :src="serverBaseAddress + model.logo"
           :class="widthOrHeight"
           class="absolute -bottom-1/5 left-5"
         />

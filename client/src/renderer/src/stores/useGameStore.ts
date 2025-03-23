@@ -3,6 +3,7 @@ import axios from 'axios';
 import functions from '../functions.js';
 
 import { useProgressStore } from './useProgress.js';
+import { serverBaseAddress } from '@renderer/utils/server.js';
 
 type archives = {
   id: number;
@@ -112,7 +113,7 @@ export const useGameStore = defineStore('game', {
       archive.isInstalled = false;
     },
     loadGames() {
-      axios.get('http://localhost:3000/api/games').then((response) => {
+      axios.get(`${serverBaseAddress}/api/games`).then((response) => {
         this.games = response.data;
       });
     },

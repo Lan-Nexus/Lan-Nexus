@@ -13,3 +13,10 @@ import TopNav from './components/TopNav.vue';
     <Progress />
   </div>
 </template>
+<style>
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+</style>

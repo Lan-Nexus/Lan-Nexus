@@ -33,7 +33,7 @@ function updateShadow() {
 <template>
   <div
     ref="actionBarPanel"
-    class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center sticky top-0 z-10 bg-base-200"
+    class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center sticky top-0 z-10"
   >
     <select
       v-if="gameStore.selectedGame?.type === 'zip'"

@@ -81,9 +81,9 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="parallax__layer parallax__layer--base">
-        <div class="dynamic-margin bg-base-200">
-          <ActionBar />
-          <div class="mt-4 flex flex-row gap-4">
+        <div class="my-[32%] bg-base-200">
+          <ActionBar class="bg-base-200" />
+          <div class="mt-4 flex flex-row gap-4 px-5">
             <div v-html="model?.description"></div>
           </div>
         </div>
@@ -97,9 +97,6 @@ onUnmounted(() => {
   height: v-bind(height);
 }
 
-.dynamic-margin {
-  margin: 32% 0;
-}
 .parallax {
   perspective: 1px;
   height: 100vh;

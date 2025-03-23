@@ -9,7 +9,7 @@ const isSelectedGame = (gameId: number): boolean => {
 </script>
 
 <template>
-  <div class="w-90 h-full bg-base-100 shadow-lg flex flex-col pb-20 overflow-y-auto">
+  <div class="w-90 h-[calc((100vh-130px))] bg-base-100 shadow-lg flex flex-col overflow-y-auto">
     <div
       v-for="game in gameStore.games"
       :key="game.id"

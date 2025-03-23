@@ -10,7 +10,9 @@ const logoElement = useTemplateRef<HTMLElement>('logoElement');
 const heroImageElement = useTemplateRef<HTMLElement>('heroImageElement');
 
 function updateHeight() {
-  height.value = heroImageElement.value!.clientHeight / 2 + 'px';
+  if (heroImageElement.value) {
+    height.value = heroImageElement.value.clientHeight / 2 + 'px';
+  }
 }
 
 function getLogoSize() {

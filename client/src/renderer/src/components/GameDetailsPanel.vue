@@ -5,11 +5,26 @@ import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
 
 const model = defineModel<gameState>();
 const height = ref('0px');
-
+const widthOrHeight = ref<string>();
+const logoElement = useTemplateRef<HTMLElement>('logoElement');
 const heroImageElement = useTemplateRef<HTMLElement>('heroImageElement');
 
 function updateHeight() {
   height.value = heroImageElement.value!.clientHeight / 2 + 'px';
+}
+
+function getLogoSize() {
+  const height = logoElement.value?.children[0]?.clientHeight;
+  const width = logoElement.value?.children[0]?.clientWidth;
+  if (!height || !width) {
+    widthOrHeight.value = 'w-1/2';
+    return;
+  }
+  if (height > width) {
+    widthOrHeight.value = 'h-1/1';
+    return;
+  }
+  widthOrHeight.value = 'w-1/2';
 }
 
 onMounted(() => {
@@ -18,6 +33,7 @@ onMounted(() => {
 
 onUpdated(() => {
   updateHeight();
+  getLogoSize();
 });
 
 onUnmounted(() => {
@@ -46,11 +62,13 @@ onUnmounted(() => {
           <div v-else class="w-full h-150 bg-violet-500"></div>
         </div>
       </div>
-      <div class="relative w-full logo">
+      <div ref="logoElement" class="relative w-full logo">
         <img
           v-if="model.logo"
+          :onload="getLogoSize"
           :src="'data:image/jpeg;base64,' + model.logo"
-          class="absolute -bottom-1/5 left-5 w-1/2"
+          :class="widthOrHeight"
+          class="absolute -bottom-1/5 left-5"
         />
         <div
           v-else-if="!model.headerImage"

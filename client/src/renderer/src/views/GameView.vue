@@ -39,13 +39,14 @@ onUnmounted(() => {
     <div v-if="selectedGame" class="flex flex-col flex-1" style="height: 88vh; overflow: overlay">
       <div class="parallax relative">
         <div class="parallax__layer parallax__layer--back">
-          <div ref="heroImageElement" class="w-full">
+          <div ref="heroImageElement" class="w-full bg-error">
             <img
               v-if="selectedGame.heroImage"
               :src="'data:image/jpeg;base64,' + selectedGame.heroImage"
               alt="game"
               class="w-full"
             />
+            <div v-else class="w-full h-150 bg-violet-500"></div>
           </div>
         </div>
         <div class="relative w-full logo">
@@ -54,6 +55,13 @@ onUnmounted(() => {
             :src="'data:image/jpeg;base64,' + selectedGame.logo"
             class="absolute -bottom-1/5 left-5 w-1/2"
           />
+          <div
+            v-else
+            style="text-shadow: 2px 2px 2px black"
+            class="absolute -bottom-1/5 left-5 text-5xl text-white"
+          >
+            {{ selectedGame.name }}
+          </div>
         </div>
         <div class="parallax__layer parallax__layer--base">
           <div class="dynamic-margin bg-base-200">

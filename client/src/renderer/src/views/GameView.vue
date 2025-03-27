@@ -1,46 +1,22 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import SideNav from '../components/SideNav.vue'
-import ActionBar from '../components/ActionBar.vue'
-import { useGameStore } from '../stores/useGameStore'
+import SideNav from '../components/SideNav.vue';
 
-const gameStore = useGameStore()
+import { useGameStore } from '../stores/useGameStore';
+import GameDetailsPanel from '@renderer/components/GameDetailsPanel.vue';
 
-const selectedGame = computed(() => {
-  return gameStore.selectedGame
-})
+const gameStore = useGameStore();
+gameStore.loadGames();
 </script>
 
 <template>
-  <div class="flex flex-col h-full w-full overflow-hidden flex flex-row">
+  <div class="flex flex-col h-full w-full flex flex-row">
     <SideNav />
-    <div class="flex flex-col flex-1" v-if="selectedGame">
-      <img
-        v-if="selectedGame.headerImage"
-        :src="selectedGame.headerImage"
-        alt="game"
-        class="w-full object-cover"
-      />
-      <div class="p-4">
-        <div class="flex gap-4 items-center pb-4">
-          <img
-            v-if="selectedGame.icon"
-            :src="selectedGame.icon"
-            alt="game icon"
-            class="h-12 w-12"
-          />
-          <h1 class="text-2xl">{{ selectedGame?.name }}</h1>
-          <span class="badge" :class="selectedGame.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
-            {{ selectedGame.type }}
-          </span>
-        </div>
-        <ActionBar/>
-        <div class="mt-4 flex flex-row gap-4">
-          <p class="mt-2 w-2/3" v-html="selectedGame?.description">
-          </p>
-        </div>
-      </div>
-    </div>
+    <template v-if="gameStore.selectedGame">
+      <GameDetailsPanel
+        v-model="gameStore.selectedGame"
+        class="flex flex-col flex-1"
+        style="height: 88vh; overflow: overlay"
+      ></GameDetailsPanel>
+    </template>
   </div>
 </template>
-

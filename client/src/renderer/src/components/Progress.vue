@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useProgressStore } from '../stores/useProgress.ts'
+import { useProgressStore } from '../stores/useProgress.js';
 
-const progressStore = useProgressStore()
+const progressStore = useProgressStore();
 </script>
 
 <template>
@@ -24,3 +24,28 @@ const progressStore = useProgressStore()
     </div>
   </div>
 </template>
+
+<style>
+.scroll_enabled {
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.scroll_enabled::-webkit-scrollbar {
+  width: 20px;
+}
+.scroll_enabled::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+.scroll_enabled::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 6px;
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: content-box;
+  min-width: 32px;
+  min-height: 32px;
+}
+.scroll_enabled::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
+}
+</style>

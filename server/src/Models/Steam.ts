@@ -2,6 +2,8 @@ import Model from './Model.js';
 import { gamesTable } from '../db/schema.js';
 import { db } from '../db.js';
 import axios from 'axios';
+import fs from 'fs/promises';
+
 import type { steamOwnedGame, SteamResponseAppDetails, SteamResponseOwnGames } from '../types/Steam.js';
 
 export default class SteamModel extends Model {
@@ -41,10 +43,10 @@ export default class SteamModel extends Model {
     }
 
     static #getAllImages(appID: number) {
-        const logo = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/logo.png`);
-        const header = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/header.jpg`);
-        const libraryHero = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_hero.jpg`);
-        const library600x900 = this.#getImageAsBase64(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_600x900.jpg`);
+        const logo = this.#getImage(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/logo.png`, appID);
+        const header = this.#getImage(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/header.jpg`, appID);
+        const libraryHero = this.#getImage(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_hero.jpg`, appID);
+        const library600x900 = this.#getImage(`https://steamcdn-a.akamaihd.net/steam/apps/${appID}/library_600x900.jpg`, appID);
         return Promise.all([logo, header, libraryHero, library600x900]);
     }
 
@@ -70,7 +72,7 @@ export default class SteamModel extends Model {
         if (filter.length === 0) {
             return null;
         }
-        return this.#getImageAsBase64(`http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`);
+        return this.#getImage(`http://media.steampowered.com/steamcommunity/public/images/apps/${appID}/${filter[0].img_icon_url}.jpg`, appID);
     }
 
     static async #getGameData(appID: number) {
@@ -81,11 +83,21 @@ export default class SteamModel extends Model {
         return response.data[appID.toString()].data;
     }
 
-    static async #getImageAsBase64(imageUrl: string) {
+    static async #getImage(imageUrl: string, appID: number) {
         try {
             const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
             const buffer = Buffer.from(response.data, 'binary');
-            return buffer.toString('base64');
+            const loc = `/steam/images/${appID}/${imageUrl.split('/').pop()}`;
+            try {
+                await fs.mkdir(`./public/steam/images/${appID}`, { recursive: true });
+                await fs.writeFile(`./public${loc}`, buffer);
+                console.log(loc);
+                return loc;
+            } catch (err) {
+                console.log(err);
+                return null;
+            }
+
         } catch (e) {
             return null;
         }

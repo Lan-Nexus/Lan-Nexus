@@ -23,6 +23,6 @@ export default class GameModel extends Model {
   }
 
   static list() {
-    return db.select().from(gamesTable);
+    return db.select().from(gamesTable).orderBy(gamesTable.name);
   }
 }

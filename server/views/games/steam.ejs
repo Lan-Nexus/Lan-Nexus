@@ -1,0 +1,95 @@
+<h1 class="mb-4">Steam Games</h1>
+<a href="/games" class="btn btn-secondary mb-3">Back to Games List</a>
+
+<!-- Alpine.js CDN -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<script>
+  // Pass existingSteamIDs from server to client (unescaped for JS)
+  window.existingSteamIDs = <%- JSON.stringify(existingSteamIDs || []) %>;
+</script>
+
+<style>
+  .steam-faded {
+    opacity: 0.4;
+    filter: grayscale(80%);
+    transition: opacity 0.3s, filter 0.3s;
+  }
+</style>
+
+<div id="steamGamesContainer" class="card shadow-sm p-4" style="max-width:1200px;margin:auto;"
+     x-data="steamGamesComponent()" x-init="loadSteamGames()">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    <template x-for="game in games" :key="game.appid">
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column align-items-center">
+            <img :src="`https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`"
+                 :alt="game.name"
+                 :class="game.added ? 'steam-faded' : ''"
+                 style="width:100%;max-width:220px;border-radius:6px;object-fit:cover;" class="mb-2" />
+            <h6 class="card-title text-center mb-2" x-text="game.name"></h6>
+            <button :class="game.added ? 'btn btn-secondary btn-sm w-100' : 'btn btn-success btn-sm w-100'"
+                    :disabled="game.adding || game.added"
+                    @click="addGame(game)"
+                    x-text="game.added ? 'Added!' : (game.adding ? 'Adding...' : 'Add')"></button>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template x-if="loading">
+      <div class="col"><div class="text-center">Loading...</div></div>
+    </template>
+    <template x-if="!loading && games.length === 0">
+      <div class="col"><div class="text-center">No Steam games found.</div></div>
+    </template>
+    <template x-if="error">
+      <div class="col"><div class="text-center text-danger" x-text="error"></div></div>
+    </template>
+  </div>
+</div>
+
+<script>
+function steamGamesComponent() {
+  return {
+    games: [],
+    loading: true,
+    error: '',
+    async loadSteamGames() {
+      this.loading = true;
+      this.error = '';
+      try {
+        const res = await fetch('/api/steam');
+        if (!res.ok) throw new Error('Failed to fetch games');
+        const existingSteamIDs = window.existingSteamIDs || [];
+        this.games = (await res.json()).map(g => ({
+          ...g,
+          adding: false,
+          added: existingSteamIDs.includes(String(g.appid)) || existingSteamIDs.includes(Number(g.appid))
+        }));
+      } catch (e) {
+        this.error = 'Error loading games.';
+      } finally {
+        this.loading = false;
+      }
+    },
+    async addGame(game) {
+      game.adding = true;
+      this.error = '';
+      try {
+        const res = await fetch('/api/steam', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appID: Number(game.appid) })
+        });
+        if (!res.ok) throw new Error('Failed to add game');
+        game.added = true;
+      } catch (e) {
+        this.error = 'Failed to add game.';
+      } finally {
+        game.adding = false;
+      }
+    }
+  }
+}
+</script>

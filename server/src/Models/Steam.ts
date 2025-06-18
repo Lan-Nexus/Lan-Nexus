@@ -9,6 +9,14 @@ import type { steamOwnedGame, SteamResponseAppDetails, SteamResponseOwnGames } f
 export default class SteamModel extends Model {
 
     static async create(data: { appID: number }) {
+        // Check if the game already exists in the database
+        const existing = await db.query.gamesTable.findFirst({
+            where: (gamesTable, { eq }) => eq(gamesTable.gameID, data.appID.toString())
+        });
+        if (existing) {
+            // Already exists, do not add again
+            throw new Error('Game already added');
+        }
         const [game, icon] = await Promise.all([this.#getGameData(data.appID), this.#getIcon(data.appID)]);
         const [logo, header, libraryHero, library600x900] = await this.#getAllImages(data.appID);
         const gameData = {
@@ -50,7 +58,14 @@ export default class SteamModel extends Model {
         return Promise.all([logo, header, libraryHero, library600x900]);
     }
 
+    // In-memory cache for getOwnedGames
+    static ownedGamesCache: { data: any, timestamp: number } | null = null;
+
     static async #getOwnedGames() {
+        const now = Date.now();
+        if (this.ownedGamesCache && (now - this.ownedGamesCache.timestamp < 5 * 60 * 1000)) {
+            return this.ownedGamesCache.data;
+        }
         const response = await axios.get<SteamResponseOwnGames>(
             `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
             params: {
@@ -63,6 +78,10 @@ export default class SteamModel extends Model {
         if (!response.data.response.games) {
             throw new Error('Game not found');
         }
+        this.ownedGamesCache = {
+            data: response.data.response.games,
+            timestamp: now
+        };
         return response.data.response.games;
     }
 

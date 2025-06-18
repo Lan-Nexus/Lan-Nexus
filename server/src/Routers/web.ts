@@ -1,5 +1,6 @@
 import express from 'express';
 import GamesPageController from '../Controllers/GamesPageController.js';
+import SteamPagesController from '../Controllers/SteamPagesController.js';
 import Router from './Router.js';
 import multer from 'multer';
 
@@ -15,7 +16,6 @@ const imageFields = [
 ];
 
 new Router<GamesPageController>(router)
-  // Only apply multer to POST and PUT routes that handle file uploads
   .post('/games/', GamesPageController, 'create', upload.fields(imageFields))
   .put('/games/:id', GamesPageController, 'update', upload.fields(imageFields))
   .get('/games/', GamesPageController, 'list')
@@ -23,5 +23,8 @@ new Router<GamesPageController>(router)
   .get('/games/:id', GamesPageController, 'read')
   .get('/games/:id/edit', GamesPageController, 'renderUpdateForm')
   .delete('/games/:id', GamesPageController, 'delete');
+
+new Router<SteamPagesController>(router)
+  .get('/steam', SteamPagesController, 'list');
   
 export default router;

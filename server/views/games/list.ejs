@@ -1,12 +1,13 @@
 <h1 class="mb-4">Games List</h1>
 <a href="/games/create" class="btn btn-success mb-3">Create New Game</a>
+<a href="/steam" class="btn btn-primary mb-3 ms-2">Add Steam Game</a>
+
 <% if (typeof data !== 'undefined' && data.length > 0) { %>
   <table class="table table-striped">
     <thead>
       <tr>
         <th>Icon</th>
         <th>Name</th>
-        <th>Description</th>
         <th>Header Image</th>
         <th>Action</th>
       </tr>
@@ -20,7 +21,6 @@
             <% } %>
           </td>
           <td><%= game.name %></td>
-          <td><%- game.description ? game.description : '' %></td>
           <td>
             <% if (game.headerImage) { %>
               <img src="<%= game.headerImage %>" alt="header" style="width:80px;height:40px;object-fit:cover;" />

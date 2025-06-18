@@ -1,44 +1,45 @@
-<input type="hidden" name="id" value="<%= data.id %>">
-<div class="mb-3">
-  <label for="gameID" class="form-label">Game ID</label>
-  <input type="text" class="form-control" id="gameID" name="gameID" value="<%= data.gameID %>" required>
-</div>
-<div class="mb-3">
-  <label for="name" class="form-label">Name</label>
-  <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>">
-</div>
-<div class="mb-3">
-  <label for="description" class="form-label">Description (HTML allowed)</label>
-  <textarea class="form-control" id="description" name="description" rows="3" required><%= data.description %></textarea>
-</div>
-<div class="mb-3">
-  <label for="icon" class="form-label">Icon URL</label>
-  <input type="text" class="form-control" id="icon" name="icon" value="<%= data.icon %>">
-</div>
-<div class="mb-3">
-  <label for="headerImage" class="form-label">Header Image URL</label>
-  <input type="text" class="form-control" id="headerImage" name="headerImage" value="<%= data.headerImage %>">
-</div>
-<div class="mb-3">
-  <label for="type" class="form-label">Type</label>
-  <input type="text" class="form-control" id="type" name="type" value="<%= data.type %>" required>
-</div>
-<div class="mb-3">
-  <label for="logo" class="form-label">Logo URL</label>
-  <input type="text" class="form-control" id="logo" name="logo" value="<%= data.logo %>" required>
-</div>
-<div class="mb-3">
-  <label for="imageCard" class="form-label">Image Card URL</label>
-  <input type="text" class="form-control" id="imageCard" name="imageCard" value="<%= data.imageCard %>" required>
-</div>
-<div class="mb-3">
-  <label for="heroImage" class="form-label">Hero Image URL</label>
-  <input type="text" class="form-control" id="heroImage" name="heroImage" value="<%= data.heroImage %>" required>
-</div>
-
-<% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
-<button type="submit" class="btn btn-primary"><%= btnText %></button>
-<a href="/games" class="btn btn-secondary">Cancel</a>
+<form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data">
+  <input type="hidden" name="id" value="<%= data.id %>">
+  <div class="mb-3">
+    <label for="gameID" class="form-label">Game ID</label>
+    <input type="text" class="form-control" id="gameID" name="gameID" value="<%= data.gameID %>" required>
+  </div>
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>">
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description (HTML allowed)</label>
+    <textarea class="form-control" id="description" name="description" rows="3" required><%= data.description %></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="icon" class="form-label">Icon File</label>
+    <input type="file" class="form-control" id="icon" name="icon">
+  </div>
+  <div class="mb-3">
+    <label for="headerImage" class="form-label">Header Image File</label>
+    <input type="file" class="form-control" id="headerImage" name="headerImage">
+  </div>
+  <div class="mb-3">
+    <label for="type" class="form-label">Type</label>
+    <input type="text" class="form-control" id="type" name="type" value="<%= data.type %>" >
+  </div>
+  <div class="mb-3">
+    <label for="logo" class="form-label">Logo File</label>
+    <input type="file" class="form-control" id="logo" name="logo">
+  </div>
+  <div class="mb-3">
+    <label for="imageCard" class="form-label">Image Card File</label>
+    <input type="file" class="form-control" id="imageCard" name="imageCard">
+  </div>
+  <div class="mb-3">
+    <label for="heroImage" class="form-label">Hero Image File</label>
+    <input type="file" class="form-control" id="heroImage" name="heroImage">
+  </div>
+  <% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
+  <button type="submit" class="btn btn-primary"><%= btnText %></button>
+  <a href="/games" class="btn btn-secondary">Cancel</a>
+</form>
 
 <script>
 document.addEventListener('htmx:responseError', evt => {
@@ -53,25 +54,7 @@ document.addEventListener('htmx:responseError', evt => {
       errors = {};
     }
     
-    // Zod error format: { error: { issues: [ { path: [field], message: ... }, ... ] } }
-    if (errors && errors.error && Array.isArray(errors.error.issues)) {
-      for (const issue of errors.error.issues) {
-        const fieldName = Array.isArray(issue.path) ? issue.path[0] : issue.path;
-        const field = form.querySelector(`[name="${fieldName}"]`);
-        if (field) {
-          field.setCustomValidity(issue.message);
-          field.onfocus = () => field.reportValidity();
-          field.onchange = () => field.setCustomValidity('');
-          field.reportValidity();
-        }
-      }
-    } else {
-      // fallback: show all error as alert
-      alert(xhr.responseText);
-    }
-  } else {
-    // Handle the error some other way
-    console.error(xhr.responseText);
+    alert(xhr.responseText);
   }
 });
 </script>

@@ -10,7 +10,7 @@ new Router<gamesController>(router)
   .get('/games/:id', gamesController, 'read')
   .post('/games', gamesController, 'create')
   .put('/games/:id', gamesController, 'update')
-  .delete('/games/:id', gamesController, 'delete');
+  .delete('/games/:id', gamesController, 'delete')
 
 new Router<steamController>(router)
   .get('/steam', steamController, 'list')

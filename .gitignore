@@ -1,2 +1,3 @@
 server/dist/*
+server/public/games/*
 server/public/steam/*

@@ -3,6 +3,9 @@
       hx-post="/games"
       hx-target="#create-game-form"
       hx-swap="outerHTML"
-      method="POST">
+      method="POST"
+      enctype="multipart/form-data"
+      hx-encoding="multipart/form-data"
+      >
   <%- include('_form', { data: {}, buttonText: 'Create', error: null }) %>
 </form>

@@ -25,6 +25,7 @@
     "express": "^4.21.2",
     "express-ejs-layouts": "^2.5.1",
     "http-status-codes": "^2.3.0",
+    "multer": "^2.0.1",
     "mysql2": "^3.12.0",
     "zod": "^3.24.2"
   },
@@ -32,6 +33,7 @@
     "@types/cors": "^2.8.17",
     "@types/express-ejs-layouts": "^2.5.4",
     "@types/koa": "^2.15.0",
+    "@types/multer": "^1.4.13",
     "@types/node": "^22.13.8",
     "drizzle-kit": "^0.30.5",
     "tsc-watch": "^6.2.1",

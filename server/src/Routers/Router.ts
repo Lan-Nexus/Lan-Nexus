@@ -2,7 +2,7 @@ import { Router as ExpressRouter } from 'express';
 import { ResourceController } from '../Controllers/ResourceController.js';
 
 type routerHandlerGet = 'list' | 'read';
-type routerHandlerPost = 'create';
+type routerHandlerPost = 'create' | 'setImage';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 

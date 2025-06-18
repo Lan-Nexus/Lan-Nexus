@@ -14,7 +14,17 @@ export default class GameModel extends Model {
     return db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });
   }
 
-  static update(id: typeof gamesTable.$inferSelect.id, game: typeof gamesTable.$inferSelect) {
+  static async update(id: typeof gamesTable.$inferSelect.id, game: typeof gamesTable.$inferSelect) {
+    // Fetch the current game from the database
+    const current = await db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });
+    if (!current) throw new Error('Game not found');
+    // Only overwrite image fields if new values are provided
+    const imageFields = ["icon", "logo", "headerImage", "imageCard", "heroImage"] as const;
+    for (const field of imageFields) {
+      if (!(game as any)[field]) {
+        (game as any)[field] = (current as any)[field];
+      }
+    }
     return db.update(gamesTable).set(game).where(eq(gamesTable.id, id));
   }
 

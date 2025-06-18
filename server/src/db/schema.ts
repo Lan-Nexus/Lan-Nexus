@@ -23,10 +23,18 @@ export const gamesTable = mysqlTable("games", {
   imageCard: mediumtext('imageCard'),
   heroImage: mediumtext('heroImage'),
   type: varchar('type', { length: 255 }).notNull(),
+  script: mediumtext('script'), // Added script field for per-game script
 });
 
 export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable, {
   name: gamesSelectSchema.shape.name,
 });
-export const gamesUpdateSchema = createUpdateSchema(gamesTable, gamesSelectSchema.shape);
+export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
+  ...gamesSelectSchema.shape,
+  icon: gamesSelectSchema.shape.icon.optional(),
+  logo: gamesSelectSchema.shape.logo.optional(),
+  headerImage: gamesSelectSchema.shape.headerImage.optional(),
+  imageCard: gamesSelectSchema.shape.imageCard.optional(),
+  heroImage: gamesSelectSchema.shape.heroImage.optional(),
+});

@@ -17,12 +17,12 @@ export default class GamesPageController extends PageController {
     read: "games/read",
     createForm: "games/create",
     updateForm: "games/update",
-    update: "games/_form",
   };
 
   static redirect = {
     delete: "/games",
     create: "/games",
+    update: "/games",
   };
 
   static errorViews = {

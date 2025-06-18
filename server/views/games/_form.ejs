@@ -36,6 +36,10 @@
     <label for="heroImage" class="form-label">Hero Image File</label>
     <input type="file" class="form-control" id="heroImage" name="heroImage">
   </div>
+  <div class="mb-3">
+    <label for="script" class="form-label">Game Script</label>
+    <textarea class="form-control" id="script" name="script" rows="6"><%= data.script || '' %></textarea>
+  </div>
   <% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
   <button type="submit" class="btn btn-primary"><%= btnText %></button>
   <a href="/games" class="btn btn-secondary">Cancel</a>

@@ -1,9 +1,8 @@
-<% /* Partial for game form fields, used by both update and create */ %>
 <input type="hidden" name="id" value="<%= data.id %>">
 <input type="hidden" name="gameID" value="<%= data.gameID %>">
 <div class="mb-3">
   <label for="name" class="form-label">Name</label>
-  <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>" required>
+  <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>">
 </div>
 <div class="mb-3">
   <label for="description" class="form-label">Description (HTML allowed)</label>
@@ -34,6 +33,42 @@
   <input type="text" class="form-control" id="heroImage" name="heroImage" value="<%= data.heroImage %>" required>
 </div>
 
-<% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'UpdateVVV'; %>
+<% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
 <button type="submit" class="btn btn-primary"><%= btnText %></button>
 <a href="/games" class="btn btn-secondary">Cancel</a>
+
+<script>
+document.addEventListener('htmx:responseError', evt => {
+  const xhr = evt.detail.xhr;
+
+  if (xhr.status == 400) {
+    const form = evt.detail.elt;
+    let errors;
+    try {
+      errors = JSON.parse(xhr.responseText);
+    } catch (e) {
+      errors = {};
+    }
+    
+    // Zod error format: { error: { issues: [ { path: [field], message: ... }, ... ] } }
+    if (errors && errors.error && Array.isArray(errors.error.issues)) {
+      for (const issue of errors.error.issues) {
+        const fieldName = Array.isArray(issue.path) ? issue.path[0] : issue.path;
+        const field = form.querySelector(`[name="${fieldName}"]`);
+        if (field) {
+          field.setCustomValidity(issue.message);
+          field.onfocus = () => field.reportValidity();
+          field.onchange = () => field.setCustomValidity('');
+          field.reportValidity();
+        }
+      }
+    } else {
+      // fallback: show all error as alert
+      alert(xhr.responseText);
+    }
+  } else {
+    // Handle the error some other way
+    console.error(xhr.responseText);
+  }
+});
+</script>

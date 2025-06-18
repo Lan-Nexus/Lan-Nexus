@@ -6,6 +6,7 @@ import {
 } from "../db/schema.js";
 import GameModel from "../Models/Game.js";
 import { PageController } from "./PageController.js";
+import { BAD_REQUEST } from "http-status-codes";
 
 export default class GamesPageController extends PageController {
 
@@ -25,6 +26,7 @@ export default class GamesPageController extends PageController {
   static errorViews = {
     NOT_FOUND: "errors/notFound",
     INTERNAL_SERVER_ERROR: "errors/internalServerError",
+    BAD_REQUEST: "games/_form",
   };
 
 

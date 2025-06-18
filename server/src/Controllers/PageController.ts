@@ -105,8 +105,8 @@ export abstract class PageController {
   }
 
   public async update(req: Request, res: Response) {
+    const body = this.mapRequestBody(req.body);
     try {
-      const body = this.mapRequestBody(req.body);
       const data = await this.UpdateSchema.parseAsync({
         ...body,
         id: Number(req.params.id),
@@ -128,7 +128,7 @@ export abstract class PageController {
         res.send(data);
       }
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body,id: Number(req.params.id) });
     }
   }
 
@@ -198,17 +198,18 @@ export abstract class PageController {
     } else if (views?.updateForm) {
       this.localRender(res, views.updateForm, { data });
     } else {
-      this.sendStatus(res, StatusCodes.INTERNAL_SERVER_ERROR, "Update form view not found");
+      data.id = Number(req.params.id); 
+      this.sendStatus(res, StatusCodes.INTERNAL_SERVER_ERROR, "Update form view not found",data);
     }
   }
   
-  sendStatus(res: Response, status: StatusCodes, error?: any): void {
+  sendStatus(res: Response, status: StatusCodes, error?: any,data?: any): void {
     const errorViews = (this.constructor as typeof PageController).errorViews;
     const statusString: string = StatusCodes[status];
     const reason: string = ReasonPhrases[statusString as keyof typeof ReasonPhrases];
-    // Try to render an error view if set, otherwise return JSON
+
     if (errorViews && errorViews[statusString]) {
-      res.status(status).render(errorViews[statusString], { status: statusString, reason, error });
+      res.status(status).render(errorViews[statusString], { status: statusString, reason, error,data });
     } else {
       res.status(status).send({ status: statusString, reason, error });
     }

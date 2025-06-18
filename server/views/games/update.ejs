@@ -1,36 +1,8 @@
 <h1>Update Game</h1>
 <form id="update-game-form"
-      action="/games/<%= data.id %>"
-      method="PUT">
-  <%- include('_form', { data: data || {}, buttonText: 'Update' }) %>
-  
+      hx-put="/games/<%= data.id %>"
+      hx-target="#update-game-form"
+      hx-swap="outerHTML"
+      method="POST">
+  <%- include('_form', { data: data || {}, buttonText: 'Update', error: typeof error !== 'undefined' ? error : null }) %>
 </form>
-<script>
-  document.getElementById('update-game-form').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    const json = {};
-    for (const [key, value] of formData.entries()) {
-      if(key === 'id') {
-        json[key] = Number(value);
-      } else {
-        json[key] = value;
-      }
-    }
-    const response = await fetch(form.action, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'HX-Request': 'true'
-      },
-      body: JSON.stringify(json)
-    });
-    if (response.ok) {
-      const html = await response.text();
-      form.outerHTML = html;
-    } else {
-      alert('Update failed.');
-    }
-  });
-</script>

@@ -203,13 +203,19 @@ export abstract class PageController {
     }
   }
   
-  sendStatus(res: Response, status: StatusCodes, error?: any,data?: any): void {
+  sendStatus(res: Response, status: StatusCodes, error?: any, data?: any): void {
     const errorViews = (this.constructor as typeof PageController).errorViews;
     const statusString: string = StatusCodes[status];
     const reason: string = ReasonPhrases[statusString as keyof typeof ReasonPhrases];
 
     if (errorViews && errorViews[statusString]) {
-      res.status(status).render(errorViews[statusString], { status: statusString, reason, error,data });
+      const view = errorViews[statusString];
+      const lastPart = view.split('/').pop() || '';
+      const renderOptions: any = { status: statusString, reason, error, data };
+      if (lastPart.startsWith('_')) {
+        renderOptions.layout = false;
+      }
+      res.status(status).render(view, renderOptions);
     } else {
       res.status(status).send({ status: statusString, reason, error });
     }

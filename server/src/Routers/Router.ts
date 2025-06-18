@@ -3,7 +3,7 @@ import { ResourceController } from '../Controllers/ResourceController.js';
 import { PageController } from '../Controllers/PageController.js';
 
 type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
-type routerHandlerPost = 'create' | 'setImage';
+type routerHandlerPost = 'create';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 

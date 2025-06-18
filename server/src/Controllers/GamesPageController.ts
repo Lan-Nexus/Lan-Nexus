@@ -26,7 +26,6 @@ export default class GamesPageController extends PageController {
   static errorViews = {
     NOT_FOUND: "errors/notFound",
     INTERNAL_SERVER_ERROR: "errors/internalServerError",
-    BAD_REQUEST: "games/_form",
   };
 
 

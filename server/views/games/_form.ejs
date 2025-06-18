@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
 <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data">
   <input type="hidden" name="id" value="<%= data.id %>">
   <div class="mb-3">
@@ -14,11 +15,23 @@
   </div>
   <div class="mb-3">
     <label for="icon" class="form-label">Icon File</label>
-    <input type="file" class="form-control" id="icon" name="icon">
+    <% if (data.icon) { %>
+      <div class="mb-2">
+        <img src="<%= data.icon %>" alt="Current Icon" style="max-width: 100px; max-height: 100px; display: block;" />
+      </div>
+    <% } %>
+    <div id="icon-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="icon" name="icon">
   </div>
   <div class="mb-3">
     <label for="headerImage" class="form-label">Header Image File</label>
-    <input type="file" class="form-control" id="headerImage" name="headerImage">
+    <% if (data.headerImage) { %>
+      <div class="mb-2">
+        <img src="<%= data.headerImage %>" alt="Current Header Image" style="max-width: 100px; max-height: 100px; display: block;" />
+      </div>
+    <% } %>
+    <div id="headerImage-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="headerImage" name="headerImage">
   </div>
   <div class="mb-3">
     <label for="type" class="form-label">Type</label>
@@ -26,24 +39,88 @@
   </div>
   <div class="mb-3">
     <label for="logo" class="form-label">Logo File</label>
-    <input type="file" class="form-control" id="logo" name="logo">
+    <% if (data.logo) { %>
+      <div class="mb-2">
+        <img src="<%= data.logo %>" alt="Current Logo" style="max-width: 100px; max-height: 100px; display: block;" />
+      </div>
+    <% } %>
+    <div id="logo-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="logo" name="logo">
   </div>
   <div class="mb-3">
     <label for="imageCard" class="form-label">Image Card File</label>
-    <input type="file" class="form-control" id="imageCard" name="imageCard">
+    <% if (data.imageCard) { %>
+      <div class="mb-2">
+        <img src="<%= data.imageCard %>" alt="Current Image Card" style="max-width: 100px; max-height: 100px; display: block;" />
+      </div>
+    <% } %>
+    <div id="imageCard-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="imageCard" name="imageCard">
   </div>
   <div class="mb-3">
     <label for="heroImage" class="form-label">Hero Image File</label>
-    <input type="file" class="form-control" id="heroImage" name="heroImage">
+    <% if (data.heroImage) { %>
+      <div class="mb-2">
+        <img src="<%= data.heroImage %>" alt="Current Hero Image" style="max-width: 100px; max-height: 100px; display: block;" />
+      </div>
+    <% } %>
+    <div id="heroImage-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="heroImage" name="heroImage">
   </div>
   <div class="mb-3">
     <label for="script" class="form-label">Game Script</label>
     <textarea class="form-control" id="script" name="script" rows="6"><%= data.script || '' %></textarea>
   </div>
+  <div class="mb-3">
+    <label for="archives" class="form-label">Game Archive (ZIP)</label>
+    <div id="archives-dropzone" class="dropzone"></div>
+    <input type="file" class="form-control d-none" id="archives" name="archives" accept=".zip">
+    <% if (data.archives) { %>
+      <p>Current: <a href="<%= data.archives %>" target="_blank"><%= data.archives %></a></p>
+    <% } %>
+  </div>
   <% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
   <button type="submit" class="btn btn-primary"><%= btnText %></button>
   <a href="/games" class="btn btn-secondary">Cancel</a>
 </form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+<script>
+// Disable auto discover to manually initialize
+Dropzone.autoDiscover = false;
+
+const dropzoneConfigs = [
+  { id: 'icon', maxFiles: 1 },
+  { id: 'headerImage', maxFiles: 1 },
+  { id: 'logo', maxFiles: 1 },
+  { id: 'imageCard', maxFiles: 1 },
+  { id: 'heroImage', maxFiles: 1 },
+  { id: 'archives', maxFiles: 1, acceptedFiles: '.zip' }
+];
+
+dropzoneConfigs.forEach(cfg => {
+  const dz = new Dropzone(`#${cfg.id}-dropzone`, {
+    url: '#', // Prevent actual upload
+    autoProcessQueue: false,
+    maxFiles: cfg.maxFiles,
+    acceptedFiles: cfg.acceptedFiles || null,
+    addRemoveLinks: true,
+    dictDefaultMessage: 'Drop file here or click to upload',
+    init: function() {
+      this.on('addedfile', file => {
+        // Put file into hidden input for form submit
+        const input = document.getElementById(cfg.id);
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+      });
+      this.on('removedfile', () => {
+        document.getElementById(cfg.id).value = '';
+      });
+    }
+  });
+});
+</script>
 
 <script>
 document.addEventListener('htmx:responseError', evt => {

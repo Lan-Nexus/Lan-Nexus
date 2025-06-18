@@ -66,6 +66,24 @@ export default class GamesPageController extends PageController {
           body[field] = `/games/images/uploads/${fileName}`;
         }
       }
+      // Handle archives (zip file)
+      if (files["archives"] && files["archives"][0]) {
+        const archive = files["archives"][0];
+        const archiveDir = path.join(
+          process.cwd(),
+          "public",
+          "games",
+          "archives"
+        );
+        if (!fs.existsSync(archiveDir)) {
+          fs.mkdirSync(archiveDir, { recursive: true });
+        }
+        const ext = path.extname(archive.originalname) || ".zip";
+        const fileName = `archive-${Date.now()}${ext}`;
+        const filePath = path.join(archiveDir, fileName);
+        fs.writeFileSync(filePath, archive.buffer);
+        body["archives"] = `/games/archives/${fileName}`;
+      }
     }
     return body;
   }

@@ -22,6 +22,7 @@ export const gamesTable = mysqlTable("games", {
   headerImage: mediumtext('headerImage'),
   imageCard: mediumtext('imageCard'),
   heroImage: mediumtext('heroImage'),
+  archives: varchar('archives', { length: 512 }), // Path to uploaded archive
   type: varchar('type', { length: 255 }).notNull(),
   script: mediumtext('script'), // Added script field for per-game script
 });
@@ -29,6 +30,7 @@ export const gamesTable = mysqlTable("games", {
 export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable, {
   name: gamesSelectSchema.shape.name,
+  archives: gamesSelectSchema.shape.archives.optional(),
 });
 export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
   ...gamesSelectSchema.shape,
@@ -37,4 +39,5 @@ export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
   headerImage: gamesSelectSchema.shape.headerImage.optional(),
   imageCard: gamesSelectSchema.shape.imageCard.optional(),
   heroImage: gamesSelectSchema.shape.heroImage.optional(),
+  archives: gamesSelectSchema.shape.archives.optional(),
 });

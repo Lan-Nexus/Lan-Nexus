@@ -1,12 +1,13 @@
 import { Router as ExpressRouter } from 'express';
 import { ResourceController } from '../Controllers/ResourceController.js';
+import { PageController } from '../Controllers/PageController.js';
 
-type routerHandlerGet = 'list' | 'read';
-type routerHandlerPost = 'create';
+type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
+type routerHandlerPost = 'create' | 'setImage';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 
-export default class Router<T extends ResourceController> {
+export default class Router<T extends ResourceController | PageController> {
   #router: ExpressRouter;
   #objects: Record<string, T>;
 
@@ -16,11 +17,11 @@ export default class Router<T extends ResourceController> {
   }
 
   #makeOrFindObject(ObjectClass: new () => T) {
-    if (!(ObjectClass.prototype instanceof ResourceController)) {
-      throw new Error(`ObjectClass must be a subclass of Controller`);
+    if (!(ObjectClass.prototype instanceof ResourceController) && !(ObjectClass.prototype instanceof PageController)) {
+      throw new Error(`ObjectClass must be a subclass of ResourceController or PageController`);
     }
 
-    const objName = ObjectClass.name;
+    const objName = ObjectClass?.name;
 
     if (!this.#objects[objName]) {
       this.#objects[objName] = new ObjectClass() as T;
@@ -31,7 +32,11 @@ export default class Router<T extends ResourceController> {
 
   public get(path: string, object: new () => T, requestHandler: routerHandlerGet) {
     const obj = this.#makeOrFindObject(object as new () => T);
-    this.#router.get(path, (req, res) => obj[requestHandler](req, res))
+    this.#router.get(path, (req, res) => {
+      console.log(`Handling GET request for ${path} with handler ${requestHandler}`);
+      // @ts-ignore
+      obj[requestHandler](req, res);
+    });
     return this;
   }
 

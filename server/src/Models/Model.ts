@@ -20,4 +20,5 @@ export default class Model {
   static list(): any {
     throw new Error('Method not implemented.');
   }
+
 }

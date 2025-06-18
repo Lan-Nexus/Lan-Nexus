@@ -1,0 +1,39 @@
+<% /* Partial for game form fields, used by both update and create */ %>
+<input type="hidden" name="id" value="<%= data.id %>">
+<input type="hidden" name="gameID" value="<%= data.gameID %>">
+<div class="mb-3">
+  <label for="name" class="form-label">Name</label>
+  <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>" required>
+</div>
+<div class="mb-3">
+  <label for="description" class="form-label">Description (HTML allowed)</label>
+  <textarea class="form-control" id="description" name="description" rows="3" required><%= data.description %></textarea>
+</div>
+<div class="mb-3">
+  <label for="icon" class="form-label">Icon URL</label>
+  <input type="text" class="form-control" id="icon" name="icon" value="<%= data.icon %>">
+</div>
+<div class="mb-3">
+  <label for="headerImage" class="form-label">Header Image URL</label>
+  <input type="text" class="form-control" id="headerImage" name="headerImage" value="<%= data.headerImage %>">
+</div>
+<div class="mb-3">
+  <label for="type" class="form-label">Type</label>
+  <input type="text" class="form-control" id="type" name="type" value="<%= data.type %>" required>
+</div>
+<div class="mb-3">
+  <label for="logo" class="form-label">Logo URL</label>
+  <input type="text" class="form-control" id="logo" name="logo" value="<%= data.logo %>" required>
+</div>
+<div class="mb-3">
+  <label for="imageCard" class="form-label">Image Card URL</label>
+  <input type="text" class="form-control" id="imageCard" name="imageCard" value="<%= data.imageCard %>" required>
+</div>
+<div class="mb-3">
+  <label for="heroImage" class="form-label">Hero Image URL</label>
+  <input type="text" class="form-control" id="heroImage" name="heroImage" value="<%= data.heroImage %>" required>
+</div>
+
+<% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'UpdateVVV'; %>
+<button type="submit" class="btn btn-primary"><%= btnText %></button>
+<a href="/games" class="btn btn-secondary">Cancel</a>

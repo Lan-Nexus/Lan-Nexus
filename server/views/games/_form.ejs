@@ -11,65 +11,78 @@
   </div>
   <div class="mb-3">
     <label for="description" class="form-label">Description (HTML allowed)</label>
-    <textarea class="form-control" id="description" name="description" rows="3" required><%= data.description %></textarea>
+    <textarea class="form-control" id="description" name="description" rows="8" style="min-height: 180px;" required><%= data.description %></textarea>
   </div>
-  <div class="mb-3">
-    <label for="icon" class="form-label">Icon File</label>
-    <% if (data.icon) { %>
-      <div class="mb-2">
-        <img src="<%= data.icon %>" alt="Current Icon" style="max-width: 100px; max-height: 100px; display: block;" />
+  <div class="image-grid">
+    <div class="mb-3">
+      <label for="icon" class="form-label">Icon File</label>
+      <div class="image-preview">
+        <span class="img-label">Current:</span>
+        <% if (data.icon) { %>
+          <img src="<%= data.icon %>" alt="Current Icon" />
+        <% } else { %>
+          <div class="placeholder-box">No Image</div>
+        <% } %>
       </div>
-    <% } %>
-    <div id="icon-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="icon" name="icon">
-  </div>
-  <div class="mb-3">
-    <label for="headerImage" class="form-label">Header Image File</label>
-    <% if (data.headerImage) { %>
-      <div class="mb-2">
-        <img src="<%= data.headerImage %>" alt="Current Header Image" style="max-width: 100px; max-height: 100px; display: block;" />
+      <div id="icon-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="icon" name="icon">
+    </div>
+    <div class="mb-3">
+      <label for="headerImage" class="form-label">Header Image File</label>
+      <div class="image-preview">
+        <span class="img-label">Current:</span>
+        <% if (data.headerImage) { %>
+          <img src="<%= data.headerImage %>" alt="Current Header Image" />
+        <% } else { %>
+          <div class="placeholder-box">No Image</div>
+        <% } %>
       </div>
-    <% } %>
-    <div id="headerImage-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="headerImage" name="headerImage">
-  </div>
-  <div class="mb-3">
-    <label for="type" class="form-label">Type</label>
-    <input type="text" class="form-control" id="type" name="type" value="<%= data.type %>" >
-  </div>
-  <div class="mb-3">
-    <label for="logo" class="form-label">Logo File</label>
-    <% if (data.logo) { %>
-      <div class="mb-2">
-        <img src="<%= data.logo %>" alt="Current Logo" style="max-width: 100px; max-height: 100px; display: block;" />
+      <div id="headerImage-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="headerImage" name="headerImage">
+    </div>
+    <div class="mb-3">
+      <label for="logo" class="form-label">Logo File</label>
+      <div class="image-preview">
+        <span class="img-label">Current:</span>
+        <% if (data.logo) { %>
+          <img src="<%= data.logo %>" alt="Current Logo" />
+        <% } else { %>
+          <div class="placeholder-box">No Image</div>
+        <% } %>
       </div>
-    <% } %>
-    <div id="logo-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="logo" name="logo">
-  </div>
-  <div class="mb-3">
-    <label for="imageCard" class="form-label">Image Card File</label>
-    <% if (data.imageCard) { %>
-      <div class="mb-2">
-        <img src="<%= data.imageCard %>" alt="Current Image Card" style="max-width: 100px; max-height: 100px; display: block;" />
+      <div id="logo-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="logo" name="logo">
+    </div>
+    <div class="mb-3">
+      <label for="imageCard" class="form-label">Image Card File</label>
+      <div class="image-preview">
+        <span class="img-label">Current:</span>
+        <% if (data.imageCard) { %>
+          <img src="<%= data.imageCard %>" alt="Current Image Card" />
+        <% } else { %>
+          <div class="placeholder-box">No Image</div>
+        <% } %>
       </div>
-    <% } %>
-    <div id="imageCard-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="imageCard" name="imageCard">
-  </div>
-  <div class="mb-3">
-    <label for="heroImage" class="form-label">Hero Image File</label>
-    <% if (data.heroImage) { %>
-      <div class="mb-2">
-        <img src="<%= data.heroImage %>" alt="Current Hero Image" style="max-width: 100px; max-height: 100px; display: block;" />
+      <div id="imageCard-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="imageCard" name="imageCard">
+    </div>
+    <div class="mb-3">
+      <label for="heroImage" class="form-label">Hero Image File</label>
+      <div class="image-preview">
+        <span class="img-label">Current:</span>
+        <% if (data.heroImage) { %>
+          <img src="<%= data.heroImage %>" alt="Current Hero Image" />
+        <% } else { %>
+          <div class="placeholder-box">No Image</div>
+        <% } %>
       </div>
-    <% } %>
-    <div id="heroImage-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="heroImage" name="heroImage">
+      <div id="heroImage-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="heroImage" name="heroImage">
+    </div>
   </div>
   <div class="mb-3">
     <label for="script" class="form-label">Game Script</label>
-    <textarea class="form-control" id="script" name="script" rows="6"><%= data.script || '' %></textarea>
+    <textarea class="form-control" id="script" name="script" rows="12" style="min-height: 260px; font-family: monospace;" ><%= data.script || '' %></textarea>
   </div>
   <div class="mb-3">
     <label for="archives" class="form-label">Game Archive (ZIP)</label>
@@ -139,3 +152,67 @@ document.addEventListener('htmx:responseError', evt => {
   }
 });
 </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var scriptTextarea = document.getElementById('script');
+    if (scriptTextarea) {
+      var editor = CodeMirror.fromTextArea(scriptTextarea, {
+        lineNumbers: true,
+        mode: 'javascript',
+        theme: 'material',
+        lineWrapping: true,
+        viewportMargin: Infinity
+      });
+      editor.setSize(null, 320);
+    }
+  });
+</script>
+
+<style>
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .image-grid .mb-3 {
+      margin-bottom: 0;
+    }
+    .image-preview {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .image-preview img, .image-preview .placeholder-box {
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      background: #f8f8f8;
+      padding: 4px;
+      display: block;
+    }
+    .image-preview .placeholder-box {
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 0.95em;
+      font-style: italic;
+      border: 1px dashed #bbb;
+    }
+    .image-preview .img-label {
+      font-size: 0.95em;
+      color: #555;
+      min-width: 80px;
+    }
+  </style>

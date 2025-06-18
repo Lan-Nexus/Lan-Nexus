@@ -15,9 +15,14 @@ const imageFields = [
   { name: 'heroImage', maxCount: 1 }
 ];
 
+const archiveFields = [
+  ...imageFields,
+  { name: 'archives', maxCount: 1 }
+];
+
 new Router<GamesPageController>(router)
-  .post('/games/', GamesPageController, 'create', upload.fields(imageFields))
-  .put('/games/:id', GamesPageController, 'update', upload.fields(imageFields))
+  .post('/games/', GamesPageController, 'create', upload.fields(archiveFields))
+  .put('/games/:id', GamesPageController, 'update', upload.fields(archiveFields))
   .get('/games/', GamesPageController, 'list')
   .get('/games/create', GamesPageController, 'renderCreateForm')
   .get('/games/:id', GamesPageController, 'read')

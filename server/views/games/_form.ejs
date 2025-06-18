@@ -1,5 +1,8 @@
 <input type="hidden" name="id" value="<%= data.id %>">
-<input type="hidden" name="gameID" value="<%= data.gameID %>">
+<div class="mb-3">
+  <label for="gameID" class="form-label">Game ID</label>
+  <input type="text" class="form-control" id="gameID" name="gameID" value="<%= data.gameID %>" required>
+</div>
 <div class="mb-3">
   <label for="name" class="form-label">Name</label>
   <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>">

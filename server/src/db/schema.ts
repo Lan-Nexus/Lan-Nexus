@@ -24,13 +24,18 @@ export const gamesTable = mysqlTable("games", {
   heroImage: mediumtext('heroImage'),
   archives: varchar('archives', { length: 512 }), // Path to uploaded archive
   type: varchar('type', { length: 255 }).notNull(),
-  script: mediumtext('script'), // Added script field for per-game script
+  install: mediumtext('install'), // Install script
+  uninstall: mediumtext('uninstall'), // Uninstall script
+  play: mediumtext('play'), // Play script
 });
 
 export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable, {
   name: gamesSelectSchema.shape.name,
   archives: gamesSelectSchema.shape.archives.optional(),
+  install: gamesSelectSchema.shape.install.optional(),
+  uninstall: gamesSelectSchema.shape.uninstall.optional(),
+  play: gamesSelectSchema.shape.play.optional(),
 });
 export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
   ...gamesSelectSchema.shape,
@@ -40,4 +45,7 @@ export const gamesUpdateSchema = createUpdateSchema(gamesTable, {
   imageCard: gamesSelectSchema.shape.imageCard.optional(),
   heroImage: gamesSelectSchema.shape.heroImage.optional(),
   archives: gamesSelectSchema.shape.archives.optional(),
+  install: gamesSelectSchema.shape.install.optional(),
+  uninstall: gamesSelectSchema.shape.uninstall.optional(),
+  play: gamesSelectSchema.shape.play.optional(),
 });

@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
 <form method="post" enctype="multipart/form-data" hx-encoding="multipart/form-data">
+  <input type="text" name="type" value="<%= data.type ?  data.type : 'archive' %>">
   <input type="hidden" name="id" value="<%= data.id %>">
   <div class="mb-3">
     <label for="gameID" class="form-label">Game ID</label>
@@ -13,6 +14,7 @@
     <label for="description" class="form-label">Description (HTML allowed)</label>
     <textarea class="form-control" id="description" name="description" rows="8" style="min-height: 180px;" required><%= data.description %></textarea>
   </div>
+  
   <div class="image-grid">
     <div class="mb-3">
       <label for="icon" class="form-label">Icon File</label>
@@ -80,18 +82,29 @@
       <input type="file" class="form-control d-none" id="heroImage" name="heroImage">
     </div>
   </div>
-  <div class="mb-3">
-    <label for="script" class="form-label">Game Script</label>
-    <textarea class="form-control" id="script" name="script" rows="12" style="min-height: 260px; font-family: monospace;" ><%= data.script || '' %></textarea>
-  </div>
-  <div class="mb-3">
-    <label for="archives" class="form-label">Game Archive (ZIP)</label>
-    <div id="archives-dropzone" class="dropzone"></div>
-    <input type="file" class="form-control d-none" id="archives" name="archives" accept=".zip">
-    <% if (data.archives) { %>
-      <p>Current: <a href="<%= data.archives %>" target="_blank"><%= data.archives %></a></p>
-    <% } %>
-  </div>
+  
+  <% if (data.type !== 'steam') { %>
+    <div class="mb-3">
+      <label for="script1" class="form-label">Install Script</label>
+      <textarea class="form-control" id="script1" name="install" rows="12" style="min-height: 260px; font-family: monospace;"><%= data.install || '' %></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="script2" class="form-label">Uninstall Script</label>
+      <textarea class="form-control" id="script2" name="uninstall" rows="12" style="min-height: 260px; font-family: monospace;"><%= data.uninstall || '' %></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="script3" class="form-label">Play Script</label>
+      <textarea class="form-control" id="script3" name="play" rows="12" style="min-height: 260px; font-family: monospace;"><%= data.play || '' %></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="archives" class="form-label">Game Archive (ZIP)</label>
+      <div id="archives-dropzone" class="dropzone"></div>
+      <input type="file" class="form-control d-none" id="archives" name="archives" accept=".zip">
+      <% if (data.archives) { %>
+        <p>Current: <a href="<%= data.archives %>" target="_blank"><%= data.archives %></a></p>
+      <% } %>
+    </div>
+  <% } %>
   <% const btnText = typeof buttonText !== 'undefined' ? buttonText : 'Update'; %>
   <button type="submit" class="btn btn-primary"><%= btnText %></button>
   <a href="/games" class="btn btn-secondary">Cancel</a>
@@ -159,17 +172,19 @@ document.addEventListener('htmx:responseError', evt => {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var scriptTextarea = document.getElementById('script');
-    if (scriptTextarea) {
-      var editor = CodeMirror.fromTextArea(scriptTextarea, {
-        lineNumbers: true,
-        mode: 'javascript',
-        theme: 'material',
-        lineWrapping: true,
-        viewportMargin: Infinity
-      });
-      editor.setSize(null, 320);
-    }
+    ['script1', 'script2', 'script3'].forEach(function(id) {
+      var textarea = document.getElementById(id);
+      if (textarea) {
+        var editor = CodeMirror.fromTextArea(textarea, {
+          lineNumbers: true,
+          mode: 'javascript',
+          theme: 'material',
+          lineWrapping: true,
+          viewportMargin: Infinity
+        });
+        editor.setSize(null, 320);
+      }
+    });
   });
 </script>
 

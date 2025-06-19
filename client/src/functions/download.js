@@ -4,7 +4,7 @@ import path from 'path';
 
 const tempDir = path.join(__dirname, '../../temp');
 
-export default async function download(progressCallback, url, filename) {
+export default async function download(progressCallback, progressActive, url, filename) {
 
   progressCallback(0, 'Downloading');
 

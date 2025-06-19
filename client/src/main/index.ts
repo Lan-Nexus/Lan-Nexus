@@ -24,7 +24,7 @@ async function createWindow() {
     autoHideMenuBar: true,
     icon: icon,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
     },
   });
@@ -85,6 +85,7 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('function', async (event, arg) => {
   const progressCallback = (...args) => event.reply('function-progress', ...args);
+  const activeCallback = (...args) => event.reply('function-active', ...args);
 
   const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '');
   if (
@@ -95,9 +96,9 @@ ipcMain.on('function', async (event, arg) => {
     event.reply('function-error', 'Invalid function name');
     return;
   }
-
-  const func = await import(`../functions/${safeFunctionName}.ts`);
-
+    console.log('function called', safeFunctionName, arg.args);  
+  const func = await import(`../functions/${safeFunctionName}.js`);
+  
   if (!func) {
     event.reply('function-error', 'Function not found');
     return;
@@ -105,7 +106,7 @@ ipcMain.on('function', async (event, arg) => {
 
   console.log('function called', safeFunctionName);
   try {
-    const result = await func.default(progressCallback, ...arg.args);
+    const result = await func.default(progressCallback, activeCallback, ...arg.args);
     console.log('function result', result);
     event.reply('function-reply', result);
   } catch (e) {

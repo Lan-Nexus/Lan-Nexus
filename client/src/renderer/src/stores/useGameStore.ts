@@ -5,27 +5,21 @@ import functions from '../functions.js';
 import { useProgressStore } from './useProgress.js';
 import { serverBaseAddress } from '@renderer/utils/server.js';
 
-type archives = {
-  id: number;
-  name: string;
-  file: string;
-  isInstalled: boolean;
-  version: string;
-  os: string;
-};
-
 export type gameState = {
   description: string;
   gameID: string;
   id: number;
   name: string;
-  selectedArchive: number;
   type: string;
   heroImage: string;
   headerImage: string;
   logo: string;
   icon: string;
-  archives: archives[];
+  archives: string; 
+  install: string;
+  uninstall: string;
+  play: string;
+  isInstalled?: boolean; // Added property
 };
 
 export const useGameStore = defineStore('game', {
@@ -41,17 +35,6 @@ export const useGameStore = defineStore('game', {
       }
       return void 0;
     },
-    selectedArchive: (state) => {
-      const game = state.games.find((game) => game.id === state.selectedGameId);
-      if (game) {
-        const archive = game.archives.find((archive) => archive.id === game.selectedArchive);
-        if (archive) {
-          console.log(archive.name);
-          return archive;
-        }
-      }
-      return void 0;
-    },
   },
   actions: {
     selectGame(id) {
@@ -62,59 +45,51 @@ export const useGameStore = defineStore('game', {
     },
     async installArchive() {
       const game = this.games.find((game) => game.id === this.selectedGameId);
-      const archive = game!.archives.find((archive) => archive.id === game!.selectedArchive);
-      if (archive === void 0) {
+      if (!game || !game.archives) {
+        console.error('Game not found or no archive available for installation.'); 
         return;
       }
-
-      const safeName = game!.name.replaceAll(' ', '-');
-      const archiveFile = safeName + '/' + archive.name;
-
+      const safeName = game.name.replaceAll(' ', '-');
+      const archiveFile = safeName + '.zip';
       const progressStore = useProgressStore();
       progressStore.active = true;
-
       try {
-        await functions.download(progressStore.setProgress, archive.file, archiveFile + '.zip');
-        await functions.unzip(progressStore.setProgress, archiveFile + '.zip', archiveFile);
-        await functions.run(progressStore.setProgress, archiveFile, 'install');
+        const url = serverBaseAddress + game.archives
+        await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
+        await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
+        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install);
         await functions.clearTemp(progressStore.setProgress);
+        // Set isInstalled to true after install
+        game.isInstalled = true;
       } catch (error) {
         console.error(error);
       } finally {
         progressStore.active = false;
       }
-
-      archive.isInstalled = true;
     },
     async uninstallArchive() {
       const progressStore = useProgressStore();
       progressStore.active = false;
       const game = this.games.find((game) => game.id === this.selectedGameId);
-      if (game === void 0) {
+      if (!game) {
         return;
       }
-      const archive = game.archives.find((archive) => archive.id === game.selectedArchive);
-      if (archive === void 0) {
-        return;
-      }
-
       const safeName = game.name.replaceAll(' ', '-');
-      const archiveFile = safeName + '/' + archive.name;
-
       try {
-        await functions.run(progressStore.setProgress, archiveFile, 'uninstall');
-        await functions.removeGame(progressStore.setProgress, archiveFile);
+        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.uninstall);
+        await functions.removeGame(progressStore.setProgress, progressStore.setActive, safeName);
+        // Set isInstalled to false after uninstall
+        game.isInstalled = false;
       } catch (error) {
         console.error(error);
       } finally {
         progressStore.active = false;
       }
-
-      archive.isInstalled = false;
     },
     loadGames() {
       axios.get(`${serverBaseAddress}/api/games`).then((response) => {
-        this.games = response.data;
+        // Set isInstalled to false by default; update with real logic as needed
+        this.games = response.data.map((game) => ({ ...game, isInstalled: false }));
       });
     },
     async play() {
@@ -122,18 +97,14 @@ export const useGameStore = defineStore('game', {
       if (selectedGame && selectedGame.type === 'steam') {
         document.location.href = `steam://run/${selectedGame.gameID}`;
       }
-      if (selectedGame && selectedGame.type === 'zip') {
+      if (selectedGame && selectedGame.type === 'archive') {
         const game = this.games.find((game) => game.id === this.selectedGameId);
-        if (game === void 0) {
+        if (!game) {
           return;
         }
-        const archive = game!.archives.find((archive) => archive.id === game.selectedArchive);
-        if (archive === void 0) {
-          return;
-        }
-        const safeName = game!.name.replaceAll(' ', '-');
-        const archiveFile = safeName + '/' + archive.name;
-        await functions.run(useProgressStore().setProgress, archiveFile, 'play');
+        const safeName = game.name.replaceAll(' ', '-');
+        const progressStore = useProgressStore();
+        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.play);
       }
     },
   },

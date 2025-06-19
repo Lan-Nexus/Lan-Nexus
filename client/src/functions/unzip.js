@@ -4,9 +4,14 @@ import path from 'path';
 import { promisify } from 'util';
 import { pipeline } from 'stream/promises';
 
-const openZip = promisify(yauzl.fromBuffer);
+const openZip = (buffer, options = {}) => new Promise((resolve, reject) => {
+  yauzl.fromBuffer(buffer, { lazyEntries: true, ...options }, (err, zipfile) => {
+    if (err) reject(err);
+    else resolve(zipfile);
+  });
+});
 
-export default async function unzip(progressCallback, filename, gameName) {
+export default async function unzip(progressCallback, progressActive, filename, gameName) {
   const tempDir = path.join(__dirname, '../../temp');
   const gameDir = path.join(__dirname, '../../games', gameName);
 
@@ -35,7 +40,7 @@ export default async function unzip(progressCallback, filename, gameName) {
   const zipfile = await openZip(zipBuffer);
 
   return new Promise((resolve, reject) => {
-    const entries: string[] = [];
+    const entries = [];
     let processedEntries = 0;
 
     // Call with 0% at start

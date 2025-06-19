@@ -90,6 +90,10 @@ export abstract class ResourceController {
     }
   }
 
+  public async setImage(req: Request, res: Response) {
+    throw new Error("setImage method not implemented");
+  }
+
   sendStatus(res: Response, status: StatusCodes,error?: any): void {
     const statusString: string = StatusCodes[status];
     const reason: string = ReasonPhrases[statusString as keyof typeof ReasonPhrases]

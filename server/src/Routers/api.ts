@@ -9,6 +9,7 @@ new Router<gamesController>(router)
   .get('/games', gamesController, 'list')
   .get('/games/:id', gamesController, 'read')
   .post('/games', gamesController, 'create')
+  .post('/games/:id/image', gamesController, 'setImage')
   .put('/games/:id', gamesController, 'update')
   .delete('/games/:id', gamesController, 'delete');
 

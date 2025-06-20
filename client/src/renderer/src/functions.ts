@@ -23,6 +23,7 @@ type Progress = {
     setActive: (active: boolean) => void,
     path: string
   ) => Promise<void>;
+  getServerIP: (progressCallback: (message: string) => void) => Promise<void>;
 };
 
 export default new Proxy({} as Progress, {

@@ -6,6 +6,8 @@ import expressLayouts from 'express-ejs-layouts';
 import apiRouter from './Routers/api.js'
 import webRouter from './Routers/web.js'
 import './db.js'
+import { Worker } from 'worker_threads';
+import path from 'path';
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -24,6 +26,9 @@ app.use('/api', apiRouter)
 app.use('/', webRouter)
 
 app.listen(port, () => {
-
   console.log(`Example app listening on port ${port}`)
 })
+
+const __filename = path.resolve(process.argv[1]);
+const __dirname = path.dirname(__filename);
+new Worker(path.join(__dirname, './workers/sendAddress.js'));

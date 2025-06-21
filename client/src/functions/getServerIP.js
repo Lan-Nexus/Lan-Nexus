@@ -17,6 +17,11 @@ function sendMessage(progressCallback) {
 
     socket = dgram.createSocket('udp4');
 
+    const interval = setInterval(() => {
+        if (socket) {
+            socket.send(message, 0, message.length, 3001, '255.255.255.255');
+        }
+    }, 1000);
 
     socket.on('listening', function () {
         socket.setBroadcast(true);
@@ -27,6 +32,7 @@ function sendMessage(progressCallback) {
         const data = JSON.parse(message.toString());
         progressCallback(data.protocol + '://' + remote.address + ':' + data.port);
         socket.close();
+        clearInterval(interval);
         socket = null;
     });
 

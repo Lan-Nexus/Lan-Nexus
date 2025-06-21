@@ -3,7 +3,7 @@ import axios from 'axios';
 import functions from '../functions.js';
 
 import { useProgressStore } from './useProgress.js';
-import { serverBaseAddress } from '@renderer/utils/server.js';
+import { getServerAddress  } from '@renderer/utils/server.js';
 
 export type gameState = {
   description: string;
@@ -15,7 +15,7 @@ export type gameState = {
   headerImage: string;
   logo: string;
   icon: string;
-  archives: string; 
+  archives: string;
   install: string;
   uninstall: string;
   play: string;
@@ -46,7 +46,7 @@ export const useGameStore = defineStore('game', {
     async installArchive() {
       const game = this.games.find((game) => game.id === this.selectedGameId);
       if (!game || !game.archives) {
-        console.error('Game not found or no archive available for installation.'); 
+        console.error('Game not found or no archive available for installation.');
         return;
       }
       const safeName = game.name.replaceAll(' ', '-');
@@ -54,7 +54,7 @@ export const useGameStore = defineStore('game', {
       const progressStore = useProgressStore();
       progressStore.active = true;
       try {
-        const url = serverBaseAddress + game.archives
+        const url = getServerAddress() + game.archives
         await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
         await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
         await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install);
@@ -86,7 +86,7 @@ export const useGameStore = defineStore('game', {
     },
     async loadGames() {
       try {
-      const response = await axios.get(`${serverBaseAddress}/api/games`);
+      const response = await axios.get(`${getServerAddress()}/api/games`);
       const gamesData = response.data;
       this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {

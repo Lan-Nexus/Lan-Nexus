@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { gameState } from '@renderer/stores/useGameStore';
 import ActionBar from '../components/ActionBar.vue';
-import { defineProps, defineEmits, onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
-import { serverBaseAddress } from '../utils/server.js';
+import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
+import { getServerAddress } from '../utils/server.js';
 
 const { game } = defineProps<{ game: gameState }>();
 const emit = defineEmits(['select-game']);
@@ -53,13 +53,13 @@ onUnmounted(() => {
           <img
             v-if="game.heroImage"
             :onload="updateHeight"
-            :src="serverBaseAddress + game.heroImage"
+            :src="getServerAddress() + game.heroImage"
             alt="game"
             class="w-full"
           />
           <img
             v-else-if="game.headerImage"
-            :src="serverBaseAddress + game.headerImage"
+            :src="getServerAddress() + game.headerImage"
             alt="game"
             class="w-full"
           />
@@ -70,7 +70,7 @@ onUnmounted(() => {
         <img
           v-if="game.logo"
           :onload="getLogoSize"
-          :src="serverBaseAddress + game.logo"
+          :src="getServerAddress() + game.logo"
           :class="widthOrHeight"
           class="absolute -bottom-1/5 left-5"
         />

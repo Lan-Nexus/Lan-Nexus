@@ -1,7 +1,6 @@
 import yauzl from 'yauzl';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 import { pipeline } from 'stream/promises';
 
 const openZip = (buffer, options = {}) => new Promise((resolve, reject) => {

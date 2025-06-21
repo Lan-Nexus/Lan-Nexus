@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { getServerAddress } from '@renderer/utils/server.js';
+import './utils/logger.js';
 
 declare global {
   interface Window {

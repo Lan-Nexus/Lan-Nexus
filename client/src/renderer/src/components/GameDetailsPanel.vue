@@ -2,10 +2,12 @@
 import type { gameState } from '@renderer/stores/useGameStore';
 import ActionBar from '../components/ActionBar.vue';
 import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
-import { getServerAddress } from '../utils/server.js';
+
+import { useServerAddressStore } from '../stores/useServerAddress.js';
+const serverAddressStore = useServerAddressStore();
 
 const { game } = defineProps<{ game: gameState }>();
-const emit = defineEmits(['select-game']);
+defineEmits(['select-game']);
 const height = ref('0px');
 const widthOrHeight = ref<string>();
 const logoElement = useTemplateRef<HTMLElement>('logoElement');
@@ -53,13 +55,13 @@ onUnmounted(() => {
           <img
             v-if="game.heroImage"
             :onload="updateHeight"
-            :src="getServerAddress() + game.heroImage"
+            :src="serverAddressStore.serverAddress + game.heroImage"
             alt="game"
             class="w-full"
           />
           <img
             v-else-if="game.headerImage"
-            :src="getServerAddress() + game.headerImage"
+            :src="serverAddressStore.serverAddress + game.headerImage"
             alt="game"
             class="w-full"
           />
@@ -70,7 +72,7 @@ onUnmounted(() => {
         <img
           v-if="game.logo"
           :onload="getLogoSize"
-          :src="getServerAddress() + game.logo"
+          :src="serverAddressStore.serverAddress + game.logo"
           :class="widthOrHeight"
           class="absolute -bottom-1/5 left-5"
         />

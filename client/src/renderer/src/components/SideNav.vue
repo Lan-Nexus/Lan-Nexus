@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useGameStore } from '../stores/useGameStore.js';
-import { getServerAddress } from '../utils/server.js';
+import { useServerAddressStore } from '../stores/useServerAddress.js';
 
 const gameStore = useGameStore();
+const serverAddressStore = useServerAddressStore();
 
 const isSelectedGame = (gameId: number): boolean => {
   return gameStore.selectedGame?.id === gameId;
@@ -22,7 +23,7 @@ const isSelectedGame = (gameId: number): boolean => {
     >
       <img
         v-if="game.icon"
-        :src="getServerAddress() + game.icon"
+        :src="serverAddressStore.serverAddress + game.icon"
         alt="game image"
         class="h-12 w-12"
       />

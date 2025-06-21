@@ -9,35 +9,38 @@ const message = Buffer.from('lanLauncher://get_ip');
 let socket = null;
 
 export default async function getServerIP(progressCallback) {
-    sendMessage(progressCallback);
+  sendMessage(progressCallback);
 }
 
 function sendMessage(progressCallback) {
+  if (socket) {
+    socket.send(message, 0, message.length, 3001, '255.255.255.255');
+    return;
+  }
+  logger.log('Searching for server IP...');
+  socket = dgram.createSocket('udp4');
+
+  const interval = setInterval(() => {
     if (socket) {
-        socket.send(message, 0, message.length, 3001, '255.255.255.255');
-        return;
+      logger.log('unable to find server IP, retrying...');
+      socket.send(message, 0, message.length, 3001, '255.255.255.255');
     }
+  }, 1000);
 
-    socket = dgram.createSocket('udp4');
+  socket.on('listening', function () {
+    socket.setBroadcast(true);
+    logger.log('sending message to find server IP...');
+    socket.send(message, 0, message.length, 3001, '255.255.255.255');
+  });
 
-    const interval = setInterval(() => {
-        if (socket) {
-            socket.send(message, 0, message.length, 3001, '255.255.255.255');
-        }
-    }, 1000);
+  socket.on('message', function (message, remote) {
+    const data = JSON.parse(message.toString());
+    progressCallback(data.protocol + '://' + remote.address + ':' + data.port);
+    socket.close();
+    logger.log('found server IP:', remote.address + ':' + data.port);
+    clearInterval(interval);
+    socket = null;
+  });
 
-    socket.on('listening', function () {
-        socket.setBroadcast(true);
-        socket.send(message, 0, message.length, 3001, '255.255.255.255');
-    });
-
-    socket.on('message', function (message, remote) {
-        const data = JSON.parse(message.toString());
-        progressCallback(data.protocol + '://' + remote.address + ':' + data.port);
-        socket.close();
-        clearInterval(interval);
-        socket = null;
-    });
-
-    socket.bind(1337);
+  socket.bind(1337);
 }

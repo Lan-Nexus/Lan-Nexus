@@ -3,8 +3,8 @@ import axios from 'axios';
 import functions from '../functions.js';
 
 import { useProgressStore } from './useProgress.js';
-import { getServerAddress  } from '@renderer/utils/server.js';
 import Logger from '@renderer/utils/logger.js';
+import { useServerAddressStore } from './useServerAddress.js';
 
 
 const logger = Logger('useGameStore');
@@ -48,6 +48,7 @@ export const useGameStore = defineStore('game', {
       this.loadGames();
     },
     async installArchive() {
+      const serverAddressStore = useServerAddressStore();
       const game = this.games.find((game) => game.id === this.selectedGameId);
       if (!game || !game.archives) {
         logger.error('Game not found or no archive available for installation.');
@@ -58,7 +59,7 @@ export const useGameStore = defineStore('game', {
       const progressStore = useProgressStore();
       progressStore.active = true;
       try {
-        const url = getServerAddress() + game.archives
+        const url = serverAddressStore.serverAddress + game.archives
         await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
         await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
         await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install);
@@ -89,12 +90,13 @@ export const useGameStore = defineStore('game', {
       }
     },
     async loadGames() {
+      const serverAddressStore = useServerAddressStore();
       try {
-      const response = await axios.get(`${getServerAddress()}/api/games`);
-      const gamesData = response.data;
-      this.games = await this._addInstallStatusToGames(gamesData);
+        const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`);
+        const gamesData = response.data;
+        this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {
-      logger.error('Failed to load games:', error);
+        logger.error('Failed to load games:', error);
       }
     },
 
@@ -110,7 +112,7 @@ export const useGameStore = defineStore('game', {
       let isInstalled = false;
       if (game.type === 'archive') {
         const safeName = game.name.replaceAll(' ', '-');
-        const noOp = () => {};
+        const noOp = () => { };
         isInstalled = await functions.isGameInstalled(noOp, noOp, safeName);
         logger.log(`Game ${game.name} is installed: ${isInstalled}`);
       }

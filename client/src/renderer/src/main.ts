@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { getServerAddress } from '@renderer/utils/server.js';
+
 import './utils/logger.js';
 
 declare global {
@@ -12,8 +12,6 @@ declare global {
 import App from './App.vue';
 import { router } from './router';
 import './assets/style.css';
-
-await getServerAddress();
 
 createApp(App).use(createPinia()).use(router).mount('#app');
 

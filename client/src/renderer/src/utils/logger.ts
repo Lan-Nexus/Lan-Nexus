@@ -1,14 +1,70 @@
- function logger(type: string): Console {
+function logger(type: string): Console {
+  // For node environment (main process)
+  if (typeof window === 'undefined') {
+    const colors = {
+      reset: '\x1b[0m',
+      red: '\x1b[31m',
+      green: '\x1b[32m',
+      yellow: '\x1b[33m',
+      blue: '\x1b[34m'
+    }
+
     return new Proxy(console, {
-        get(target, logType: string) {
-            return (...args: any[]) => {
-                target[logType](`*[${type}]`, ...args);
-            };
+      get(target, logType: string) {
+        return (...args: any[]) => {
+          let color = colors.reset
+          switch (logType) {
+            case 'log':
+              color = colors.green
+              break
+            case 'warn':
+              color = colors.yellow
+              break
+            case 'error':
+              color = colors.red
+              break
+            case 'info':
+              color = colors.blue
+              break
+          }
+          target[logType](`${color} -> *[${type}]${colors.reset}`, ...args)
         }
-    });
+      }
+    })
+  } else {
+    // For browser environment (renderer process)
+    const colors = {
+      red: 'color: red',
+      green: 'color: green',
+      yellow: 'color: yellow',
+      blue: 'color: blue'
+    }
+
+    return new Proxy(console, {
+      get(target, logType: string) {
+        return (...args: any[]) => {
+          let color = ''
+          switch (logType) {
+            case 'log':
+              color = colors.green
+              break
+            case 'warn':
+              color = colors.yellow
+              break
+            case 'error':
+              color = colors.red
+              break
+            case 'info':
+              color = colors.blue
+              break
+          }
+          target[logType](`%c -> *[${type}]`, color, ...args)
+        }
+      }
+    })
+  }
 }
 
-logger('logger').log('Logger initialized');
-
+logger('logger').log('Logger initialized')
 
 export default logger

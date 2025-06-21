@@ -1,3 +1,7 @@
+import Logger from "./utils/logger.js";
+
+const logger = Logger('functions');
+
 type Progress = {
   download: (
     progressCallback: (percent: string, message: string) => void,
@@ -41,23 +45,25 @@ export default new Proxy({} as Progress, {
         });
 
         window.electron.ipcRenderer.once('function-reply', (_event, arg) => {
+          logger.log('Reply:', arg);
           resolve(arg);
         });
 
         window.electron.ipcRenderer.once('function-error', (_event, arg) => {
+          logger.error('Error:', arg);
           reject(arg);
         });
 
         window.electron.ipcRenderer.on('function-progress', (_event, ...arg) => {
-          console.log('Progress:', arg);
+          logger.log('Progress:', arg);
           progressCallback(...arg);
         });
         window.electron.ipcRenderer.on('function-active', (_event, ...arg) => {
-          console.log('Active:', arg);
+          logger.log('Active:', arg);
           setActive(...arg);
         });
         window.electron.ipcRenderer.on('function-log', (_event, ...arg) => {
-          console.log('Log:', arg);
+          logger.log('Log:', arg);
         });
       });
     };

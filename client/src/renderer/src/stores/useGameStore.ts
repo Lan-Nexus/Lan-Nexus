@@ -4,6 +4,10 @@ import functions from '../functions.js';
 
 import { useProgressStore } from './useProgress.js';
 import { getServerAddress  } from '@renderer/utils/server.js';
+import Logger from '@renderer/utils/logger.js';
+
+
+const logger = Logger('useGameStore');
 
 export type gameState = {
   description: string;
@@ -46,7 +50,7 @@ export const useGameStore = defineStore('game', {
     async installArchive() {
       const game = this.games.find((game) => game.id === this.selectedGameId);
       if (!game || !game.archives) {
-        console.error('Game not found or no archive available for installation.');
+        logger.error('Game not found or no archive available for installation.');
         return;
       }
       const safeName = game.name.replaceAll(' ', '-');
@@ -61,7 +65,7 @@ export const useGameStore = defineStore('game', {
         await functions.clearTemp(progressStore.setProgress);
         game.isInstalled = true;
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       } finally {
         progressStore.active = false;
       }
@@ -79,7 +83,7 @@ export const useGameStore = defineStore('game', {
         await functions.removeGame(progressStore.setProgress, progressStore.setActive, safeName);
         game.isInstalled = false;
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       } finally {
         progressStore.active = false;
       }
@@ -90,7 +94,7 @@ export const useGameStore = defineStore('game', {
       const gamesData = response.data;
       this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {
-      console.error('Failed to load games:', error);
+      logger.error('Failed to load games:', error);
       }
     },
 
@@ -108,7 +112,7 @@ export const useGameStore = defineStore('game', {
         const safeName = game.name.replaceAll(' ', '-');
         const noOp = () => {};
         isInstalled = await functions.isGameInstalled(noOp, noOp, safeName);
-        console.log(`Game ${game.name} is installed: ${isInstalled}`);
+        logger.log(`Game ${game.name} is installed: ${isInstalled}`);
       }
       return { ...game, isInstalled };
     },

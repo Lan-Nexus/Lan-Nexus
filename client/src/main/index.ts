@@ -1,6 +1,9 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import Logger from './logger.js'
+
+const logger = Logger('main');
 
 let iconPath: Promise<string>;
 if (process.platform == 'linux') {
@@ -13,7 +16,7 @@ if (process.platform == 'linux') {
 
 async function createWindow() {
   const icon = await iconPath;
-  console.log(icon);
+  logger.log(icon);
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -96,7 +99,7 @@ ipcMain.on('function', async (event, arg) => {
     event.reply('function-error', 'Invalid function name');
     return;
   }
-    console.log('function called', safeFunctionName, arg.args);  
+    logger.log('function called', safeFunctionName, arg.args);  
   const func = await import(`../functions/${safeFunctionName}.js`);
   
   if (!func) {
@@ -104,13 +107,13 @@ ipcMain.on('function', async (event, arg) => {
     return;
   }
 
-  console.log('function called', safeFunctionName);
+  logger.log('function called', safeFunctionName);
   try {
     const result = await func.default(progressCallback, activeCallback, ...arg.args);
-    console.log('function result', result);
+    logger.log('function result', result);
     event.reply('function-reply', result);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     event.reply('function-error', e);
   }
 });

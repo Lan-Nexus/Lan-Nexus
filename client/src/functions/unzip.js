@@ -2,6 +2,9 @@ import yauzl from 'yauzl';
 import fs from 'fs';
 import path from 'path';
 import { pipeline } from 'stream/promises';
+import logger from '../main/logger';
+
+const log = logger('unzip');
 
 const openZip = (buffer, options = {}) => new Promise((resolve, reject) => {
   yauzl.fromBuffer(buffer, { lazyEntries: true, ...options }, (err, zipfile) => {
@@ -14,8 +17,8 @@ export default async function unzip(progressCallback, progressActive, filename, 
   const tempDir = path.join(__dirname, '../../temp');
   const gameDir = path.join(__dirname, '../../games', gameName);
 
-  console.log(`Unzipping ${path.join(tempDir, filename)} for ${gameName}`);
-  console.log(`Extracting to ${gameDir}`);
+  log.log(`Unzipping ${path.join(tempDir, filename)} for ${gameName}`);
+  log.log(`Extracting to ${gameDir}`);
 
   // Read the zip file into a buffer
   const zipBuffer = await fs.promises.readFile(path.join(tempDir, filename));
@@ -44,7 +47,7 @@ export default async function unzip(progressCallback, progressActive, filename, 
 
     // Call with 0% at start
     progressCallback(0, 'Extracting');
-    console.log('Total entries:', totalEntries);
+    log.log('Total entries:', totalEntries);
 
     zipfile.on('entry', async (entry) => {
       if (/\/$/.test(entry.fileName)) {
@@ -52,7 +55,7 @@ export default async function unzip(progressCallback, progressActive, filename, 
         processedEntries++;
         const progress = Math.floor((processedEntries / totalEntries) * 100);
         progressCallback(progress, 'Extracting');
-        console.log('Directory:', entry.fileName);
+        log.log('Directory:', entry.fileName);
         zipfile.readEntry();
         return;
       }
@@ -78,24 +81,24 @@ export default async function unzip(progressCallback, progressActive, filename, 
         // Calculate and report progress (0-100)
         const progress = Math.floor((processedEntries / totalEntries) * 100);
         progressCallback(progress, 'Extracting' + entry.fileName);
-        console.log('File:', entry.fileName);
+        log.log('File:', entry.fileName);
 
         zipfile.readEntry();
       } catch (err) {
-        console.error('Error extracting entry:', err);
+        log.error('Error extracting entry:', err);
         reject(err);
       }
     });
 
     zipfile.on('end', () => {
       progressCallback(100, 'Complete');
-      console.log('Extraction complete', entries);
-      console.log('processedEntries:', processedEntries);
+      log.log('Extraction complete', entries);
+      log.log('processedEntries:', processedEntries);
       resolve(entries);
     });
 
     zipfile.on('error', (err) => {
-      console.error('Error extracting zip:', err);
+      log.error('Error extracting zip:', err);
       reject(err);
     });
 

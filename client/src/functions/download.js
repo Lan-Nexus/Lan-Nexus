@@ -2,14 +2,16 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import logger from '../main/logger';
 
+const log = logger('download');
 const tempDir = path.join(__dirname, '../../temp');
 
 export default async function download(progressCallback, progressActive, url, filename) {
 
   progressCallback(0, 'Downloading');
 
-  console.log('Downloading ' + url + ' to ' + path.join(tempDir, filename));
+  log.log('Downloading ' + url + ' to ' + path.join(tempDir, filename));
   const subDir = path.join(tempDir, filename.split('/').slice(0, -1).join('/'));
 
   if (!fs.existsSync(tempDir)) {

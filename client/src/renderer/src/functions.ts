@@ -17,6 +17,11 @@ type Progress = {
     path: string,
     command: string
   ) => Promise<void>;
+  isGameInstalled: (
+    progressCallback: (percent: string, message: string) => void,
+    setActive: (active: boolean) => void,
+    path: string
+  ) => Promise<boolean>;
   clearTemp: (progressCallback: (percent: string, message: string) => void) => Promise<void>;
   removeGame: (
     progressCallback: (percent: string, message: string) => void,

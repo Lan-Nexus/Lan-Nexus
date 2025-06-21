@@ -59,7 +59,6 @@ export const useGameStore = defineStore('game', {
         await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
         await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install);
         await functions.clearTemp(progressStore.setProgress);
-        // Set isInstalled to true after install
         game.isInstalled = true;
       } catch (error) {
         console.error(error);
@@ -78,7 +77,6 @@ export const useGameStore = defineStore('game', {
       try {
         await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.uninstall);
         await functions.removeGame(progressStore.setProgress, progressStore.setActive, safeName);
-        // Set isInstalled to false after uninstall
         game.isInstalled = false;
       } catch (error) {
         console.error(error);
@@ -86,12 +84,35 @@ export const useGameStore = defineStore('game', {
         progressStore.active = false;
       }
     },
-    loadGames() {
-      axios.get(`${serverBaseAddress}/api/games`).then((response) => {
-        // Set isInstalled to false by default; update with real logic as needed
-        this.games = response.data.map((game) => ({ ...game, isInstalled: false }));
-      });
+    async loadGames() {
+      try {
+      const response = await axios.get(`${serverBaseAddress}/api/games`);
+      const gamesData = response.data;
+      this.games = await this._addInstallStatusToGames(gamesData);
+      } catch (error) {
+      console.error('Failed to load games:', error);
+      }
     },
+
+    async _addInstallStatusToGames(gamesData: gameState[]): Promise<gameState[]> {
+      const gamesWithStatus: gameState[] = [];
+      for (const game of gamesData) {
+        gamesWithStatus.push(await this._addInstallStatusToGame(game));
+      }
+      return gamesWithStatus;
+    },
+
+    async _addInstallStatusToGame(game: gameState): Promise<gameState> {
+      let isInstalled = false;
+      if (game.type === 'archive') {
+        const safeName = game.name.replaceAll(' ', '-');
+        const noOp = () => {};
+        isInstalled = await functions.isGameInstalled(noOp, noOp, safeName);
+        console.log(`Game ${game.name} is installed: ${isInstalled}`);
+      }
+      return { ...game, isInstalled };
+    },
+
     async play() {
       const selectedGame = this.selectedGame;
       if (selectedGame && selectedGame.type === 'steam') {

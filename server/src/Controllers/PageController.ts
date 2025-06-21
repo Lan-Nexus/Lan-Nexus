@@ -10,7 +10,7 @@ export abstract class PageController {
   protected UpdateSchema: ZodSchema;
 
   protected static views?: Record<string, string>;
-  protected static redirect?: Record<string, string>;
+  protected static redirect?: Record<string, string | ((req: Request, res: Response, action: string) => string)>;
   protected static errorViews?: Record<string, string>;
 
   constructor(
@@ -33,25 +33,33 @@ export abstract class PageController {
     res.render(view, options);
   }
 
+  protected handleHxRedirect(req: Request, res: Response, action: string): boolean {
+    const redirect = (this.constructor as typeof PageController).redirect;
+    const redirectValue = redirect?.[action];
+    if (!req.get('HX-Request') || !redirectValue) return false;
+
+    if (typeof redirectValue === 'function') {
+      const url = redirectValue(req, res, action);
+      if (url) res.set('HX-Redirect', url);
+    } else {
+      res.set('HX-Redirect', redirectValue);
+    }
+    res.status(204).end();
+    return true;
+  }
+
   public async read(req: Request, res: Response) {
     try {
       const { id } = await this.SelectSchema.pick({ id: true }).parseAsync({
         id: Number(req.params.id),
       });
-
       const results = await this.model.read(id);
       if (results == void 0) {
         this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
-
       const views = (this.constructor as typeof PageController).views;
-      const redirect = (this.constructor as typeof PageController).redirect;
-      if (req.get('HX-Request') && redirect?.read) {
-        res.set('HX-Redirect', redirect.read);
-        res.status(204).end();
-        return;
-      }
+      if (this.handleHxRedirect(req, res, 'read')) return;
       if (views?.read) {
         this.localRender(res, views.read, { data: results });
       } else {
@@ -65,12 +73,7 @@ export abstract class PageController {
   public async list(req: Request, res: Response) {
     const data = await this.model.list();
     const views = (this.constructor as typeof PageController).views;
-    const redirect = (this.constructor as typeof PageController).redirect;
-    if (req.get('HX-Request') && redirect?.list) {
-      res.set('HX-Redirect', redirect.list);
-      res.status(204).end();
-      return;
-    }
+    if (this.handleHxRedirect(req, res, 'list')) return;
     if (views?.list && views.list.startsWith('_')) {
       res.render(views.list, { data, layout: false });
     } else if (views?.list) {
@@ -86,12 +89,7 @@ export abstract class PageController {
       const data = await this.InsertSchema.parseAsync(body)
       const results = await this.model.create(data);
       const views = (this.constructor as typeof PageController).views;
-      const redirect = (this.constructor as typeof PageController).redirect;
-      if (req.get('HX-Request') && redirect?.create) {
-        res.set('HX-Redirect', redirect.create);
-        res.status(204).end();
-        return;
-      }
+      if (this.handleHxRedirect(req, res, 'create')) return;
       if (views?.create && views.create.startsWith('_')) {
         res.render(views.create, { data: results, layout: false });
       } else if (views?.create) {
@@ -111,15 +109,9 @@ export abstract class PageController {
         ...body,
         id: Number(req.params.id),
       });
-
       await this.model.update(data.id, data);
       const views = (this.constructor as typeof PageController).views;
-      const redirect = (this.constructor as typeof PageController).redirect;
-      if (req.get('HX-Request') && redirect?.update) {
-        res.set('HX-Redirect', redirect.update);
-        res.status(204).end();
-        return;
-      }
+      if (this.handleHxRedirect(req, res, 'update')) return;
       if (views?.update && views.update.startsWith('_')) {
         res.render(views.update, { data, layout: false });
       } else if (views?.update) {
@@ -137,38 +129,22 @@ export abstract class PageController {
       const { id } = await this.SelectSchema.pick({ id: true }).parseAsync({
         id: Number(req.params.id),
       });
-
       const results = await this.model.read(id);
       if (results == void 0) {
         this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
-
       await this.model.delete(id);
-      const redirect = (this.constructor as typeof PageController).redirect;
-      if (req.get('HX-Request') && redirect?.delete) {
-        res.set('HX-Redirect', redirect.delete);
-        res.status(204).end();
-        return;
-      }
+      if (this.handleHxRedirect(req, res, 'delete')) return;
       this.sendStatus(res, StatusCodes.NO_CONTENT);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
-  public async setImage(req: Request, res: Response) {
-    throw new Error("setImage method not implemented");
-  }
-
   public async renderCreateForm(req: Request, res: Response) {
     const views = (this.constructor as typeof PageController).views;
-    const redirect = (this.constructor as typeof PageController).redirect;
-    if (req.get('HX-Request') && redirect?.createForm) {
-      res.set('HX-Redirect', redirect.createForm);
-      res.status(204).end();
-      return;
-    }
+    if (this.handleHxRedirect(req, res, 'createForm')) return;
     if (views?.createForm && views.createForm.startsWith('_')) {
       res.render(views.createForm, { layout: false });
     } else if (views?.createForm) {
@@ -180,19 +156,12 @@ export abstract class PageController {
 
   public  async renderUpdateForm(req: Request, res: Response) {
     const data = await this.model.read(Number(req.params.id));
-
     if (data == void 0) {
       this.sendStatus(res, StatusCodes.NOT_FOUND);
       return;
     }
-
     const views = (this.constructor as typeof PageController).views;
-    const redirect = (this.constructor as typeof PageController).redirect;
-    if (req.get('HX-Request') && redirect?.updateForm) {
-      res.set('HX-Redirect', redirect.updateForm);
-      res.status(204).end();
-      return;
-    }
+    if (this.handleHxRedirect(req, res, 'updateForm')) return;
     if (views?.updateForm && views.updateForm.startsWith('_')) {
       res.render(views.updateForm, { data, layout: false });
     } else if (views?.updateForm) {

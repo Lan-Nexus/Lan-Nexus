@@ -14,6 +14,10 @@ export default class GameModel extends Model {
     return db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });
   }
 
+  static async readById(id: number) {
+    return db.select().from(gamesTable).where(eq(gamesTable.id, id)).then(rows => rows[0]);
+  }
+
   static async update(id: typeof gamesTable.$inferSelect.id, game: typeof gamesTable.$inferSelect) {
     // Fetch the current game from the database
     const current = await db.query.gamesTable.findFirst({ where: (gamesTable, { eq }) => eq(gamesTable.id, id) });

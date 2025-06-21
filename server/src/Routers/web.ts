@@ -3,6 +3,8 @@ import GamesPageController from '../Controllers/GamesPageController.js';
 import SteamPagesController from '../Controllers/SteamPagesController.js';
 import Router from './Router.js';
 import multer from 'multer';
+import GameKeyPageController from '../Controllers/GameKeyPageController.js';
+import GameModel from '../Models/Game.js';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -31,5 +33,14 @@ new Router<GamesPageController>(router)
 
 new Router<SteamPagesController>(router)
   .get('/steam', SteamPagesController, 'list');
-  
+
+// Game Keys routes (web views)
+new Router<GameKeyPageController>(router)
+  .get('/games/:gameId/keys', GameKeyPageController, 'list')
+  .get('/games/:gameId/keys/new', GameKeyPageController, 'renderCreateForm')
+  .post('/games/:gameId/keys', GameKeyPageController, 'create')
+  .get('/games/:gameId/keys/:id/edit', GameKeyPageController, 'renderUpdateForm')
+  .put('/games/:gameId/keys/:id', GameKeyPageController, 'update')
+  .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete');
+
 export default router;

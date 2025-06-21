@@ -29,6 +29,14 @@ export const gamesTable = mysqlTable("games", {
   play: mediumtext('play'), // Play script
 });
 
+export const gameKeysTable = mysqlTable("game_keys", {
+  id: serial().primaryKey(),
+  key: varchar("key", { length: 255 }).notNull().unique(),
+  gameId: int("game_id").notNull(), // Foreign key to gamesTable.id
+  ipAddress: varchar("ip_address", { length: 255 }).notNull(),
+});
+
+
 export const gamesSelectSchema = createSelectSchema(gamesTable);
 export const gamesInsertSchema = createInsertSchema(gamesTable, {
   name: gamesSelectSchema.shape.name,

@@ -100,7 +100,7 @@ ipcMain.on('function', async (event, arg) => {
     event.reply('function-error', id,'Invalid function name');
     return;
   }
-    logger.log('function called', safeFunctionName,{id}, arg.args);  
+   logger.log('function called', safeFunctionName,{id}, arg.args);  
   const func = await import(`../functions/${safeFunctionName}.js`);
   
   if (!func) {

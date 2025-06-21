@@ -33,6 +33,13 @@ type Progress = {
     path: string
   ) => Promise<void>;
   getServerIP: (progressCallback: (message: string) => void) => Promise<void>;
+  updateRegistry: (
+    progressCallback: (percent: string, message: string) => void,
+    setActive: (active: boolean) => void,
+    path: string,
+    registryKey: string,
+    value: string
+  ) => Promise<void>;
 };
 
 export default new Proxy({} as Progress, {

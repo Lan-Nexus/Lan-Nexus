@@ -39,32 +39,49 @@ export default new Proxy({} as Progress, {
   get: function (_target, prop) {
     return (progressCallback, setActive, ...args) => {
       return new Promise((resolve, reject) => {
+        const reqestId = Math.random().toString(36).substring(2, 15);
+        logger.log('Request ID:', reqestId, 'Function:', prop, 'Args:', args);
         window.electron.ipcRenderer.send('function', {
           functionName: prop,
           args: args,
+          id: reqestId,
         });
 
-        window.electron.ipcRenderer.once('function-reply', (_event, arg) => {
+        window.electron.ipcRenderer.once('function-reply', (_event,id, arg) => {
+          if (id !== reqestId) {
+            return;
+          }
           logger.log('Reply:', arg);
           resolve(arg);
         });
 
-        window.electron.ipcRenderer.once('function-error', (_event, arg) => {
+        window.electron.ipcRenderer.once('function-error', (_event,id, arg) => {
+          if (id !== reqestId) {
+            return;
+          }
           logger.error('Error:', arg);
           reject(arg);
         });
 
-        window.electron.ipcRenderer.on('function-progress', (_event, ...arg) => {
+        window.electron.ipcRenderer.on('function-progress', (_event,id, ...arg) => {
+          if (id !== reqestId) {
+            return;
+          }
           logger.log('Progress:', arg);
           progressCallback(...arg);
         });
-        window.electron.ipcRenderer.on('function-active', (_event, ...arg) => {
+        window.electron.ipcRenderer.on('function-active', (_event,id, ...arg) => {
+          if (id !== reqestId) {
+            return;
+          }
           logger.log('Active:', arg);
           setActive(...arg);
         });
-        window.electron.ipcRenderer.on('function-log', (_event, ...arg) => {
-          const logType = arg.shift();
-          logger.log(logType, ...arg);
+        window.electron.ipcRenderer.on('function-log', (_event,id, ...arg) => {
+          if (id !== reqestId) {
+            return;
+          }
+          logger.log('Log:', arg);
         });
       });
     };

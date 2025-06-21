@@ -63,7 +63,8 @@ export default new Proxy({} as Progress, {
           setActive(...arg);
         });
         window.electron.ipcRenderer.on('function-log', (_event, ...arg) => {
-          logger.log('Log:', arg);
+          const logType = arg.shift();
+          logger.log(logType, ...arg);
         });
       });
     };

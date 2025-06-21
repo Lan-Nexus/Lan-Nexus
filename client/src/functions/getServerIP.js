@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import dgram from 'dgram';
+import Logger from '../main/logger.js';
+
+const logger = Logger.getLogger('getServerIP');
 
 const message = Buffer.from('lanLauncher://get_ip');
 

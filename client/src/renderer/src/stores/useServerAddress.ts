@@ -7,7 +7,7 @@ const logger = Logger('server');
 
 export const useServerAddressStore = defineStore('serverAddress', {
   state: () => ({
-    serverAddress: 'http://localhost:3000' as string ,
+    serverAddress: null as string | null,
   }),
   actions: {
     setServerAddress(address: string) {

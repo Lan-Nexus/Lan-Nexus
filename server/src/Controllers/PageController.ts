@@ -52,7 +52,10 @@ export abstract class PageController {
 
   protected renderWithViews(res: Response, action: string, data: any) {
     const views = (this.constructor as typeof PageController).views;
-    if (!views || !views[action]) {
+    if (
+      res.get('Content-Type') === 'application/json' ||
+      !views || !views[action]
+    ) {
       res.send({ data, ...this.otherData });
       return;
     }
@@ -206,6 +209,11 @@ export abstract class PageController {
   public release(req: Request, res: Response): void {
     console.warn("release method not implemented in PageController, using default implementation");
     this.sendStatus(res, StatusCodes.NOT_IMPLEMENTED, "Release method not implemented");
+  }
+
+  public reserve(req: Request, res: Response): void {
+    console.warn("reserve method not implemented in PageController, using default implementation");
+    this.sendStatus(res, StatusCodes.NOT_IMPLEMENTED, "Reserve method not implemented");
   }
 
   public mapRequestBody(body: any, req: Request, res: Response): any {

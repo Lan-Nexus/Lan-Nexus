@@ -39,4 +39,9 @@ export default class GameKeyModel extends Model {
         if (!key) throw new Error('Game key not found');
         return db.update(gameKeysTable).set({ ipAddress: '' }).where(eq(gameKeysTable.id, id));
     }
+    static async reserve(id: number, ipAddress: string) {
+        const [key] = await db.select().from(gameKeysTable).where(eq(gameKeysTable.id, id));
+        if (!key) throw new Error('Game key not found');
+        return db.update(gameKeysTable).set({ ipAddress }).where(eq(gameKeysTable.id, id));
+    }
 }

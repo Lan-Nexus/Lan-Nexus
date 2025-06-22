@@ -6,6 +6,7 @@ import { useProgressStore } from './useProgress.js';
 import Logger from '@renderer/utils/logger.js';
 import { useServerAddressStore } from './useServerAddress.js';
 import { useAlerts } from './useAlerts.js';
+import { reserveGameKey, releaseGameKey, loadGames as apiLoadGames } from '../utils/api.js';
 
 const logger = Logger('useGameStore');
 
@@ -37,17 +38,9 @@ export const useGameStore = defineStore('game', {
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       try {
-        const response = await axios.post(
-          `${serverAddressStore.serverAddress}/api/games/${gameId}/keys/reserve`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        logger.log('Game key reserved:', response.data);
-        return response.data.data;
+        const data = await reserveGameKey(serverAddressStore.serverAddress, gameId);
+        logger.log('Game key reserved:', data);
+        return data;
       } catch (error) {
         logger.error('Failed to reserve game key:', error);
         let description = 'Failed to reserve game key.';
@@ -90,11 +83,12 @@ export const useGameStore = defineStore('game', {
       }
     },
     async uninstallArchive() {
+      const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       const keyid = this.selectedGame?.gamekey?.id;
       if( keyid) {
         logger.log('Releasing game key:', keyid);
-        await axios.post(`${useServerAddressStore().serverAddress}/api/games/${this.selectedGameId}/keys/${keyid}/release`);
+        await releaseGameKey(serverAddressStore.serverAddress, this.selectedGameId, keyid);
         this.selectedGame.gamekey = void 0;
         logger.log('Game key released:', keyid);
       }
@@ -122,13 +116,8 @@ export const useGameStore = defineStore('game', {
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       try {
-        const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`,{
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-        const gamesData = response.data;
-        this.games = await this._addInstallStatusToGames(gamesData.data);
+        const gamesData = await apiLoadGames(serverAddressStore.serverAddress);
+        this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {
         logger.error('Failed to load games:', error);
         alerts.showError({ title: 'Load Failed', description: 'Failed to load games.' });

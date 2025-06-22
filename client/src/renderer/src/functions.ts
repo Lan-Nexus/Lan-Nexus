@@ -20,7 +20,7 @@ type Progress = {
     setActive: (active: boolean) => void,
     path: string,
     command: string,
-    args: object,
+    args?: object,
   ) => Promise<void>;
   isGameInstalled: (
     progressCallback: (percent: string, message: string) => void,

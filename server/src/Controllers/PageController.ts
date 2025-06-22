@@ -52,8 +52,15 @@ export abstract class PageController {
 
   protected renderWithViews(res: Response, action: string, data: any) {
     const views = (this.constructor as typeof PageController).views;
+    // Prefer req.headers['accept'] over res.getHeader('Accept') for request Accept header
+    const acceptHeader = (res.req?.headers?.['accept'] as string | string[] | undefined) ?? '';
+    const isJson = typeof acceptHeader === 'string'
+      ? acceptHeader.includes('application/json')
+      : Array.isArray(acceptHeader)
+        ? acceptHeader.some(h => typeof h === 'string' && h.includes('application/json'))
+        : false;
     if (
-      res.get('Content-Type') === 'application/json' ||
+      isJson ||
       !views || !views[action]
     ) {
       res.send({ data, ...this.otherData });
@@ -69,15 +76,15 @@ export abstract class PageController {
 
   // --- Pre/Post hooks ---
   protected async preCreate(req: Request, res: Response) {}
-  protected async postCreate(req: Request, res: Response, results: any) {}
+  protected async postCreate(req: Request, res: Response, results: any): Promise<any> { return results; }
   protected async preRead(req: Request, res: Response) {}
-  protected async postRead(req: Request, res: Response, results: any) {}
+  protected async postRead(req: Request, res: Response, results: any): Promise<any> { return results; }
   protected async preList(req: Request, res: Response) {}
-  protected async postList(req: Request, res: Response, data: any) {}
+  protected async postList(req: Request, res: Response, data: any): Promise<any> { return data; }
   protected async preUpdate(req: Request, res: Response) {}
-  protected async postUpdate(req: Request, res: Response, data: any) {}
+  protected async postUpdate(req: Request, res: Response, data: any): Promise<any> { return data; }
   protected async preDelete(req: Request, res: Response) {}
-  protected async postDelete(req: Request, res: Response, results: any) {}
+  protected async postDelete(req: Request, res: Response, results: any): Promise<any> { return results; }
 
   public async create(req: Request, res: Response) {
     try {
@@ -85,9 +92,9 @@ export abstract class PageController {
       const body = this.mapRequestBody(req.body, req, res);
       const data = await this.InsertSchema.parseAsync(body)
       const results = await this.model.create(data);
-      await this.postCreate(req, res, results);
-      if (this.handleHxRedirect(req, res, 'create', results)) return;
-      this.renderWithViews(res, 'create', results);
+      const finalResults = await this.postCreate?.(req, res, results) ?? results;
+      if (this.handleHxRedirect(req, res, 'create', finalResults)) return;
+      this.renderWithViews(res, 'create', finalResults);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -100,13 +107,13 @@ export abstract class PageController {
         id: Number(req.params.id),
       });
       const results = await this.model.read(id);
-      await this.postRead(req, res, results);
-      if (results == void 0) {
+      const finalResults = await this.postRead?.(req, res, results) ?? results;
+      if (finalResults == void 0) {
         this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
-      if (this.handleHxRedirect(req, res, 'read', results)) return;
-      this.renderWithViews(res, 'read', results);
+      if (this.handleHxRedirect(req, res, 'read', finalResults)) return;
+      this.renderWithViews(res, 'read', finalResults);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -114,10 +121,10 @@ export abstract class PageController {
 
   public async list(req: Request, res: Response) {
     await this.preList(req, res);
-    const data = await this.model.list();
-    await this.postList(req, res, data);
-    if (this.handleHxRedirect(req, res, 'list', data)) return;
-    this.renderWithViews(res, 'list', data);
+    let data = await this.model.list();
+    const finalData = await this.postList?.(req, res, data) ?? data;
+    if (this.handleHxRedirect(req, res, 'list', finalData)) return;
+    this.renderWithViews(res, 'list', finalData);
   }
 
   public async update(req: Request, res: Response) {
@@ -129,9 +136,9 @@ export abstract class PageController {
         id: Number(req.params.id),
       });
       await this.model.update(data.id, data);
-      await this.postUpdate(req, res, data);
-      if (this.handleHxRedirect(req, res, 'update', data)) return;
-      this.renderWithViews(res, 'update', data);
+      const finalData = await this.postUpdate?.(req, res, data) ?? data;
+      if (this.handleHxRedirect(req, res, 'update', finalData)) return;
+      this.renderWithViews(res, 'update', finalData);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body,id: Number(req.params.id) });
     }
@@ -149,9 +156,9 @@ export abstract class PageController {
         return;
       }
       await this.model.delete(id);
-      await this.postDelete(req, res, results);
+      const finalResults = await this.postDelete?.(req, res, results) ?? {};
       if (this.handleHxRedirect(req, res, 'delete')) return;
-      this.renderWithViews(res, 'delete', {});
+      this.renderWithViews(res, 'delete', finalResults);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }

@@ -44,4 +44,21 @@ export default class GameKeyModel extends Model {
         if (!key) throw new Error('Game key not found');
         return db.update(gameKeysTable).set({ ipAddress }).where(eq(gameKeysTable.id, id));
     }
+    static async getNextAvailableKey(gameId: number) {
+        const keys = await db
+            .select()
+            .from(gameKeysTable)
+            .where(
+                (row) =>
+                    eq(row.gameId, gameId) && eq(row.ipAddress, '')
+            );
+        if (keys.length === 0) throw new Error('No available keys found');
+        return keys[0]; // Return the first available key
+    }
+    static async myKey(gameId: number, ipAddress: string) {
+        const keys = await db.select().from(gameKeysTable).where(eq(gameKeysTable.ipAddress, ipAddress));
+        const key = keys.find(k => k.gameId === gameId);
+        return key || null;
+    }
+    
 }

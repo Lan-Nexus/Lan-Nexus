@@ -23,5 +23,6 @@ new Router<GameKeyPageController>(router)
   .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete')
   .post('/games/:gameId/keys/:id/release', GameKeyPageController, 'release')
   .post('/games/:gameId/keys/:id/reserve', GameKeyPageController, 'reserve')
+  .post('/games/:gameId/keys/reserve', GameKeyPageController, 'reserve')
 
 export default router;

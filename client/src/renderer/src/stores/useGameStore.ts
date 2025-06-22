@@ -9,6 +9,13 @@ import { useServerAddressStore } from './useServerAddress.js';
 
 const logger = Logger('useGameStore');
 
+export type gameKey = {
+  id: number;
+  key: string;
+  gameId: number;
+  ipAddress: string;
+};
+
 export type gameState = {
   description: string;
   gameID: string;
@@ -19,6 +26,7 @@ export type gameState = {
   headerImage: string;
   logo: string;
   icon: string;
+  gamekey?: gameKey;
   archives: string;
   install: string;
   uninstall: string;
@@ -47,6 +55,25 @@ export const useGameStore = defineStore('game', {
     reload() {
       this.loadGames();
     },
+    async reserveGameKey(gameId: number) {
+      const serverAddressStore = useServerAddressStore();
+      try {
+        const response = await axios.post(
+          `${serverAddressStore.serverAddress}/api/games/${gameId}/keys/reserve`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        logger.log('Game key reserved:', response.data);
+        return response.data.data;
+      } catch (error) {
+        logger.error('Failed to reserve game key:', error);
+        throw error;
+      }
+    },
     async installArchive() {
       const serverAddressStore = useServerAddressStore();
       const game = this.games.find((game) => game.id === this.selectedGameId);
@@ -54,6 +81,9 @@ export const useGameStore = defineStore('game', {
         logger.error('Game not found or no archive available for installation.');
         return;
       }
+
+      game.gamekey = await this.reserveGameKey(game.id)
+
       const safeName = game.name.replaceAll(' ', '-');
       const archiveFile = safeName + '.zip';
       const progressStore = useProgressStore();
@@ -62,7 +92,7 @@ export const useGameStore = defineStore('game', {
         const url = serverAddressStore.serverAddress + game.archives
         await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
         await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
-        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install);
+        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install,{GAME_KEY: game.gamekey?.key});
         await functions.clearTemp(progressStore.setProgress);
         game.isInstalled = true;
       } catch (error) {
@@ -72,6 +102,14 @@ export const useGameStore = defineStore('game', {
       }
     },
     async uninstallArchive() {
+      debugger;
+      const keyid = this.selectedGame?.gamekey?.id;
+      if( keyid) {
+        logger.log('Releasing game key:', keyid);
+        await axios.post(`${useServerAddressStore().serverAddress}/api/games/${this.selectedGameId}/keys/${keyid}/release`);
+        this.selectedGame.gamekey = void 0;
+        logger.log('Game key released:', keyid);
+      }
       const progressStore = useProgressStore();
       progressStore.active = false;
       const game = this.games.find((game) => game.id === this.selectedGameId);
@@ -92,7 +130,11 @@ export const useGameStore = defineStore('game', {
     async loadGames() {
       const serverAddressStore = useServerAddressStore();
       try {
-        const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`);
+        const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`,{
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         const gamesData = response.data;
         this.games = await this._addInstallStatusToGames(gamesData.data);
       } catch (error) {
@@ -101,7 +143,6 @@ export const useGameStore = defineStore('game', {
     },
 
     async _addInstallStatusToGames(gamesData: gameState[]): Promise<gameState[]> {
-      debugger;
       const gamesWithStatus: gameState[] = [];
       for (const game of gamesData) {
         gamesWithStatus.push(await this._addInstallStatusToGame(game));

@@ -64,6 +64,9 @@ function updateShadow() {
       >
         Play
       </button>
+      <div class="badge badge-secondary">
+        {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key' }}
+      </div>
     </div>
     <div v-else>
       <button

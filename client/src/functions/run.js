@@ -41,12 +41,13 @@ export default async function(progressCallback, progressActive, gameName, code, 
 
   const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
-
+  console.log
 
   const util = {
     gameName,
     run,
     args,
+    _: args,
     sleep,
     progress: progressCallback,
     updateRegistry,

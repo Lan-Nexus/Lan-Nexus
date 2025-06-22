@@ -1,8 +1,8 @@
 import dgram from 'dgram';
 const socket = dgram.createSocket('udp4');
 const port = Number(process.env.PORT) || 3000
-const broadcastPort = Number(process.env.BROADCAST_PORT) || 3001
 const protocol = process.env.PROTOCOL || 'http'
+const broadcastPort = 50000;
 
 const response = {
     protocol: protocol,
@@ -25,4 +25,14 @@ socket.on('message', function (message, remote) {
     }
 });
 
-socket.bind(broadcastPort);
+// Listen on a range of ports
+const startPort = broadcastPort;
+const endPort = broadcastPort; // Example: listen on 10 ports
+
+for (let p = startPort; p <= endPort; p++) {
+    const s = dgram.createSocket('udp4');
+    s.on('message', (...args) => socket.emit('message', ...args));
+    s.bind(p, () => {
+        console.log(`Listening on UDP port ${p}`);
+    });
+}

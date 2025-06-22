@@ -13,8 +13,9 @@ export default async function getServerIP(progressCallback) {
 }
 
 function sendMessage(progressCallback) {
+
   if (socket) {
-    socket.send(message, 0, message.length, 3001, '255.255.255.255');
+    socket.send(message, 0, message.length, 50000, '255.255.255.255');
     return;
   }
   logger.log('Searching for server IP...');
@@ -23,14 +24,14 @@ function sendMessage(progressCallback) {
   const interval = setInterval(() => {
     if (socket) {
       logger.log('unable to find server IP, retrying...');
-      socket.send(message, 0, message.length, 3001, '255.255.255.255');
+      socket.send(message, 0, message.length, 50000, '255.255.255.255');
     }
   }, 1000);
 
   socket.on('listening', function () {
     socket.setBroadcast(true);
     logger.log('sending message to find server IP...');
-    socket.send(message, 0, message.length, 3001, '255.255.255.255');
+    socket.send(message, 0, message.length, 50000, '255.255.255.255');
   });
 
   socket.on('message', function (message, remote) {
@@ -42,5 +43,7 @@ function sendMessage(progressCallback) {
     socket = null;
   });
 
-  socket.bind(1337);
+  // Pick a random port between 49152 and 65535 for binding
+  const port = Math.floor(Math.random() * (65535 - 49152 + 1)) + 49152;
+  socket.bind(port);
 }

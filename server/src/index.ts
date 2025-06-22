@@ -8,6 +8,8 @@ import webRouter from './Routers/web.js'
 import './db.js'
 import { Worker } from 'worker_threads';
 import path from 'path';
+import Ip from './ip.js';
+
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -25,6 +27,11 @@ app.use(express.static('public'))
 
 app.use('/api', apiRouter)
 app.use('/', webRouter)
+
+app.get('/api/ip', (req, res) => {
+    const ip = Ip(req,res);
+    res.json({ ip });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

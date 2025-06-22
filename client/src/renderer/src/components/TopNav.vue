@@ -15,7 +15,6 @@ const gameStore = useGameStore();
     <button
       class="btn"
       :class="{ 'btn-primary': $route.fullPath === '/' }"
-      hidden
       @click="$router.push('/')"
     >
       <font-awesome-icon :icon="faHome" class="text-2xl" />
@@ -23,7 +22,6 @@ const gameStore = useGameStore();
 
     <button
       class="btn"
-      hidden
       :class="{ 'btn-primary': $route.fullPath === '/games' }"
       @click="$router.push('/games')"
     >
@@ -32,7 +30,6 @@ const gameStore = useGameStore();
 
     <button
       class="btn"
-      hidden
       :class="{ 'btn-primary': $route.fullPath === '/settings' }"
       @click="$router.push('/settings')"
     >

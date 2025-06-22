@@ -1,3 +1,13 @@
+export interface LogEntry {
+  type: string;
+  logType: string;
+  color: string;
+  args: any[];
+  timestamp: number;
+}
+
+export const history: LogEntry[] = [];
+
 function logger(type: string): Console {
   // For node environment (main process)
   if (typeof window === 'undefined') {
@@ -28,6 +38,13 @@ function logger(type: string): Console {
               break
           }
           target[logType](`${color} -> *[${type}]${colors.reset}`, ...args)
+          history.push({
+            type,
+            logType,
+            color,
+            args,
+            timestamp: Date.now()
+          })
         }
       }
     })
@@ -59,6 +76,13 @@ function logger(type: string): Console {
               break
           }
           target[logType](`%c -> *[${type}]`, color, ...args)
+          history.push({
+            type,
+            logType,
+            color,
+            args,
+            timestamp: Date.now()
+          })
         }
       }
     })

@@ -24,3 +24,12 @@ export async function loadGames(serverAddress: string) {
   });
   return response.data.data;
 }
+
+export async function getIpAddress(serverAddress: string) {
+  const response = await axios.get(`${serverAddress}/api/ip`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.data.ip;
+} 

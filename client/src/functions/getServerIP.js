@@ -45,5 +45,12 @@ function sendMessage(progressCallback) {
 
   // Pick a random port between 49152 and 65535 for binding
   const port = Math.floor(Math.random() * (65535 - 49152 + 1)) + 49152;
-  socket.bind(port);
+  try {
+    socket.bind(port);
+  } catch (error) {
+    logger.error('Error binding socket:', error);
+    socket = null;
+    sendMessage(progressCallback);
+  }
+
 }

@@ -8,6 +8,7 @@ export const routes = [
   { path: '/', component: HomeView }, // Home moved to /home
   { path: '/games', component: GameView },
   { path: '/settings', component: SettingsView },
+  { path: '/avatar', component: () => import('./views/AvatarView.vue') },
 ];
 
 export const router = createRouter({

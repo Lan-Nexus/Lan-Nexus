@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCog, faArrowsRotate, faHome, faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 import { useGameStore } from '../stores/useGameStore.js';
+import { useAvatarStore } from '@renderer/stores/useAvatarStore.js';
 
+const avatarStore = useAvatarStore();
 const gameStore = useGameStore();
 </script>
 <template>
@@ -40,5 +42,18 @@ const gameStore = useGameStore();
     <button class="btn btn-ghost text-neutral-content">
       <font-awesome-icon :icon="faArrowsRotate" class="text-2xl" @click="gameStore.reload" />
     </button>
+    <div>
+      <button
+        class="btn btn-ghost text-neutral-content"
+        @click="$router.push('/avatar')"
+      >
+        <img
+          v-if="avatarStore.get()"
+          :src="avatarStore.get() ?? undefined"
+          alt="Avatar"
+          class="w-10 h-10"
+        />
+      </button> 
+    </div>
   </div>
 </template>

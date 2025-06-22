@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import Logger from './logger.js'
+const { screen } = require('electron');
 
 const logger = Logger('main');
 
@@ -17,11 +18,17 @@ if (process.platform == 'linux') {
 async function createWindow() {
   const icon = await iconPath;
   logger.log(icon);
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const screenWidth = primaryDisplay.workAreaSize.width;
+  const screenHeight = primaryDisplay.workAreaSize.height;
+
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    minWidth: 640,
+    minWidth: 700,
     minHeight: 670,
+    maxWidth: screenWidth,
+    maxHeight: screenHeight,
     title: 'demo',
     show: false,
     autoHideMenuBar: true,
@@ -88,8 +95,8 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('function', async (event, arg) => {
   const id = arg.id
-  const progressCallback = (...args) => event.reply('function-progress',id, ...args);
-  const activeCallback = (...args) => event.reply('function-active',id, ...args);
+  const progressCallback = (...args) => event.reply('function-progress', id, ...args);
+  const activeCallback = (...args) => event.reply('function-active', id, ...args);
 
   const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '');
   if (
@@ -97,24 +104,24 @@ ipcMain.on('function', async (event, arg) => {
     safeFunctionName.length === 0 ||
     safeFunctionName.length > 100
   ) {
-    event.reply('function-error', id,'Invalid function name');
+    event.reply('function-error', id, 'Invalid function name');
     return;
   }
-   logger.log('function called', safeFunctionName,{id}, arg.args);  
+  logger.log('function called', safeFunctionName, { id }, arg.args);
   const func = await import(`../functions/${safeFunctionName}.js`);
-  
+
   if (!func) {
-    event.reply('function-error',id, 'Function not found');
+    event.reply('function-error', id, 'Function not found');
     return;
   }
 
   logger.log('function called', safeFunctionName);
   try {
     const result = await func.default(progressCallback, activeCallback, ...arg.args);
-    logger.log('function result',id, result);
-    event.reply('function-reply',id, result);
+    logger.log('function result', id, result);
+    event.reply('function-reply', id, result);
   } catch (e) {
     logger.error(e);
-    event.reply('function-error',id, e);
+    event.reply('function-error', id, e);
   }
 });

@@ -17,6 +17,7 @@ export const useGameStore = defineStore('game', {
   state: () => ({
     games: [] as gameState[],
     selectedGameId: -1,
+    loading: false,
   }),
   getters: {
     selectedGame: (state) => {
@@ -59,6 +60,7 @@ export const useGameStore = defineStore('game', {
     },
 
     async installArchive() {
+      this.loading = true;
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       const game = this._findSelectedGame();
@@ -87,10 +89,12 @@ export const useGameStore = defineStore('game', {
         alerts.showError({ title: 'Install Failed', description: 'Failed to install game.<br>' + (error instanceof Error ? error.message : '') });
       } finally {
         progressStore.active = false;
+        this.loading = false;
       }
     },
 
     async uninstallArchive() {
+      this.loading = true;
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       const keyid = this.selectedGame?.gamekey?.id;
@@ -118,10 +122,12 @@ export const useGameStore = defineStore('game', {
         alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });
       } finally {
         progressStore.active = false;
+        this.loading = false;
       }
     },
 
     async loadGames() {
+      this.loading = true;
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       try {
@@ -130,6 +136,8 @@ export const useGameStore = defineStore('game', {
       } catch (error) {
         logger.error('Failed to load games:', error);
         alerts.showError({ title: 'Load Failed', description: 'Failed to load games.' });
+      }finally {
+        this.loading = false;
       }
     },
 

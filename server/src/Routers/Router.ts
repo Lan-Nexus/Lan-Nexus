@@ -2,7 +2,7 @@ import { Router as ExpressRouter } from 'express';
 import { PageController } from '../Controllers/PageController.js';
 
 type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
-type routerHandlerPost = 'create';
+type routerHandlerPost = 'create' | 'release';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 

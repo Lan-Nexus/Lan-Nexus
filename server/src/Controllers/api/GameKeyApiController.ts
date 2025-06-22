@@ -14,6 +14,7 @@ export default class GameKeyApiController extends PageController {
   static views = {
     create: 'games/_gameKeys',
     delete: 'games/_gameKeys',
+    release: 'games/_gameKeys',
   };
 
   constructor() {
@@ -26,6 +27,13 @@ export default class GameKeyApiController extends PageController {
 
   public async postDelete(req: Request, res: Response): Promise<void> {
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
+  }
+
+  public async release (req: Request, res: Response): Promise<void> {
+    const KeyId = Number(req.params.id);
+    await GameKeyModel.release(KeyId);
+    this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
+    this.renderWithViews(res, 'release', {});
   }
 
   public mapRequestBody(body: any, req: Request, res: Response): any {

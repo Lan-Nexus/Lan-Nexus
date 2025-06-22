@@ -28,6 +28,12 @@
                                     hx-confirm="Remove this key?" hx-target="#game-keys-table" hx-swap="outerHTML">
                                     Remove
                                 </button>
+                                <button class="btn btn-sm btn-secondary"
+                                    hx-post="/api/games/<%= key.gameId %>/keys/<%= key.id %>/release"
+                                    hx-confirm="Release this key?"
+                                    hx-target="#game-keys-table" hx-swap="outerHTML">
+                                    release
+                                </button>
                             </td>
                         </tr>
                         <% }); %>

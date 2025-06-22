@@ -20,6 +20,7 @@ new Router<steamController>(router)
 
 new Router<GameKeyPageController>(router)
   .post('/games/:gameId/keys', GameKeyPageController, 'create')
-  .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete');
+  .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete')
+  .post('/games/:gameId/keys/:id/release', GameKeyPageController, 'release')
 
 export default router;

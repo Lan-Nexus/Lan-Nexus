@@ -50,16 +50,17 @@ export abstract class PageController {
     return true;
   }
 
-  protected renderWithViews(res: Response, views: Record<string, string> | undefined, action: string, data: any) {
+  protected renderWithViews(res: Response, action: string, data: any) {
+    const views = (this.constructor as typeof PageController).views;
     if (!views || !views[action]) {
-      res.send(data);
+      res.send({ data, ...this.otherData });
       return;
     }
     const view = views[action];
     if (view.startsWith('_')) {
       res.render(view, { data, layout: false, ...this.otherData });
     } else {
-      this.localRender(res, view, { data , ...this.otherData });
+      this.localRender(res, view, { data, ...this.otherData });
     }
   }
 
@@ -82,9 +83,8 @@ export abstract class PageController {
       const data = await this.InsertSchema.parseAsync(body)
       const results = await this.model.create(data);
       await this.postCreate(req, res, results);
-      const views = (this.constructor as typeof PageController).views;
       if (this.handleHxRedirect(req, res, 'create', results)) return;
-      this.renderWithViews(res, views, 'create', results);
+      this.renderWithViews(res, 'create', results);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -102,9 +102,8 @@ export abstract class PageController {
         this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
-      const views = (this.constructor as typeof PageController).views;
       if (this.handleHxRedirect(req, res, 'read', results)) return;
-      this.renderWithViews(res, views, 'read', results);
+      this.renderWithViews(res, 'read', results);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -114,9 +113,8 @@ export abstract class PageController {
     await this.preList(req, res);
     const data = await this.model.list();
     await this.postList(req, res, data);
-    const views = (this.constructor as typeof PageController).views;
     if (this.handleHxRedirect(req, res, 'list', data)) return;
-    this.renderWithViews(res, views, 'list', data);
+    this.renderWithViews(res, 'list', data);
   }
 
   public async update(req: Request, res: Response) {
@@ -129,9 +127,8 @@ export abstract class PageController {
       });
       await this.model.update(data.id, data);
       await this.postUpdate(req, res, data);
-      const views = (this.constructor as typeof PageController).views;
       if (this.handleHxRedirect(req, res, 'update', data)) return;
-      this.renderWithViews(res, views, 'update', data);
+      this.renderWithViews(res, 'update', data);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body,id: Number(req.params.id) });
     }
@@ -151,8 +148,7 @@ export abstract class PageController {
       await this.model.delete(id);
       await this.postDelete(req, res, results);
       if (this.handleHxRedirect(req, res, 'delete')) return;
-      const views = (this.constructor as typeof PageController).views;
-      this.renderWithViews(res, views, 'update', {});
+      this.renderWithViews(res, 'delete', {});
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -205,6 +201,11 @@ export abstract class PageController {
     } else {
       res.status(status).send({ status: statusString, reason, error });
     }
+  }
+
+  public release(req: Request, res: Response): void {
+    console.warn("release method not implemented in PageController, using default implementation");
+    this.sendStatus(res, StatusCodes.NOT_IMPLEMENTED, "Release method not implemented");
   }
 
   public mapRequestBody(body: any, req: Request, res: Response): any {

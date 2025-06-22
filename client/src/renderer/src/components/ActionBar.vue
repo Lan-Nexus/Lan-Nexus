@@ -14,6 +14,11 @@ const isloading = computed(() => {
   return gameStore.loading ?? false;
 });
 
+const isIngame = computed(() => {
+  return gameStore.openGameId !== null && gameStore.openGameId !== undefined;
+});
+
+
 onMounted(() => {
   if (actionBarPanel.value) {
     actionBarPanel.value.closest('.parallax')?.addEventListener('scroll', updateShadow);
@@ -48,21 +53,21 @@ function updateShadow() {
         <button
           class="btn btn-primary w-24"
           @click="gameStore.installArchive"
-          :disabled="isInstalled || isloading"
+          :disabled="isInstalled || isloading || isIngame"
         >
           Install
         </button>
         <button
           class="btn btn-error w-24"
           @click="gameStore.uninstallArchive"
-          :disabled="!isInstalled || isloading"
+          :disabled="!isInstalled || isloading || isIngame"
         >
           Uninstall
         </button>
         <button
           class="btn btn-warning"
           @click="gameStore.play"
-          :disabled="!isInstalled || isloading"
+          :disabled="!isInstalled || isloading || isIngame"
         >
           Play
         </button>

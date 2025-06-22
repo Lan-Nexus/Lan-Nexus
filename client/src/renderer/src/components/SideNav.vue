@@ -38,9 +38,17 @@ const isSelectedGame = (gameId: number): boolean => {
         >
           {{ game.name }}
         </h2>
-        <span class="badge" :class="game.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
-          {{ game.type }}</span
-        >
+        <div class="flex gap-2 mt-1">
+          <span class="badge" :class="game.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
+            {{ game.type }}
+          </span>
+          <span
+            v-if="gameStore.openGameId === game.id"
+            class="badge badge-accent"
+          >
+            In Game
+          </span>
+        </div>
       </div>
     </div>
   </div>

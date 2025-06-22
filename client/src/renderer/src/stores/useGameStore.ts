@@ -18,6 +18,7 @@ export const useGameStore = defineStore('game', {
     games: [] as gameState[],
     selectedGameId: -1,
     loading: false,
+    openGameId: null as number | null,
   }),
   getters: {
     selectedGame: (state) => {
@@ -188,7 +189,12 @@ export const useGameStore = defineStore('game', {
       }
       const safeName = game.name.replaceAll(' ', '-');
       const progressStore = useProgressStore();
+      this.openGameId = game.id;
+      logger.log(`Preparing to play game: ${game.name}`);
       await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.play);
+      logger.log(`Playing game: ${game.name}`);
+      this.openGameId = null;
+
     },
   },
 });

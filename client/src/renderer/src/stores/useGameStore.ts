@@ -94,13 +94,14 @@ export const useGameStore = defineStore('game', {
       try {
         const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`);
         const gamesData = response.data;
-        this.games = await this._addInstallStatusToGames(gamesData);
+        this.games = await this._addInstallStatusToGames(gamesData.data);
       } catch (error) {
         logger.error('Failed to load games:', error);
       }
     },
 
     async _addInstallStatusToGames(gamesData: gameState[]): Promise<gameState[]> {
+      debugger;
       const gamesWithStatus: gameState[] = [];
       for (const game of gamesData) {
         gamesWithStatus.push(await this._addInstallStatusToGame(game));

@@ -5,7 +5,7 @@ import functions from '../functions.js';
 import { useProgressStore } from './useProgress.js';
 import Logger from '@renderer/utils/logger.js';
 import { useServerAddressStore } from './useServerAddress.js';
-
+import { useAlerts } from './useAlerts.js';
 
 const logger = Logger('useGameStore');
 
@@ -57,6 +57,7 @@ export const useGameStore = defineStore('game', {
     },
     async reserveGameKey(gameId: number) {
       const serverAddressStore = useServerAddressStore();
+      const alerts = useAlerts();
       try {
         const response = await axios.post(
           `${serverAddressStore.serverAddress}/api/games/${gameId}/keys/reserve`,
@@ -71,14 +72,21 @@ export const useGameStore = defineStore('game', {
         return response.data.data;
       } catch (error) {
         logger.error('Failed to reserve game key:', error);
+        let description = 'Failed to reserve game key.';
+        if (axios.isAxiosError(error) && error.response?.data?.error?.error) {
+          description += '<br>' + error.response.data.error.error;
+        }
+        alerts.showError({ title: 'Key Reservation Failed', description });
         throw error;
       }
     },
     async installArchive() {
       const serverAddressStore = useServerAddressStore();
+      const alerts = useAlerts();
       const game = this.games.find((game) => game.id === this.selectedGameId);
       if (!game || !game.archives) {
         logger.error('Game not found or no archive available for installation.');
+        alerts.showError({ title: 'Install Failed', description: 'Game not found or no archive available for installation.' });
         return;
       }
 
@@ -92,17 +100,19 @@ export const useGameStore = defineStore('game', {
         const url = serverAddressStore.serverAddress + game.archives
         await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
         await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
-        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install,{GAME_KEY: game.gamekey?.key});
+        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install,{GAME_KEY: game.gamekey?.key ?? ''});
         await functions.clearTemp(progressStore.setProgress);
         game.isInstalled = true;
+        alerts.showSuccess({ title: 'Install Success', description: 'Game installed successfully!' });
       } catch (error) {
         logger.error(error);
+        alerts.showError({ title: 'Install Failed', description: 'Failed to install game.<br>' + (error instanceof Error ? error.message : '') });
       } finally {
         progressStore.active = false;
       }
     },
     async uninstallArchive() {
-      debugger;
+      const alerts = useAlerts();
       const keyid = this.selectedGame?.gamekey?.id;
       if( keyid) {
         logger.log('Releasing game key:', keyid);
@@ -114,6 +124,7 @@ export const useGameStore = defineStore('game', {
       progressStore.active = false;
       const game = this.games.find((game) => game.id === this.selectedGameId);
       if (!game) {
+        alerts.showError({ title: 'Uninstall Failed', description: 'Game not found for uninstall.' });
         return;
       }
       const safeName = game.name.replaceAll(' ', '-');
@@ -121,14 +132,17 @@ export const useGameStore = defineStore('game', {
         await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.uninstall);
         await functions.removeGame(progressStore.setProgress, progressStore.setActive, safeName);
         game.isInstalled = false;
+        alerts.showSuccess({ title: 'Uninstall Success', description: 'Game uninstalled successfully!' });
       } catch (error) {
         logger.error(error);
+        alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });
       } finally {
         progressStore.active = false;
       }
     },
     async loadGames() {
       const serverAddressStore = useServerAddressStore();
+      const alerts = useAlerts();
       try {
         const response = await axios.get(`${serverAddressStore.serverAddress}/api/games`,{
           headers: {
@@ -139,6 +153,7 @@ export const useGameStore = defineStore('game', {
         this.games = await this._addInstallStatusToGames(gamesData.data);
       } catch (error) {
         logger.error('Failed to load games:', error);
+        alerts.showError({ title: 'Load Failed', description: 'Failed to load games.' });
       }
     },
 

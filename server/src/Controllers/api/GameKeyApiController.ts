@@ -42,9 +42,16 @@ export default class GameKeyApiController extends PageController {
     let KeyId = Number(req.params.id); 
 
     const ip = Ip(req, res);
+    let nextKey;
   
     if(isNaN(KeyId)) {
-      const nextKey = await GameKeyModel.getNextAvailableKey(Number(req.params.gameId));
+      try{
+        nextKey = await GameKeyModel.getNextAvailableKey(Number(req.params.gameId));
+      } catch (error) {
+        this.errorRenderWithViews(res, 'reserve', { error: 'No available keys for this game.' });
+        return;
+      }
+
       KeyId = nextKey.id;
     }
 

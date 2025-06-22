@@ -74,6 +74,23 @@ export abstract class PageController {
     }
   }
 
+  protected errorRenderWithViews(res: Response, action: string, error: any, data?: any, status: StatusCodes = StatusCodes.INTERNAL_SERVER_ERROR) {
+    const errorViews = (this.constructor as typeof PageController).errorViews;
+    if (!errorViews || !errorViews[action]) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error });
+      return;
+    }
+    const view = errorViews[action];
+    const lastPart = view.split('/').pop() || '';
+    const renderOptions: any = { error, data, ...this.otherData };
+    if (lastPart.startsWith('_')) {
+      renderOptions.layout = false;
+    }
+    res.status(status).render(view, renderOptions);
+  }
+  
+  
+
   // --- Pre/Post hooks ---
   protected async preCreate(req: Request, res: Response) {}
   protected async postCreate(req: Request, res: Response, results: any): Promise<any> { return results; }

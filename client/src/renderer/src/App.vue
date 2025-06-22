@@ -4,6 +4,7 @@ import TopNav from './components/TopNav.vue';
 import { useServerAddressStore } from './stores/useServerAddress.js';
 import Loading from './components/Loading.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
+import Alert from './components/Alert.vue';
 
 const serverAddressStore = useServerAddressStore();
 serverAddressStore.getServerAddress();
@@ -54,6 +55,7 @@ function addServerAddress() {
   <template v-else>
     <div class="flex flex-col h-full w-full overflow-hidden">
       <TopNav />
+      <Alert />
       <div class="flex h-full w-full mt-18 bg-base-100">
         <router-view />
       </div>

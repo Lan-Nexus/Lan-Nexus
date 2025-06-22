@@ -1,4 +1,4 @@
-import { defineStore, setActivePinia } from 'pinia';
+import { defineStore } from 'pinia';
 import Logger from '@renderer/utils/logger.js';
 
 const logger = Logger('useProgressStore');

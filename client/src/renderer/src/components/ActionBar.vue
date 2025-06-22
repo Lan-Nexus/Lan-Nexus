@@ -6,10 +6,7 @@ const actionBarPanel = useTemplateRef<HTMLElement>('actionBarPanel');
 const gameStore = useGameStore();
 const height = 72;
 
-// Add a computed property for install state
 const isInstalled = computed(() => {
-  // Placeholder logic: you should replace this with real check
-  // For example, if selectedGame has an isInstalled property, use that
   return gameStore.selectedGame?.isInstalled ?? false;
 });
 

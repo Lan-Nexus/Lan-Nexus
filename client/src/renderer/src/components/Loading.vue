@@ -16,6 +16,5 @@ const props = defineProps({
         <div class="h-2"></div>
         <div><p class="text-2xl">{{ props.title }}</p></div>
       </div>
-     
     </div>
 </template>

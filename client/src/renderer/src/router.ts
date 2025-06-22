@@ -5,8 +5,8 @@ import GameView from './views/GameView.vue';
 import SettingsView from './views/SettingsView.vue';
 
 export const routes = [
-  { path: '/', component: HomeView }, // Home moved to /home
-  { path: '/games', component: GameView },
+  { path: '/home', component: HomeView }, // Home moved to /home
+  { path: '/', component: GameView },
   { path: '/settings', component: SettingsView },
 ];
 

@@ -29,10 +29,7 @@ const daisyType = computed(() => {
   }
 })
 
-// Map store icon string to FontAwesome icon array
 const faIcon = computed(() => {
-  // icon.value should be a FontAwesome icon name like 'check-circle', 'circle-xmark', etc.
-  // You can adjust this mapping if you use different icon sets (fas, far, etc.)
   return icon.value ? ['fas', icon.value] : null
 })
 </script>

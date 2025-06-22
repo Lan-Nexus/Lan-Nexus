@@ -9,30 +9,8 @@ import { useAlerts } from './useAlerts.js';
 
 const logger = Logger('useGameStore');
 
-export type gameKey = {
-  id: number;
-  key: string;
-  gameId: number;
-  ipAddress: string;
-};
+import type { gameState } from '@renderer/types.js';
 
-export type gameState = {
-  description: string;
-  gameID: string;
-  id: number;
-  name: string;
-  type: string;
-  heroImage: string;
-  headerImage: string;
-  logo: string;
-  icon: string;
-  gamekey?: gameKey;
-  archives: string;
-  install: string;
-  uninstall: string;
-  play: string;
-  isInstalled?: boolean; // Added property
-};
 
 export const useGameStore = defineStore('game', {
   state: () => ({

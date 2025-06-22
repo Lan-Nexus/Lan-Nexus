@@ -1,5 +1,4 @@
 import { Router as ExpressRouter } from 'express';
-import { ResourceController } from '../Controllers/ResourceController.js';
 import { PageController } from '../Controllers/PageController.js';
 
 type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
@@ -7,7 +6,7 @@ type routerHandlerPost = 'create';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 
-export default class Router<T extends ResourceController | PageController> {
+export default class Router<T extends PageController | PageController> {
   #router: ExpressRouter;
   #objects: Record<string, T>;
 
@@ -17,7 +16,7 @@ export default class Router<T extends ResourceController | PageController> {
   }
 
   #makeOrFindObject(ObjectClass: new () => T) {
-    if (!(ObjectClass.prototype instanceof ResourceController) && !(ObjectClass.prototype instanceof PageController)) {
+    if (!(ObjectClass.prototype instanceof PageController)) {
       throw new Error(`ObjectClass must be a subclass of ResourceController or PageController`);
     }
 

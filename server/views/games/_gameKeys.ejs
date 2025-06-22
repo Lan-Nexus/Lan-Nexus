@@ -1,0 +1,39 @@
+<div id="game-keys-table">
+    <% const safeGameKeys=gameKeys || []; %>
+        <% if (safeGameKeys.length> 0) { %>
+            <table class="table table-bordered mb-2">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Game ID</th>
+                        <th>IP Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% safeGameKeys.forEach(function(key) { %>
+                        <tr>
+                            <td>
+                                <%= key.key %>
+                            </td>
+                            <td>
+                                <%= key.gameId %>
+                            </td>
+                            <td>
+                                <%= key.ipAddress %>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger"
+                                    hx-delete="/api/games/<%= key.gameId %>/keys/<%= key.id %>"
+                                    hx-confirm="Remove this key?" hx-target="#game-keys-table" hx-swap="outerHTML">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+                <div class="text-muted">No keys available for this game.</div>
+                <% } %>
+</div>

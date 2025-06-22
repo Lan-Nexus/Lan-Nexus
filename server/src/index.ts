@@ -22,6 +22,7 @@ app.set('layout', 'layout'); // uses views/layout.ejs by default
 
 app.use(express.static('public'))
 
+
 app.use('/api', apiRouter)
 app.use('/', webRouter)
 

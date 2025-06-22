@@ -10,7 +10,7 @@ export abstract class PageController {
   protected UpdateSchema: ZodSchema;
 
   protected static views?: Record<string, string>;
-  protected static redirect?: Record<string, string | ((req: Request, res: Response, action: string) => string)>;
+  protected static redirect?: Record<string, string | ((req: Request, res: Response, action: string, data?: any) => string)>;
   protected static errorViews?: Record<string, string>;
 
   constructor(
@@ -25,6 +25,8 @@ export abstract class PageController {
     this.UpdateSchema = UpdateSchema;
   }
 
+  protected otherData: Record<string, any> = {};
+
   protected localRender(res: Response, view: string, options: any = {}) {
     const lastPart = view.split('/').pop() || '';
     if (lastPart.startsWith('_')) {
@@ -33,13 +35,13 @@ export abstract class PageController {
     res.render(view, options);
   }
 
-  protected handleHxRedirect(req: Request, res: Response, action: string): boolean {
+  protected handleHxRedirect(req: Request, res: Response, action: string, data?: any): boolean {
     const redirect = (this.constructor as typeof PageController).redirect;
     const redirectValue = redirect?.[action];
     if (!req.get('HX-Request') || !redirectValue) return false;
 
     if (typeof redirectValue === 'function') {
-      const url = redirectValue(req, res, action);
+      const url = redirectValue(req, res, data);
       if (url) res.set('HX-Redirect', url);
     } else {
       res.set('HX-Redirect', redirectValue);
@@ -48,61 +50,77 @@ export abstract class PageController {
     return true;
   }
 
+  protected renderWithViews(res: Response, views: Record<string, string> | undefined, action: string, data: any) {
+    if (!views || !views[action]) {
+      res.send(data);
+      return;
+    }
+    const view = views[action];
+    if (view.startsWith('_')) {
+      res.render(view, { data, layout: false, ...this.otherData });
+    } else {
+      this.localRender(res, view, { data , ...this.otherData });
+    }
+  }
+
+  // --- Pre/Post hooks ---
+  protected async preCreate(req: Request, res: Response) {}
+  protected async postCreate(req: Request, res: Response, results: any) {}
+  protected async preRead(req: Request, res: Response) {}
+  protected async postRead(req: Request, res: Response, results: any) {}
+  protected async preList(req: Request, res: Response) {}
+  protected async postList(req: Request, res: Response, data: any) {}
+  protected async preUpdate(req: Request, res: Response) {}
+  protected async postUpdate(req: Request, res: Response, data: any) {}
+  protected async preDelete(req: Request, res: Response) {}
+  protected async postDelete(req: Request, res: Response, results: any) {}
+
+  public async create(req: Request, res: Response) {
+    try {
+      await this.preCreate(req, res);
+      const body = this.mapRequestBody(req.body, req, res);
+      const data = await this.InsertSchema.parseAsync(body)
+      const results = await this.model.create(data);
+      await this.postCreate(req, res, results);
+      const views = (this.constructor as typeof PageController).views;
+      if (this.handleHxRedirect(req, res, 'create', results)) return;
+      this.renderWithViews(res, views, 'create', results);
+    } catch (error) {
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
+    }
+  }
+
   public async read(req: Request, res: Response) {
     try {
+      await this.preRead(req, res);
       const { id } = await this.SelectSchema.pick({ id: true }).parseAsync({
         id: Number(req.params.id),
       });
       const results = await this.model.read(id);
+      await this.postRead(req, res, results);
       if (results == void 0) {
         this.sendStatus(res, StatusCodes.NOT_FOUND);
         return;
       }
       const views = (this.constructor as typeof PageController).views;
-      if (this.handleHxRedirect(req, res, 'read')) return;
-      if (views?.read) {
-        this.localRender(res, views.read, { data: results });
-      } else {
-        res.send(results);
-      }
+      if (this.handleHxRedirect(req, res, 'read', results)) return;
+      this.renderWithViews(res, views, 'read', results);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
   }
 
   public async list(req: Request, res: Response) {
+    await this.preList(req, res);
     const data = await this.model.list();
+    await this.postList(req, res, data);
     const views = (this.constructor as typeof PageController).views;
-    if (this.handleHxRedirect(req, res, 'list')) return;
-    if (views?.list && views.list.startsWith('_')) {
-      res.render(views.list, { data, layout: false });
-    } else if (views?.list) {
-      this.localRender(res, views.list, { data });
-    } else {
-      res.send(data);
-    }
-  }
-
-  public async create(req: Request, res: Response) {
-    try {
-      const body = this.mapRequestBody(req.body, req, res);
-      const data = await this.InsertSchema.parseAsync(body)
-      const results = await this.model.create(data);
-      const views = (this.constructor as typeof PageController).views;
-      if (this.handleHxRedirect(req, res, 'create')) return;
-      if (views?.create && views.create.startsWith('_')) {
-        res.render(views.create, { data: results, layout: false });
-      } else if (views?.create) {
-        this.localRender(res, views.create, { data: results });
-      } else {
-        res.send(results);
-      }
-    } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
-    }
+    if (this.handleHxRedirect(req, res, 'list', data)) return;
+    this.renderWithViews(res, views, 'list', data);
   }
 
   public async update(req: Request, res: Response) {
+    await this.preUpdate(req, res);
     const body = this.mapRequestBody(req.body, req, res);
     try {
       const data = await this.UpdateSchema.parseAsync({
@@ -110,15 +128,10 @@ export abstract class PageController {
         id: Number(req.params.id),
       });
       await this.model.update(data.id, data);
+      await this.postUpdate(req, res, data);
       const views = (this.constructor as typeof PageController).views;
-      if (this.handleHxRedirect(req, res, 'update')) return;
-      if (views?.update && views.update.startsWith('_')) {
-        res.render(views.update, { data, layout: false });
-      } else if (views?.update) {
-        this.localRender(res, views.update, { data });
-      } else {
-        res.send(data);
-      }
+      if (this.handleHxRedirect(req, res, 'update', data)) return;
+      this.renderWithViews(res, views, 'update', data);
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body,id: Number(req.params.id) });
     }
@@ -126,6 +139,7 @@ export abstract class PageController {
 
   public async delete(req: Request, res: Response) {
     try {
+      await this.preDelete(req, res);
       const { id } = await this.SelectSchema.pick({ id: true }).parseAsync({
         id: Number(req.params.id),
       });
@@ -135,8 +149,10 @@ export abstract class PageController {
         return;
       }
       await this.model.delete(id);
+      await this.postDelete(req, res, results);
       if (this.handleHxRedirect(req, res, 'delete')) return;
-      this.sendStatus(res, StatusCodes.NO_CONTENT);
+      const views = (this.constructor as typeof PageController).views;
+      this.renderWithViews(res, views, 'update', {});
     } catch (error) {
       this.sendStatus(res, StatusCodes.BAD_REQUEST, error);
     }
@@ -180,7 +196,8 @@ export abstract class PageController {
     if (errorViews && errorViews[statusString]) {
       const view = errorViews[statusString];
       const lastPart = view.split('/').pop() || '';
-      const renderOptions: any = { status: statusString, reason, error, data };
+      const renderOptions: any = { status: statusString, reason, error, data, ...this.otherData };
+
       if (lastPart.startsWith('_')) {
         renderOptions.layout = false;
       }

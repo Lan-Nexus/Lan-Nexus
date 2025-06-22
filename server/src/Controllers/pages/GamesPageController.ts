@@ -4,10 +4,10 @@ import {
   gamesInsertSchema,
   gamesSelectSchema,
   gamesUpdateSchema,
-} from "../db/schema.js";
-import GameModel from "../Models/Game.js";
-import { PageController } from "./PageController.js";
-import { BAD_REQUEST } from "http-status-codes";
+} from "../../db/schema.js";
+import GameModel from "../../Models/Game.js";
+import GameKeyModel from "../../Models/GameKey.js";
+import { PageController } from "../PageController.js";
 import path from "path";
 import fs from "fs";
 
@@ -21,8 +21,8 @@ export default class GamesPageController extends PageController {
 
   static redirect = {
     delete: "/games",
-    create: "/games",
-    update: "/games",
+    create: (req: Request, res: Response, data: any) => `/games/${data.id}`,
+    update: (req: Request, res: Response, data: any) => `/games/${data.id}`,
   };
 
   static errorViews = {
@@ -33,6 +33,11 @@ export default class GamesPageController extends PageController {
   constructor() {
     super(GameModel, gamesSelectSchema, gamesInsertSchema, gamesUpdateSchema);
   }
+
+  public async preRead(req: Request, res: Response) {
+    this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.id));
+  }
+
 
   public mapRequestBody(body: any, req: Request, res: Response): any {
     body.id = Number(body.id);

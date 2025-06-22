@@ -1,34 +1,56 @@
 <h1>Game Details</h1>
-<% if (data) { %>
   <div class="card mb-4">
     <div class="card-body">
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/games/<%= data.id %>/edit" class="btn btn-warning me-2">Edit</a>
+        <button 
+          class="btn btn-danger me-2" 
+          hx-delete="/games/<%= data.id %>" 
+          hx-confirm="Are you sure you want to delete this game?" 
+          hx-target="body" 
+          hx-swap="outerHTML">
+          Delete
+        </button>
+        <a href="/games" class="btn btn-secondary">Back to List</a>
+      </div>
       <h2 class="card-title"><%= data.name %></h2>
       <% if (data.icon) { %>
         <img src="<%= data.icon %>" alt="icon" style="width:60px;height:60px;object-fit:cover;" class="mb-2" />
       <% } %>
-      <div class="mb-2">
-        <strong>Description:</strong>
-        <div><%- data.description %></div>
-      </div>
       <% if (data.headerImage) { %>
         <div class="mb-2">
           <strong>Header Image:</strong><br>
           <img src="<%= data.headerImage %>" alt="header" style="width:200px;height:80px;object-fit:cover;" />
         </div>
       <% } %>
-      <a href="/games/<%= data.id %>/edit" class="btn btn-warning mt-3 me-2">Edit</a>
-      <button 
-        class="btn btn-danger mt-3 me-2" 
-        hx-delete="/games/<%= data.id %>" 
-        hx-confirm="Are you sure you want to delete this game?" 
-        hx-target="body" 
-        hx-swap="outerHTML">
-        Delete
-      </button>
-      <a href="/games/<%= data.id %>/keys" class="btn btn-info mt-3 me-2">Manage Keys</a>
-      <a href="/games" class="btn btn-secondary mt-3">Back to List</a>
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <strong>Game Keys</strong>
+        </div>
+        <form 
+          method="POST" 
+          class="row g-2 mb-3"
+          hx-post="/api/games/<%= data.id %>/keys"
+          hx-target="#game-keys-table"
+          hx-swap="outerHTML"
+        >
+          <input type="hidden" name="gameId" value="<%= data.id %>" />
+          <div class="col-md-5">
+            <input type="text" name="key" class="form-control" placeholder="Enter new key" required />
+          </div>
+          <div class="col-md-5">
+            <input type="text" name="ipAddress" class="form-control" placeholder="IP Address (optional)" />
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Add Key</button>
+          </div>
+        </form>
+        
+        <%- include('./_gameKeys', { gameKeys }) %>
+      </div>
+      <div class="mb-2">
+        <strong>Description:</strong>
+        <div><%- data.description %></div>
+      </div>
     </div>
   </div>
-<% } else { %>
-  <div class="alert alert-danger">Game not found.</div>
-<% } %>

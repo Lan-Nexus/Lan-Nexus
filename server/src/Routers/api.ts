@@ -1,6 +1,7 @@
 import express from 'express';
-import gamesController from '../Controllers/Games.js';
-import steamController from '../Controllers/Steam.js';
+import gamesController from '../Controllers/api/GamesApiController.js';
+import steamController from '../Controllers/api/SteamApiController.js';
+import GameKeyPageController from '../Controllers/api/GameKeyApiController.js';
 import Router from './Router.js';
 
 const router = express.Router();
@@ -16,5 +17,9 @@ new Router<steamController>(router)
   .get('/steam', steamController, 'list')
   .get('/steam/:id', steamController, 'read')
   .post('/steam', steamController, 'create')
+
+new Router<GameKeyPageController>(router)
+  .post('/games/:gameId/keys', GameKeyPageController, 'create')
+  .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete');
 
 export default router;

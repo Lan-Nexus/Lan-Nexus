@@ -39,29 +39,31 @@ function updateShadow() {
     ref="actionBarPanel"
     class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center sticky top-0 z-10"
   >
-    <div v-if="gameStore.selectedGame?.type === 'archive'" class="flex gap-2">
-      <button
-        class="btn btn-primary w-24"
-        @click="gameStore.installArchive"
-        :disabled="isInstalled"
-      >
-        Install
-      </button>
-      <button
-        class="btn btn-error w-24"
-        @click="gameStore.uninstallArchive"
-        :disabled="!isInstalled"
-      >
-        Uninstall
-      </button>
-      <button
-        class="btn btn-warning"
-        @click="gameStore.play"
-        :disabled="!isInstalled"
-      >
-        Play
-      </button>
-      <div class="badge badge-secondary">
+    <div v-if="gameStore.selectedGame?.type === 'archive'" class="flex gap-2 items-center w-full">
+      <div class="flex gap-2 flex-1">
+        <button
+          class="btn btn-primary w-24"
+          @click="gameStore.installArchive"
+          :disabled="isInstalled"
+        >
+          Install
+        </button>
+        <button
+          class="btn btn-error w-24"
+          @click="gameStore.uninstallArchive"
+          :disabled="!isInstalled"
+        >
+          Uninstall
+        </button>
+        <button
+          class="btn btn-warning"
+          @click="gameStore.play"
+          :disabled="!isInstalled"
+        >
+          Play
+        </button>
+      </div>
+      <div class="badge badge-secondary ml-4">
         {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key' }}
       </div>
     </div>

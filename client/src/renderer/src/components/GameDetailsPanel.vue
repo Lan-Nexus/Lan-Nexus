@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { gameState } from '@renderer/stores/useGameStore';
 import ActionBar from '../components/ActionBar.vue';
 import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
 
 import { useServerAddressStore } from '../stores/useServerAddress.js';
+import { gameState } from '@renderer/types';
 const serverAddressStore = useServerAddressStore();
 
 const { game } = defineProps<{ game: gameState }>();
@@ -65,7 +65,11 @@ onUnmounted(() => {
             alt="game"
             class="w-full"
           />
-          <div v-else class="w-full h-150 bg-violet-500"></div>
+            <div
+            v-else
+            class="w-full bg-violet-500"
+            :style="{ aspectRatio: '16 / 5.1'}"
+            ></div>
         </div>
       </div>
       <div ref="logoElement" class="relative w-full logo">

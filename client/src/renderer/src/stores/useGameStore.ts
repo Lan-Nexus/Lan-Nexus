@@ -46,7 +46,7 @@ export const useGameStore = defineStore('game', {
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       try {
-        const data = await reserveGameKey(serverAddressStore.serverAddress, gameId);
+        const data = await reserveGameKey(serverAddressStore.serverAddress!, gameId);
         logger.log('Game key reserved:', data);
         return data;
       } catch (error) {
@@ -101,7 +101,7 @@ export const useGameStore = defineStore('game', {
       const keyid = this.selectedGame?.gamekey?.id;
       if (keyid) {
         logger.log('Releasing game key:', keyid);
-        await releaseGameKey(serverAddressStore.serverAddress, this.selectedGameId, keyid);
+        await releaseGameKey(serverAddressStore.serverAddress!, this.selectedGameId, keyid);
         this.selectedGame.gamekey = void 0;
         logger.log('Game key released:', keyid);
       }
@@ -132,12 +132,12 @@ export const useGameStore = defineStore('game', {
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
       try {
-        const gamesData = await apiLoadGames(serverAddressStore.serverAddress);
+        const gamesData = await apiLoadGames(serverAddressStore.serverAddress!);
         this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {
         logger.error('Failed to load games:', error);
         alerts.showError({ title: 'Load Failed', description: 'Failed to load games.' });
-      }finally {
+      } finally {
         this.loading = false;
       }
     },

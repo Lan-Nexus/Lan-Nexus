@@ -10,26 +10,18 @@ export const useServerAddressStore = defineStore('serverAddress', {
     serverAddress: undefined as string | undefined,
   }),
   actions: {
-    setServerAddress(address: string) {
+    async setServerAddress(address: string) {
+      await api.function('getServerIP', true);
       this.serverAddress = address;
     },
-    getServerAddress() {
+    async getServerAddress() {
       if (this.serverAddress) {
         logger.log('Using cached server address:', this.serverAddress);
         return this.serverAddress;
       }
-      return new Promise((resolve) => {
-        logger.log('Fetching server address...');
-        functions.getServerIP((ip) => {
-          if (!ip) {
-            logger.error('Failed to fetch server address');
-            return;
-          }
-          logger.log('Server address fetched:', ip);
-          this.serverAddress = ip;
-          resolve(this.serverAddress);
-        });
-      });
+
+      this.serverAddress = await api.function('getServerIP');
+
     }
   },
 });

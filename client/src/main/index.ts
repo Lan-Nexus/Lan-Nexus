@@ -2,7 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import Logger from './logger.js'
-const { screen } = require('electron');
+import { screen } from 'electron';
+import './function.js'
 
 const logger = Logger('main');
 
@@ -93,35 +94,36 @@ app.on('window-all-closed', () => {
   }
 });
 
-ipcMain.on('function', async (event, arg) => {
-  const id = arg.id
-  const progressCallback = (...args) => event.reply('function-progress', id, ...args);
-  const activeCallback = (...args) => event.reply('function-active', id, ...args);
 
-  const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '');
-  if (
-    safeFunctionName !== arg.functionName ||
-    safeFunctionName.length === 0 ||
-    safeFunctionName.length > 100
-  ) {
-    event.reply('function-error', id, 'Invalid function name');
-    return;
-  }
-  logger.log('function called', safeFunctionName, { id }, arg.args);
-  const func = await import(`../functions/${safeFunctionName}.js`);
+// ipcMain.on('function', async (event, arg) => {
+//   const id = arg.id
+//   const progressCallback = (...args) => event.reply('function-progress', id, ...args);
+//   const activeCallback = (...args) => event.reply('function-active', id, ...args);
 
-  if (!func) {
-    event.reply('function-error', id, 'Function not found');
-    return;
-  }
+//   const safeFunctionName = arg.functionName.replace(/[^a-zA-Z0-9]/g, '');
+//   if (
+//     safeFunctionName !== arg.functionName ||
+//     safeFunctionName.length === 0 ||
+//     safeFunctionName.length > 100
+//   ) {
+//     event.reply('function-error', id, 'Invalid function name');
+//     return;
+//   }
+//   logger.log('function called', safeFunctionName, { id }, arg.args);
+//   const func = await import(`../functions/${safeFunctionName}.js`);
 
-  logger.log('function called', safeFunctionName);
-  try {
-    const result = await func.default(progressCallback, activeCallback, ...arg.args);
-    logger.log('function result', id, result);
-    event.reply('function-reply', id, result);
-  } catch (e) {
-    logger.error(e);
-    event.reply('function-error', id, e);
-  }
-});
+//   if (!func) {
+//     event.reply('function-error', id, 'Function not found');
+//     return;
+//   }
+
+//   logger.log('function called', safeFunctionName);
+//   try {
+//     const result = await func.default(progressCallback, activeCallback, ...arg.args);
+//     logger.log('function result', id, result);
+//     event.reply('function-reply', id, result);
+//   } catch (e) {
+//     logger.error(e);
+//     event.reply('function-error', id, e);
+//   }
+// });

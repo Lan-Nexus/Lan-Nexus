@@ -25,29 +25,9 @@ function startApp() {
   app.component('FontAwesomeIcon', FontAwesomeIcon);
   app.mount('#app');
 
-  window.functions = new Proxy(
-    {},
-    {
-      get: function (_target, prop) {
-        return (args) => {
-          return new Promise((resolve, reject) => {
-            window.electron.ipcRenderer.send('function', {
-              functionName: prop,
-              args: args,
-            });
+  // Example usage of the new bridge:
+  // (You can remove this or adapt as needed)
 
-            window.electron.ipcRenderer.once('function-reply', (_event, arg) => {
-              resolve(arg);
-            });
-
-            window.electron.ipcRenderer.once('function-error', (_event, arg) => {
-              reject(arg);
-            });
-          });
-        };
-      },
-    }
-  );
 }
 
 function waitForElectronAndStart() {

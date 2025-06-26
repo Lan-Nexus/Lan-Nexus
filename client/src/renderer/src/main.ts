@@ -12,6 +12,9 @@ import './utils/logger.js';
 declare global {
   interface Window {
     functions: unknown;
+    api: {
+      function: (...args: any[]) => Promise<any>
+    }
   }
 }
 

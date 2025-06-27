@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { createAvatar } from '@dicebear/core';
 import { bigEarsNeutral } from '@dicebear/collection';
 import { useAvatarStore } from '../stores/useAvatarStore.js';

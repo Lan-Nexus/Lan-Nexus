@@ -79,7 +79,7 @@ export const useGameStore = defineStore('game', {
       progressStore.active = true;
       try {
         const url = serverAddressStore.serverAddress + game.archives
-        await functions.download( url, archiveFile);
+        await functions.download(url, archiveFile);
         await functions.unzip(archiveFile, safeName);
         await functions.run(safeName, game.install, { GAME_KEY: game.gamekey?.key ?? '' });
         await functions.clearTemp();
@@ -187,7 +187,7 @@ export const useGameStore = defineStore('game', {
         return;
       }
       const safeName = game.name.replaceAll(' ', '-');
-      const progressStore = useProgressStore();
+      // const progressStore = useProgressStore();
       this.openGameId = game.id;
       logger.log(`Preparing to play game: ${game.name}`);
       await functions.run(safeName, game.play);

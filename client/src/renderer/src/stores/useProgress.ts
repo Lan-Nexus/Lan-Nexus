@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import Logger from '@renderer/utils/logger.js';
 // Use the progressAPI object exposed by the preload script
 const progressAPI = window.progressAPI;
+debugger;
 const logger = Logger('useProgressStore')
 
 export const useProgressStore = defineStore('progress', {
@@ -33,11 +34,11 @@ export const useProgressStore = defineStore('progress', {
     },
     listenForIpcEvents() {
       if (!progressAPI) logger.error('Progress api not found')
-      progressAPI.onProgress((amount: string, name: string) => {
+      progressAPI.onProgress((amount, name) => {
         logger.log('Setting progress from api :', amount);
         this.setProgress(amount, name);
       });
-      progressAPI.onProgressActive((state: boolean) => {
+      progressAPI.onProgressActive((state) => {
         logger.log('Setting active from api :', state);
         this.setActive(state);
       });

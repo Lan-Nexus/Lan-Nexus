@@ -58,10 +58,3 @@ function waitForElectronAndStart() {
 
 document.addEventListener('DOMContentLoaded', waitForElectronAndStart);
 
-
-const t = ['a', 'b', 'c'] as const;
-
-function f(a: typeof t[number]) {
-  console.log(a);
-
-}

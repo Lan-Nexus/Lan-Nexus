@@ -21,7 +21,7 @@ export const useServerAddressStore = defineStore('serverAddress', {
       }
 
       this.serverAddress = await functions.getServerIP()
-
+      return this.serverAddress;
     }
   },
 });

@@ -1,7 +1,8 @@
 import path from 'path';
 import fs from 'fs';
+import { progressCallback } from './utils.js'
 
-export default async (progressCallback, progressActive, gameName) => {
+export default async (gameName) => {
 
   progressCallback(0);
 

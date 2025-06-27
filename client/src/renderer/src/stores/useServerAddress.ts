@@ -11,7 +11,7 @@ export const useServerAddressStore = defineStore('serverAddress', {
   }),
   actions: {
     async setServerAddress(address: string) {
-      await api.function('getServerIP', true);
+      await functions.getServerIP(true);
       this.serverAddress = address;
     },
     async getServerAddress() {
@@ -20,7 +20,7 @@ export const useServerAddressStore = defineStore('serverAddress', {
         return this.serverAddress;
       }
 
-      this.serverAddress = await api.function('getServerIP');
+      this.serverAddress = await functions.getServerIP()
 
     }
   },

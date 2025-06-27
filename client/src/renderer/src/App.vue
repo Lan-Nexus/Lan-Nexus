@@ -5,6 +5,10 @@ import { useServerAddressStore } from './stores/useServerAddress.js';
 import Loading from './components/Loading.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import Alert from './components/Alert.vue';
+import { useProgressStore } from './stores/useProgress';
+
+const store = useProgressStore();
+store.listenForIpcEvents();
 
 const serverAddressStore = useServerAddressStore();
 serverAddressStore.getServerAddress();

@@ -79,10 +79,10 @@ export const useGameStore = defineStore('game', {
       progressStore.active = true;
       try {
         const url = serverAddressStore.serverAddress + game.archives
-        await functions.download(progressStore.setProgress, progressStore.setActive, url, archiveFile);
-        await functions.unzip(progressStore.setProgress, progressStore.setActive, archiveFile, safeName);
-        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.install, { GAME_KEY: game.gamekey?.key ?? '' });
-        await functions.clearTemp(progressStore.setProgress);
+        await functions.download( url, archiveFile);
+        await functions.unzip(archiveFile, safeName);
+        await functions.run(safeName, game.install, { GAME_KEY: game.gamekey?.key ?? '' });
+        await functions.clearTemp();
         game.isInstalled = true;
         alerts.showSuccess({ title: 'Install Success', description: 'Game installed successfully!' });
       } catch (error) {
@@ -114,8 +114,8 @@ export const useGameStore = defineStore('game', {
       }
       const safeName = game.name.replaceAll(' ', '-');
       try {
-        await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.uninstall);
-        await functions.removeGame(progressStore.setProgress, progressStore.setActive, safeName);
+        await functions.run(safeName, game.uninstall);
+        await functions.removeGame(safeName);
         game.isInstalled = false;
         alerts.showSuccess({ title: 'Uninstall Success', description: 'Game uninstalled successfully!' });
       } catch (error) {
@@ -154,8 +154,7 @@ export const useGameStore = defineStore('game', {
       let isInstalled = false;
       if (game.type === 'archive') {
         const safeName = game.name.replaceAll(' ', '-');
-        const noOp = () => { };
-        isInstalled = await functions.isGameInstalled(noOp, noOp, safeName);
+        isInstalled = await functions.isGameInstalled(safeName);
         logger.log(`Game ${game.name} is installed: ${isInstalled}`);
       }
       return { ...game, isInstalled };
@@ -191,7 +190,7 @@ export const useGameStore = defineStore('game', {
       const progressStore = useProgressStore();
       this.openGameId = game.id;
       logger.log(`Preparing to play game: ${game.name}`);
-      await functions.run(progressStore.setProgress, progressStore.setActive, safeName, game.play);
+      await functions.run(safeName, game.play);
       logger.log(`Playing game: ${game.name}`);
       this.openGameId = null;
 

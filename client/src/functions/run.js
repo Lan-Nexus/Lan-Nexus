@@ -2,6 +2,8 @@ import path from 'path';
 import { exec } from 'child_process';
 import updateRegistry from './runUtils/updateRegistry';
 import run from './runUtils/run.js';
+import { progressCallback, progressActive } from './utils.js'
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -32,14 +34,14 @@ export default async function(gameName, code, args = []) {
     args,
     _: args,
     sleep,
-    progress: this.progressCallback,
+    progress: progressCallback,
     updateRegistry,
-    progressCallback: this.progressCallback,
+    progressCallback: progressCallback,
     showProgress: () => {
-        this.progressActive(true);
+        progressActive(true);
     },
     hideProgress: () => {
-        this.progressActive(false);
+        progressActive(false);
     },
     error: (message) => {
         throw new Error(message);

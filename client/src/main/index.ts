@@ -40,6 +40,9 @@ async function createWindow() {
     },
   });
 
+  // Set mainWindow for progress utils
+  import('../functions/utils.js').then(({ setMainWindow }) => setMainWindow(mainWindow));
+
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();

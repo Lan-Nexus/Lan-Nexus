@@ -6,8 +6,9 @@ import logger from '../main/logger';
 
 const log = logger('download');
 const tempDir = path.join(__dirname, '../../temp');
+import { progressCallback } from './utils.js'
 
-export default async function download(progressCallback, progressActive, url, filename) {
+export default async function download(url, filename) {
   progressCallback(0, 'Downloading');
   log.log('Downloading ' + url + ' to ' + path.join(tempDir, filename));
   const subDir = path.join(tempDir, filename.split('/').slice(0, -1).join('/'));
@@ -42,4 +43,3 @@ export default async function download(progressCallback, progressActive, url, fi
     writer.on('error', reject);
   });
 }
-

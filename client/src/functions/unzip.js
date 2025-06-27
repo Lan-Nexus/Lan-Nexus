@@ -3,10 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { pipeline } from 'stream/promises';
 import logger from '../main/logger';
+import { progressCallback} from './utils.js'
 
 const log = logger('unzip');
 
-export default async function unzip(progressCallback, progressActive, filename, gameName) {
+export default async function unzip(filename, gameName) {
   const tempDir = path.join(__dirname, '../../temp');
   const gameDir = path.join(__dirname, '../../games', gameName);
 
@@ -84,4 +85,3 @@ export default async function unzip(progressCallback, progressActive, filename, 
     });
   });
 }
-

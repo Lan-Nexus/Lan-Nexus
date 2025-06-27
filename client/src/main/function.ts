@@ -39,10 +39,12 @@ ipcMain.handle('bridge', async (_event, {functionName, args}: bridgeArgs): Promi
   try {
     const progressCallback = () => { };
     const progressActive = () => { };
-    const result = await importedFunc.default.call({
-          progressCallback,
-          progressActive
-      },...args)
+    const func = importedFunc.default.bind({
+      progressCallback,
+      progressActive
+    })
+    const result = await func(...args);
+
     logger.log('function result', result);
     return result;
   } catch (e) {

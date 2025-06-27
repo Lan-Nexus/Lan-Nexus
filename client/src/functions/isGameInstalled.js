@@ -4,7 +4,7 @@ import logger from '../main/logger';
 
 const log = logger('isGameInstalled');
 
-export default async function isGameInstalled(_progress, _active, gameName) {
+export default async function isGameInstalled(gameName) {
   log.info('Checking if game is installed:', gameName);
   const gameDir = path.join(__dirname, '../../games', gameName);
   log.log(`Checking if game is installed at ${gameDir}`);

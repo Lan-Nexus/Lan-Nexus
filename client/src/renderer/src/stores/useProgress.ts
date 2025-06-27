@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import Logger from '@renderer/utils/logger.js';
-
-const logger = Logger('useProgressStore');
+// Use the progressAPI object exposed by the preload script
+const progressAPI = window.progressAPI;
+const logger = Logger('useProgressStore')
 
 export const useProgressStore = defineStore('progress', {
   state: () => {
@@ -23,12 +24,24 @@ export const useProgressStore = defineStore('progress', {
 
       if (this.progress < 0 || this.progress > 100) {
         logger.warn('Progress value out of bounds:', this.progress);
-        this.progress = 50; 
+        this.progress = 50;
       }
-      
+
       if (msg) {
         this.message = msg;
       }
+    },
+    listenForIpcEvents() {
+      if (!progressAPI) logger.error('Progress api not found')
+      progressAPI.onProgress((amount: string, name: string) => {
+        logger.log('Setting progress from api :', amount);
+        this.setProgress(amount, name);
+      });
+      progressAPI.onProgressActive((state: boolean) => {
+        logger.log('Setting active from api :', state);
+        this.setActive(state);
+      });
+      logger.log('Progress api loaded')
     },
   },
 });

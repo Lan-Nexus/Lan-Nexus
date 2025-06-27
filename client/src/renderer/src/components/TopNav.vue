@@ -12,7 +12,7 @@ const gameStore = useGameStore();
   <div
     class="flex justify-between items-center bg-base-content shadow-lg absolute w-full pe-4 gap-4"
   >
-    <h1 class="text-4xl font-bold text-center p-4 text-primary-content">Lan-Launch</h1>
+    <h1 class="text-4xl font-bold text-center p-4 text-primary-content">LanLauncher</h1>
     <div class="flex-grow"></div>
     <button
       class="btn"

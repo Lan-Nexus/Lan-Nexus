@@ -12,6 +12,10 @@ import './utils/logger.js';
 declare global {
   interface Window {
     functions: unknown;
+    progressAPI: {
+      onProgress: (callback: (amount: string, name: string) => void) => void;
+      onProgressActive: (callback: (state: boolean) => void) => void;
+    }
     api: {
       function: (...args: any[]) => Promise<any>
     }
@@ -53,3 +57,11 @@ function waitForElectronAndStart() {
 }
 
 document.addEventListener('DOMContentLoaded', waitForElectronAndStart);
+
+
+const t = ['a', 'b', 'c'] as const;
+
+function f(a: typeof t[number]) {
+  console.log(a);
+
+}

@@ -29,10 +29,11 @@
                  :class="game.added ? 'steam-faded' : ''"
                  style="width:100%;max-width:220px;border-radius:6px;object-fit:cover;" class="mb-2" />
             <h6 class="card-title text-center mb-2" x-text="game.name"></h6>
-            <button :class="game.added ? 'btn btn-secondary btn-sm w-100' : 'btn btn-success btn-sm w-100'"
-                    :disabled="game.adding || game.added"
-                    @click="addGame(game)"
-                    x-text="game.added ? 'Added!' : (game.adding ? 'Adding...' : 'Add')"></button>
+            <button class="mt-auto"
+                :class="game.added ? 'btn btn-secondary btn-sm w-100' : 'btn btn-success btn-sm w-100'"
+                :disabled="game.adding || game.added"
+                @click="addGame(game)"
+                x-text="game.added ? 'Added!' : (game.adding ? 'Adding...' : 'Add')"></button>
           </div>
         </div>
       </div>
@@ -62,7 +63,8 @@ function steamGamesComponent() {
         const res = await fetch('/api/steam');
         if (!res.ok) throw new Error('Failed to fetch games');
         const existingSteamIDs = window.existingSteamIDs || [];
-        this.games = (await res.json()).map(g => ({
+        const json = await res.json();
+        this.games = json.data.map(g => ({
           ...g,
           adding: false,
           added: existingSteamIDs.includes(String(g.appid)) || existingSteamIDs.includes(Number(g.appid))

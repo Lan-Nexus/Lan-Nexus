@@ -1,6 +1,6 @@
 import path from 'path';
 import { exec } from 'child_process';
-import updateRegistry from './runUtils/updateRegistry';
+import {updateRegistry,updateRegistryAdmin} from './runUtils/updateRegistry';
 import run from './runUtils/run.js';
 import { progressCallback, progressActive } from './utils.js'
 
@@ -36,6 +36,7 @@ export default async function(gameName, code, args = []) {
     sleep,
     progress: progressCallback,
     updateRegistry,
+    updateRegistryAdmin,
     progressCallback: progressCallback,
     showProgress: () => {
         progressActive(true);

@@ -87,7 +87,7 @@ export const useGameStore = defineStore('game', {
         alerts.showSuccess({ title: 'Install Success', description: 'Game installed successfully!' });
       } catch (error) {
         logger.error(error);
-        this.uninstallArchive();
+        this.uninstallArchive(true);
         alerts.showError({ title: 'Install Failed', description: 'Failed to install game.<br>' + (error instanceof Error ? error.message : '') });
       } finally {
         progressStore.active = false;
@@ -95,7 +95,7 @@ export const useGameStore = defineStore('game', {
       }
     },
 
-    async uninstallArchive() {
+    async uninstallArchive(hideAlerts = false) {
       this.loading = true;
       const serverAddressStore = useServerAddressStore();
       const alerts = useAlerts();
@@ -118,7 +118,9 @@ export const useGameStore = defineStore('game', {
         await functions.run(safeName, game.uninstall);
         await functions.removeGame(safeName);
         game.isInstalled = false;
-        alerts.showSuccess({ title: 'Uninstall Success', description: 'Game uninstalled successfully!' });
+        if(!hideAlerts) {
+          alerts.showSuccess({ title: 'Uninstall Success', description: 'Game uninstalled successfully!' });
+        } 
       } catch (error) {
         logger.error(error);
         alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });

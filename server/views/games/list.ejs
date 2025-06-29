@@ -1,6 +1,15 @@
 <h1 class="mb-4">Games List</h1>
-<a href="/games/create" class="btn btn-success mb-3">Create New Game</a>
-<a href="/steam" class="btn btn-primary mb-3 ms-2">Add Steam Game</a>
+
+<div class="dropdown">
+  <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Create New Game
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/search">Find Game</a></li>
+    <li><a class="dropdown-item" href="/steam">From Steam</a></li>
+    <li><a class="dropdown-item" href="/games/create">Manual Entry</a></li>
+  </ul>
+</div>
 
 <% if (typeof data !== 'undefined' && data.length > 0) { %>
   <table class="table table-striped">

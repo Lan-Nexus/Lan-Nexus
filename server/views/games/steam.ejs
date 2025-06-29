@@ -1,9 +1,6 @@
 <h1 class="mb-4">Steam Games</h1>
 <a href="/games" class="btn btn-secondary mb-3">Back to Games List</a>
 
-<!-- Alpine.js CDN -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
 <script>
   // Pass existingSteamIDs from server to client (unescaped for JS)
   window.existingSteamIDs = <%- JSON.stringify(existingSteamIDs || []) %>;

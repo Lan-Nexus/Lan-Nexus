@@ -2,11 +2,11 @@ import { Router as ExpressRouter } from 'express';
 import { PageController } from '../Controllers/PageController.js';
 
 type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
-type routerHandlerPost = 'create' | 'release' | 'reserve'
+type routerHandlerPost = 'create' | 'release' | 'reserve' | 'search';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 
-export default class Router<T extends PageController | PageController> {
+export default class Router<T extends PageController> {
   #router: ExpressRouter;
   #objects: Record<string, T>;
 

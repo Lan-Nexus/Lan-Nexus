@@ -88,19 +88,19 @@ export abstract class PageController {
     }
     res.status(status).render(view, renderOptions);
   }
-  
-  
+
+
 
   // --- Pre/Post hooks ---
-  protected async preCreate(req: Request, res: Response) {}
+  protected async preCreate(req: Request, res: Response) { }
   protected async postCreate(req: Request, res: Response, results: any): Promise<any> { return results; }
-  protected async preRead(req: Request, res: Response) {}
+  protected async preRead(req: Request, res: Response) { }
   protected async postRead(req: Request, res: Response, results: any): Promise<any> { return results; }
-  protected async preList(req: Request, res: Response) {}
+  protected async preList(req: Request, res: Response) { }
   protected async postList(req: Request, res: Response, data: any): Promise<any> { return data; }
-  protected async preUpdate(req: Request, res: Response) {}
+  protected async preUpdate(req: Request, res: Response) { }
   protected async postUpdate(req: Request, res: Response, data: any): Promise<any> { return data; }
-  protected async preDelete(req: Request, res: Response) {}
+  protected async preDelete(req: Request, res: Response) { }
   protected async postDelete(req: Request, res: Response, results: any): Promise<any> { return results; }
 
   public async create(req: Request, res: Response) {
@@ -157,7 +157,7 @@ export abstract class PageController {
       if (this.handleHxRedirect(req, res, 'update', finalData)) return;
       this.renderWithViews(res, 'update', finalData);
     } catch (error) {
-      this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body,id: Number(req.params.id) });
+      this.sendStatus(res, StatusCodes.BAD_REQUEST, error, { ...body, id: Number(req.params.id) });
     }
   }
 
@@ -193,7 +193,7 @@ export abstract class PageController {
     }
   }
 
-  public  async renderUpdateForm(req: Request, res: Response) {
+  public async renderUpdateForm(req: Request, res: Response) {
     const data = await this.model.read(Number(req.params.id));
     if (data == void 0) {
       this.sendStatus(res, StatusCodes.NOT_FOUND);
@@ -206,11 +206,11 @@ export abstract class PageController {
     } else if (views?.updateForm) {
       this.localRender(res, views.updateForm, { data });
     } else {
-      data.id = Number(req.params.id); 
-      this.sendStatus(res, StatusCodes.INTERNAL_SERVER_ERROR, "Update form view not found",data);
+      data.id = Number(req.params.id);
+      this.sendStatus(res, StatusCodes.INTERNAL_SERVER_ERROR, "Update form view not found", data);
     }
   }
-  
+
   sendStatus(res: Response, status: StatusCodes, error?: any, data?: any): void {
     const errorViews = (this.constructor as typeof PageController).errorViews;
     const statusString: string = StatusCodes[status];
@@ -236,6 +236,11 @@ export abstract class PageController {
   }
 
   public reserve(req: Request, res: Response): void {
+    console.warn("reserve method not implemented in PageController, using default implementation");
+    this.sendStatus(res, StatusCodes.NOT_IMPLEMENTED, "Reserve method not implemented");
+  }
+
+  public search(req: Request, res: Response): void {
     console.warn("reserve method not implemented in PageController, using default implementation");
     this.sendStatus(res, StatusCodes.NOT_IMPLEMENTED, "Reserve method not implemented");
   }

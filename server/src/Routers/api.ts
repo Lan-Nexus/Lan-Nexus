@@ -1,5 +1,6 @@
 import express from 'express';
 import gamesController from '../Controllers/api/GamesApiController.js';
+import gamesSearchController from '../Controllers/api/GameSearchApiController.js';
 import steamController from '../Controllers/api/SteamApiController.js';
 import GameKeyPageController from '../Controllers/api/GameKeyApiController.js';
 import Router from './Router.js';
@@ -12,6 +13,11 @@ new Router<gamesController>(router)
   .post('/games', gamesController, 'create')
   .put('/games/:id', gamesController, 'update')
   .delete('/games/:id', gamesController, 'delete')
+
+new Router<gamesSearchController>(router)
+  .get('/games/search', gamesSearchController, 'list')
+  .post('/games/search', gamesSearchController, 'search')
+  .post('/search/create', gamesSearchController, 'create')
 
 new Router<steamController>(router)
   .get('/steam', steamController, 'list')

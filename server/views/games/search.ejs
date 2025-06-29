@@ -1,0 +1,71 @@
+<div x-data="searchGamesComponent()">
+    <div class="input-group mb-3">
+        <input type="text" x-model="searchQuery" class="form-control" placeholder="Search for game title.."
+            aria-label="Example text with button addon" aria-describedby="button-addon1"
+            @keydown.enter="searchResults()" />
+        <button @click="searchResults()" class="btn btn-secondary" type="button" id="button-addon1">Search</button>
+    </div>
+    <div style="height: 32px;"></div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            <template x-if="loading">
+                <div>Loading...</div>
+            </template>
+            <template x-if="error">
+                <div x-text="error"></div>
+            </template>
+            <template x-for="game in searchList">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h6 class="card-title text-center mb-2" x-text="game.name"></h6>
+                            <button @click="setSelectedGame(game)" class="mt-auto">Add Game</button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    <div style="height: 32px;"></div>
+</div>
+
+<script>
+    function searchGamesComponent() {
+        return {
+            searchList: [],
+            selectedGame: null,
+            loading: false,
+            error: '',
+            searchQuery: '',
+            async searchResults() {
+                this.loading = true;
+                this.searchList = [];
+                this.error = '';
+                try {
+                    const res = await fetch('/api/games/search', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ query: this.searchQuery })
+                    });
+                    if (!res.ok) throw new Error('Failed');
+                    const json = await res.json();
+                    this.searchList = json.results;
+                } catch (e) {
+                    this.error = 'Error loading search results.';
+                } finally {
+                    this.loading = false;
+                }
+            },
+            async addGame(game) {
+                debugger;
+            },
+
+            setSelectedGame(game) {
+                window.location.href = `/search/${game.id}`;
+            }
+        }
+    }
+</script>

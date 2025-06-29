@@ -1,6 +1,7 @@
 import express from 'express';
 import GamesPageController from '../Controllers/pages/GamesPageController.js';
 import SteamPagesController from '../Controllers/pages/SteamPageController.js';
+import SearchGameController from '../Controllers/pages/SearchGameController.js';
 import Router from './Router.js';
 import multer from 'multer';
 
@@ -31,6 +32,10 @@ new Router<GamesPageController>(router)
 
 new Router<SteamPagesController>(router)
   .get('/steam', SteamPagesController, 'list');
+
+new Router<SearchGameController>(router)
+  .get('/search', SearchGameController, 'list')
+  .get('/search/:id', SearchGameController, 'read')
 
 // Game Keys routes (web views)
 

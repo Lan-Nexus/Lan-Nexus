@@ -133,9 +133,10 @@ export const useGameStore = defineStore('game', {
     async loadGames() {
       this.loading = true;
       const serverAddressStore = useServerAddressStore();
+      const authStore = useAuthStore();
       const alerts = useAlerts();
       try {
-        const gamesData = await apiLoadGames(serverAddressStore.serverAddress!);
+        const gamesData = await apiLoadGames(serverAddressStore.serverAddress!, authStore.clientId);
         this.games = await this._addInstallStatusToGames(gamesData);
       } catch (error) {
         logger.error('Failed to load games:', error);

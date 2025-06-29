@@ -17,8 +17,8 @@ export async function releaseGameKey(serverAddress: string, gameId: number, keyI
   return axios.post(`${serverAddress}/api/games/${gameId}/keys/${keyId}/release`);
 }
 
-export async function loadGames(serverAddress: string) {
-  const response = await axios.get(`${serverAddress}/api/games`, {
+export async function loadGames(serverAddress: string,clientId: string) {
+  const response = await axios.get(`${serverAddress}/api/games?clientId=${clientId}`, {
     headers: {
       'Content-Type': 'application/json',
     },

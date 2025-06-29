@@ -16,11 +16,12 @@ export default class GamesController extends PageController {
     super(GameModel, gamesSelectSchema, gamesInsertSchema, gamesUpdateSchema);
   }
 
-  async postList(_req: Request, res: Response, games: any[]) {
-    const ip = Ip(_req, res);
+  async postList(req: Request, res: Response, games: any[]) {
     for (const game of games) {
       game.keys = await GameKeyModel.listByGame(game.id);
-      game.gamekey = await GameKeyModel.myKey(game.id, ip);
+      if (typeof req.query.clientId === "string") {
+        game.gamekey = await GameKeyModel.myKey(game.id, req.query.clientId);
+      }
     }
   }
 }

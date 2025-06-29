@@ -56,8 +56,8 @@ export default class GameKeyModel extends Model {
         if (keys.length === 0) throw new Error('No available keys found');
         return keys[0]; // Return the first available key
     }
-    static async myKey(gameId: number, ipAddress: string) {
-        const keys = await db.select().from(gameKeysTable).where(eq(gameKeysTable.ipAddress, ipAddress));
+    static async myKey(gameId: number, clientId: string) {
+        const keys = await db.select().from(gameKeysTable).where(eq(gameKeysTable.clientId, clientId));
         const key = keys.find(k => k.gameId === gameId);
         return key || null;
     }

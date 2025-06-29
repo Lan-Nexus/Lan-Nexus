@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-export async function reserveGameKey(serverAddress: string, gameId: number) {
+export async function reserveGameKey(serverAddress: string, gameId: number, clientId: string) {
   const response = await axios.post(
     `${serverAddress}/api/games/${gameId}/keys/reserve`,
+    {clientId},
     {
       headers: {
         'Content-Type': 'application/json',

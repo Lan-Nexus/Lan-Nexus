@@ -34,6 +34,7 @@ export const gameKeysTable = mysqlTable("game_keys", {
   key: varchar("key", { length: 255 }).notNull().unique(),
   gameId: int("game_id").notNull(), // Foreign key to gamesTable.id
   ipAddress: varchar("ip_address", { length: 255 }).notNull(),
+  clientId: varchar("client_id", { length: 255 })
 });
 
 

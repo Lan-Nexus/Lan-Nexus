@@ -5,6 +5,7 @@
                 <thead>
                     <tr>
                         <th>Key</th>
+                        <th>Client ID</th>
                         <th>IP Address</th>
                         <th>Actions</th>
                     </tr>
@@ -14,6 +15,9 @@
                         <tr>
                             <td>
                                 <%= key.key %>
+                            </td>
+                            <td>
+                                <%= key.clientId %>
                             </td>
                             <td>
                                 <%= key.ipAddress %>
@@ -32,6 +36,7 @@
                                 </button>
                                 <button class="btn btn-sm btn-primary"
                                     hx-post="/api/games/<%= key.gameId %>/keys/<%= key.id %>/reserve"
+                                    hx-vals='{"clientId": "admin"}'
                                     hx-confirm="Reserve this key to your Ip address?"
                                     hx-target="#game-keys-table" hx-swap="outerHTML">
                                     Reserve

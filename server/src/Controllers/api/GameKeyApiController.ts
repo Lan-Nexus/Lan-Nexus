@@ -55,7 +55,7 @@ export default class GameKeyApiController extends PageController {
       KeyId = nextKey.id;
     }
 
-    await GameKeyModel.reserve(KeyId,ip);
+    await GameKeyModel.reserve(KeyId,ip, req.body.clientId);
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
     const gamekey = await GameKeyModel.read(KeyId);
     this.renderWithViews(res, 'reserve', {...gamekey, ipAddress: ip});

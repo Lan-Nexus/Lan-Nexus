@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import functions from '../functions.js';
-
+import { useAuthStore } from './useAuthStore.js';
 import { useProgressStore } from './useProgress.js';
 import Logger from '@renderer/utils/logger.js';
 import { useServerAddressStore } from './useServerAddress.js';
@@ -11,7 +11,6 @@ import { reserveGameKey, releaseGameKey, loadGames as apiLoadGames } from '../ut
 const logger = Logger('useGameStore');
 
 import type { gameState } from '@renderer/types.js';
-
 
 export const useGameStore = defineStore('game', {
   state: () => ({
@@ -44,9 +43,10 @@ export const useGameStore = defineStore('game', {
 
     async reserveGameKey(gameId: number) {
       const serverAddressStore = useServerAddressStore();
+      const authStore = useAuthStore();
       const alerts = useAlerts();
       try {
-        const data = await reserveGameKey(serverAddressStore.serverAddress!, gameId);
+        const data = await reserveGameKey(serverAddressStore.serverAddress!, gameId, authStore.clientId);
         logger.log('Game key reserved:', data);
         return data;
       } catch (error) {

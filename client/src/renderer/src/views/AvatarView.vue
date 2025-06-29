@@ -3,8 +3,13 @@ import { ref, watch } from 'vue';
 import { createAvatar } from '@dicebear/core';
 import { bigEarsNeutral } from '@dicebear/collection';
 import { useAvatarStore } from '../stores/useAvatarStore.js';
+import { useAuthStore } from '../stores/useAuthStore.js';
+import { useRouter } from 'vue-router';
 
 const avatarStore = useAvatarStore();
+const auth = useAuthStore();
+const router = useRouter();
+
 // Expanded color palette for backgrounds
 const colors = [
   "b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf", "c2f5b5", "f7f7b6", "f7c6b6", "e0bb95", "f1c27d", "ffdbac", "d1a17b", "a87554", "6f4e37", "f5e6da", "f7cac9", "b5ead7", "ffb7b2", "b28dff", "f7b267", "f4845f", "f27059", "b8b8ff", "b5ead7", "c7ceea"
@@ -70,19 +75,30 @@ function getPreview({ backgroundOpt, eyesOpt, cheeksOpt, mouthOpt, noseOpt }: { 
 // Update avatar when options change
 watch([backgroundColor, eyes, cheeks, mouth, nose], updateAvatar, { immediate: true });
 
-const userName = ref('');
-const seatNumber = ref('');
+// Bind userName and seatNumber to the store
+const userName = ref(auth.getUsername);
+const seatNumber = ref(auth.getSeatNumber);
+
+watch(userName, (val) => {
+  auth.setUsername(val);
+});
+watch(seatNumber, (val) => {
+  auth.setSeatNumber(val);
+});
 
 function saveAvatar() {
   avatarStore.set(avatar.value);
+  router.push('/games');
 }
+
+// New reactive reference for client ID
+const clientId = ref(auth.getClientId ?? 'unknown');
 </script>
 
 <template>
   <div class="flex min-h-screen w-full">
     <div class="flex-1 max-w-[33vw] min-w-[320px] box-border p-8 pb-0 overflow-y-auto h-full">
       <div class="mb-4">
-        <button @click="saveAvatar" class="btn btn-primary mb-4">Save Avatar</button>
         <div class="mb-4">
           <span class="font-semibold">Background:</span>
           <div class="flex flex-wrap gap-2 mt-2">
@@ -140,7 +156,11 @@ function saveAvatar() {
       </div>
       <div class="relative flex flex-col items-center justify-center flex-1">
         <img :src="avatar" alt="Avatar" class="w-64 h-64 rounded-2xl shadow-lg bg-white mx-auto block" />
+        <button @click="saveAvatar" class="btn btn-primary mt-8 self-center">Save Avatar</button>
       </div>
     </div>
+  </div>
+  <div class="fixed bottom-2 left-2 text-xs text-gray-500 bg-white/80 px-2 py-1 rounded shadow z-50">
+    Client ID: {{ clientId }}
   </div>
 </template>

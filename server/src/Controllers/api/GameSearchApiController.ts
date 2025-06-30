@@ -28,7 +28,18 @@ export default class SearchController extends PageController {
             return res.status(HttpStatusCode.BadRequest).json({ error: "Query must be at least 3 characters long." });
         }
         const results = await GameSearchModel.search(req.body.query);
-        res.status(200).json({ results: results.data });
+        const existingGames = await GameSearchModel.list();
+
+        const query = req.body.query.toLowerCase();
+        const filterResults = results.data.map((game) => {
+            const hasGame = existingGames.some((g) => {
+                // Match by id from results with id from existingGames
+                return g.gameID === game.id.toString();
+            });
+            return { ...game, hasGame };
+        });
+
+        res.status(200).json({ results: filterResults });
     }
 
     async preCreate(req: Request, res: Response): Promise<void> {
@@ -40,12 +51,13 @@ export default class SearchController extends PageController {
             "uploads"
         );
 
-        const bodyTypes = ['hero', 'grid', 'icon', 'logo'];
+        const bodyTypes = { 'hero': 'hero', 'grid': 'grid', 'icon': 'icon', 'logo': 'logo', 'card': 'grid' };
 
-        for (const field of bodyTypes) {
+        for (const field of Object.keys(bodyTypes)) {
             if (req.body[field]) {
+                console.log(`Processing field: ${field} with value: ${req.body[field]}`);
                 try {
-                    const response = await axios.get(`https://cdn2.steamgriddb.com/${field}/${req.body[field]}`, {
+                    const response = await axios.get(`https://cdn2.steamgriddb.com/${bodyTypes[field as keyof typeof bodyTypes]}/${req.body[field]}`, {
                         responseType: "arraybuffer"
                     });
 
@@ -77,6 +89,11 @@ export default class SearchController extends PageController {
         if (typeof body.grid === "string") {
             body.imageCard = body.grid;
             delete body.grid;
+        }
+
+        if (typeof body.card === "string") {
+            body.headerImage = body.card;
+            delete body.card;
         }
 
         return body;

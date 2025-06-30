@@ -30,3 +30,17 @@ export type SteamDBGame = {
         "verified": boolean
     }
 }
+
+export type SteamDBGameSearch = {
+    "success": true,
+    "data": [
+        {
+            "id": number,
+            "name": string,
+            "verified": boolean,
+            "types": string[],
+            "release_date": number
+        },
+    ]
+}
+

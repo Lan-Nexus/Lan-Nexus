@@ -20,7 +20,13 @@
                     <div class="card h-100 shadow-sm">
                         <div class="card-body d-flex flex-column align-items-center">
                             <h6 class="card-title text-center mb-2" x-text="game.name"></h6>
-                            <button @click="setSelectedGame(game)" class="mt-auto">Add Game</button>
+                            <template x-if="game.hasGame">
+                                <button class="btn btn-secondary mt-auto" disabled>Game Added</button>
+                            </template> 
+                            <template x-if="!game.hasGame">
+                                <button @click="setSelectedGame(game)" class="btn btn-primary mt-auto">Add Game</button>
+                            </template>
+                                
                         </div>
                     </div>
                 </div>
@@ -58,9 +64,6 @@
                 } finally {
                     this.loading = false;
                 }
-            },
-            async addGame(game) {
-                debugger;
             },
 
             setSelectedGame(game) {

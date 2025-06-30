@@ -65,6 +65,23 @@
             </div>
         </template>
 
+        <template x-if="showHeaderCard">
+            <div>
+                <h1>Select Header Card</h1>
+        
+                <div class="row">
+                    <% for( let index=0; index < data.card.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedHeaderCard('<%= data.card[index].url %>')" class="card-img-top p-2"
+                                    src="<%= data.card[index].thumb %>">
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </template>
+
         <template x-if="processing">
             <div class="text-center">
                 <div class="spinner-border" role="status">
@@ -96,12 +113,14 @@
                     showGrid: false,
                     showIcon: false,
                     showLogo: false,
+                    showHeaderCard: false,
                     processing: false,
 
                     selectedHero: null,
                     selectedGrid: null,
                     selectedIcon: null,
                     selectedLogo: null,
+                    selectedHeaderCard: null,
 
                     selectedHero(url) {
                         this.selectedHero = url.split('/').pop();
@@ -124,6 +143,12 @@
                     selectedLogo(url) {
                         this.selectedLogo = url.split('/').pop();
                         this.showLogo = false;
+                        this.showHeaderCard = true;
+                    },
+
+                    selectedHeaderCard(url) {
+                        this.showHeaderCard = false;
+                        this.selectedHeaderCard = url.split('/').pop();
                         this.processRequest();
                     },
 
@@ -138,6 +163,7 @@
                             grid: this.selectedGrid,
                             icon: this.selectedIcon,
                             logo: this.selectedLogo,
+                            card: this.selectedHeaderCard,
                             type: 'archive',
                             description: ''
                         }).then(response => {

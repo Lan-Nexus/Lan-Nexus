@@ -1,7 +1,6 @@
-import { AnyCnameRecord } from 'node:dns';
 import Model from './Model.js';
 import axios from 'axios';
-import { SteamDBGameImage } from '../types/SteamDB.js';
+import { SteamDBGameImage, SteamDBGameSearch } from '../types/SteamDB.js';
 import GameModel from './Game.js';
 
 // Create an Axios instance
@@ -35,8 +34,13 @@ export default class GameSearchModel extends Model {
                 "dimensions": "600x900"
             }
         });
+        const header = steamGridDb.get<SteamDBGameImage>(`/grids/game/${gameID}`, {
+            params: {
+                "dimensions": "460x215"
+            }
+        });
 
-        const [gameResponse, iconsResponse, logosResponse, heroesResponse, gridsResponse] = await Promise.all([game, icons, logos, heroes, grids]);
+        const [gameResponse, iconsResponse, logosResponse, heroesResponse, gridsResponse, headerResponse] = await Promise.all([game, icons, logos, heroes, grids, header]);
 
         console.log(gameResponse.data.data);
         return {
@@ -44,7 +48,8 @@ export default class GameSearchModel extends Model {
             icon: iconsResponse.data.data,
             logo: logosResponse.data.data,
             hero: heroesResponse.data.data,
-            grid: gridsResponse.data.data
+            grid: gridsResponse.data.data,
+            card: headerResponse.data.data
         };
 
     }
@@ -55,12 +60,11 @@ export default class GameSearchModel extends Model {
     }
 
     static async list() {
-        console.log("Listing games");
-        return [];
+        return GameModel.list();
     }
 
     static async search(query: string) {
-        const response = await steamGridDb.get(`/search/autocomplete/${query}`);
+        const response = await steamGridDb.get<SteamDBGameSearch>(`/search/autocomplete/${query}`);
         return response.data;
     }
 

@@ -14,18 +14,18 @@ const gameStore = useGameStore();
   >
     <h1 class="text-4xl font-bold text-center p-4 text-primary-content">LanLauncher</h1>
     <div class="flex-grow"></div>
-    <button
+    <!-- <button
       class="btn"
       :class="{ 'btn-primary': $route.fullPath === '/' }"
       @click="$router.push('/')"
     >
       <font-awesome-icon :icon="faHome" class="text-2xl" />
-    </button>
+    </button> -->
 
     <button
       class="btn"
-      :class="{ 'btn-primary': $route.fullPath === '/games' }"
-      @click="$router.push('/games')"
+      :class="{ 'btn-primary': $route.fullPath === '/' }"
+      @click="$router.push('/')"
     >
       <FontAwesomeIcon :icon="faGamepad" class="text-2xl" />
     </button>

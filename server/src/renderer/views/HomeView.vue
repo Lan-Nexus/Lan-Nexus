@@ -1,5 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import GameList from "@/components/games/gameList.vue";
+</script>
 
 <template>
-  <main></main>
+  <main>
+    <GameList />
+  </main>
 </template>
+``

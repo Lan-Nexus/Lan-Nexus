@@ -13,9 +13,9 @@ export default function getRunningPrograms() {
             }
             // Split output into lines, skip the header (first 3 lines)
             const lines = stdout.split('\n').slice(3);
-            // Extract the process name from each line (first column)
+            // Extract the process name from the first 25 characters of each line
             const programs = lines
-                .map(line => line.trim().split(/\s+/)[0])
+                .map(line => line.substring(0, 25).trim())
                 .filter(name => name && name !== '');
             const uniquePrograms = [...new Set(programs)];
             

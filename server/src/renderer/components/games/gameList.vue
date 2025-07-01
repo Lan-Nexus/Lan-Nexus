@@ -1,5 +1,4 @@
-<script lang="js" setup>
-
+<script lang="ts" setup>
 import GameItem from "@/components/games/gameItem.vue";
 import { useGamesStore } from "@/stores/games";
 const gamesStore = useGamesStore();

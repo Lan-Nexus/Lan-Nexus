@@ -4,9 +4,27 @@ import SteamPagesController from '../Controllers/pages/SteamPageController.js';
 import SearchGameController from '../Controllers/pages/SearchGameController.js';
 import Router from './Router.js';
 import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+
+// Use disk storage for archive uploads
+const archiveStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const archiveDir = path.join(process.cwd(), 'public', 'games', 'archives');
+    fs.mkdirSync(archiveDir, { recursive: true });
+    cb(null, archiveDir);
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname) || '.zip';
+    const fileName = `archive-${Date.now()}${ext}`;
+    cb(null, fileName);
+  }
+});
+
+const upload = multer({ storage: multer.memoryStorage() }); // for images
+const uploadArchive = multer({ storage: archiveStorage }); // for archives
 
 const imageFields = [
   { name: 'icon', maxCount: 1 },
@@ -28,7 +46,8 @@ new Router<GamesPageController>(router)
   .get('/games/create', GamesPageController, 'renderCreateForm')
   .get('/games/:id', GamesPageController, 'read')
   .get('/games/:id/edit', GamesPageController, 'renderUpdateForm')
-  .delete('/games/:id', GamesPageController, 'delete');
+  .delete('/games/:id', GamesPageController, 'delete')
+  .post('/games/upload-archive', GamesPageController, 'uploadArchive', uploadArchive.single('file'));
 
 new Router<SteamPagesController>(router)
   .get('/steam', SteamPagesController, 'list');

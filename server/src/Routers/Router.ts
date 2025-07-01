@@ -2,7 +2,7 @@ import { Router as ExpressRouter } from 'express';
 import { PageController } from '../Controllers/PageController.js';
 
 type routerHandlerGet = 'list' | 'read' | 'renderCreateForm' | 'renderUpdateForm';
-type routerHandlerPost = 'create' | 'release' | 'reserve' | 'search';
+type routerHandlerPost = 'create' | 'release' | 'reserve' | 'search' | 'uploadArchive';
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 
@@ -50,9 +50,9 @@ export default class Router<T extends PageController> {
   public post(path: string, object: new () => T, requestHandler: routerHandlerPost, middleware?: any) {
     const obj = this.#makeOrFindObject(object as new () => T);
     if (middleware) {
-      this.#router.post(path, middleware, (req, res) => obj[requestHandler](req, res));
+      this.#router.post(path, middleware, (req, res) => (obj as any)[requestHandler](req, res));
     } else {
-      this.#router.post(path, (req, res) => obj[requestHandler](req, res));
+      this.#router.post(path, (req, res) => (obj as any)[requestHandler](req, res));
     }
     return this;
   }

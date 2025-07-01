@@ -107,6 +107,7 @@
       <label for="script3" class="form-label">Play Script</label>
       <textarea class="form-control" id="script3" name="play" rows="12" style="min-height: 260px; font-family: monospace;"><%= data.play || '' %></textarea>
     </div>
+    <input type="hidden" id="archivesPath" name="archives" value="">
     <div class="mb-3">
       <label for="archives" class="form-label">Game Archive (ZIP)</label>
       <div id="archives-dropzone" class="dropzone"></div>
@@ -132,28 +133,46 @@ const dropzoneConfigs = [
   { id: 'logo', maxFiles: 1 },
   { id: 'imageCard', maxFiles: 1 },
   { id: 'heroImage', maxFiles: 1 },
-  { id: 'archives', maxFiles: 1, acceptedFiles: '.zip' }
+  { id: 'archives', maxFiles: 1, acceptedFiles: '.zip', url: '/games/upload-archive', maxFilesize: 5120 }
 ];
 
 dropzoneConfigs.forEach(cfg => {
+  const isArchive = cfg.id === 'archives';
   const dz = new Dropzone(`#${cfg.id}-dropzone`, {
-    url: '#', // Prevent actual upload
-    autoProcessQueue: false,
-    maxFiles: cfg.maxFiles,
-    acceptedFiles: cfg.acceptedFiles || null,
+    ...cfg,
+    url: cfg.url || '#',
+    autoProcessQueue: isArchive ? true : false,
     addRemoveLinks: true,
     dictDefaultMessage: 'Drop file here or click to upload',
     init: function() {
-      this.on('addedfile', file => {
-        // Put file into hidden input for form submit
-        const input = document.getElementById(cfg.id);
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        input.files = dataTransfer.files;
-      });
-      this.on('removedfile', () => {
-        document.getElementById(cfg.id).value = '';
-      });
+      if (isArchive) {
+        this.on('success', (file, response) => {
+          // Update the hidden input with the uploaded archive filePath
+          const hiddenInput = document.getElementById('archivesPath');
+          if (response && response.filePath) {
+            hiddenInput.value = response.filePath;
+          } else if (typeof response === 'string') {
+            hiddenInput.value = response;
+          }
+        });
+        this.on('error', (file, errorMessage) => {
+          alert('Archive upload failed: ' + errorMessage);
+        });
+        this.on('removedfile', () => {
+          document.getElementById(cfg.id).value = '';
+        });
+      } else {
+        this.on('addedfile', file => {
+          // Put file into hidden input for form submit
+          const input = document.getElementById(cfg.id);
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          input.files = dataTransfer.files;
+        });
+        this.on('removedfile', () => {
+          document.getElementById(cfg.id).value = '';
+        });
+      }
     }
   });
 });

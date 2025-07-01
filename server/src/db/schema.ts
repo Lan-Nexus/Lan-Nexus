@@ -28,6 +28,7 @@ export const gamesTable = mysqlTable("games", {
   uninstall: mediumtext('uninstall'), // Uninstall script
   play: mediumtext('play'), // Play script
   needsKey: int('needs_key').notNull().default(0), // 0 = no key needed, 1 = key needed
+  executable: mediumtext('executable'), // Path to the executable file
 });
 
 export const gameKeysTable = mysqlTable("game_keys", {

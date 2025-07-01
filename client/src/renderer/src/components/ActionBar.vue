@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, useTemplateRef, computed } from 'vue';
 import { useGameStore } from '../stores/useGameStore.js';
+import { useRunningStore } from '../stores/useRunning.js';
 
 const actionBarPanel = useTemplateRef<HTMLElement>('actionBarPanel');
 const gameStore = useGameStore();
+const runningStore = useRunningStore();
 const height = 72;
 
 const isInstalled = computed(() => {
@@ -15,7 +17,9 @@ const isloading = computed(() => {
 });
 
 const isIngame = computed(() => {
-  return gameStore.openGameId !== null && gameStore.openGameId !== undefined;
+  const game = gameStore.selectedGame;
+  if (!game || !game.executable) return false;
+  return runningStore.isRunning(game.executable); 
 });
 
 
@@ -71,12 +75,16 @@ function updateShadow() {
         >
           Play
         </button>
+        
+      </div>
+      <div class="badge badge-accent ml-4" v-if="isIngame">
+          In Game
       </div>
       <div class="badge badge-secondary ml-4" v-if="gameStore.selectedGame?.needsKey">
         {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key' }}
       </div>
       <div class="badge badge-info ml-4" v-if="!gameStore.selectedGame?.needsKey">
-        {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key Needed' }}
+        {{ gameStore.selectedGame?.gamekey?.key || 'key not required' }}
       </div>
     </div>
     <div v-else>

@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { useGameStore } from '../stores/useGameStore.js';
 import { useServerAddressStore } from '../stores/useServerAddress.js';
+import { useRunningStore } from '@renderer/stores/useRunning.js';
 
 const gameStore = useGameStore();
 const serverAddressStore = useServerAddressStore();
+const runningStore = useRunningStore();
 
 const isSelectedGame = (gameId: number): boolean => {
   return gameStore.selectedGame?.id === gameId;
+};
+
+const isGameRunning = (executable: string): boolean => {
+  return runningStore.isRunning(executable);
 };
 </script>
 
@@ -43,7 +49,7 @@ const isSelectedGame = (gameId: number): boolean => {
             {{ game.type }}
           </span>
           <span
-            v-if="gameStore.openGameId === game.id"
+            v-if="isGameRunning(game.executable)"
             class="badge badge-accent"
           >
             In Game

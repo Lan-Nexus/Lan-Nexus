@@ -22,6 +22,11 @@
         </div>
         <div class="col">
           <h2 class="card-title mb-0"><%= data.name %></h2>
+          <% if (data.executable) { %>
+            <div class="text-muted small mt-1">
+              <strong>Executable:</strong> <code><%= data.executable %></code>
+            </div>
+          <% } %>
         </div>
       </div>
       <% if (data.headerImage) { %>
@@ -34,6 +39,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <strong>Game Keys</strong>
         </div>
+        <% if (data.needsKey) { %>
         <form 
           method="POST" 
           class="row g-2 mb-3 align-items-end"
@@ -55,7 +61,6 @@
             <button type="submit" class="btn btn-success w-100">Add Key</button>
           </div>
         </form>
-        <% if (data.needsKey) { %>
           <div id="game-keys-table">
             <%- include('./_gameKeys', { gameKeys }) %>
           </div>

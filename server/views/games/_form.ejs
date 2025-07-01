@@ -11,6 +11,10 @@
     <input type="text" class="form-control" id="name" name="name" value="<%= data.name %>">
   </div>
   <div class="mb-3">
+    <label for="executable" class="form-label">Executable</label>
+    <input type="text" class="form-control" id="executable" name="executable" value="<%= data.executable || '' %>" placeholder="e.g. game.exe">
+  </div>
+  <div class="mb-3">
     <label for="description" class="form-label">Description (HTML allowed)</label>
     <textarea class="form-control" id="description" name="description" rows="8" style="min-height: 180px;" required><%= data.description %></textarea>
   </div>

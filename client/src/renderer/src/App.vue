@@ -6,12 +6,16 @@ import Loading from './components/Loading.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import Alert from './components/Alert.vue';
 import { useProgressStore } from './stores/useProgress';
+import { useRunningStore } from './stores/useRunning';
 
 const store = useProgressStore();
 store.listenForIpcEvents();
 
 const serverAddressStore = useServerAddressStore();
 serverAddressStore.getServerAddress();
+
+const runningStore = useRunningStore();
+runningStore.init();
 
 onMounted(() => document.addEventListener("keyup", keyHandler));
 onUnmounted(() => document.removeEventListener("keyup", keyHandler));

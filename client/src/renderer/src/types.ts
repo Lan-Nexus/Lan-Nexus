@@ -22,4 +22,5 @@ export type gameState = {
   play: string;
   isInstalled?: boolean; // Added property
   needsKey: boolean;
+  executable: string;
 };

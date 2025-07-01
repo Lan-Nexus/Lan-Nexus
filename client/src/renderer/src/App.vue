@@ -7,6 +7,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import Alert from './components/Alert.vue';
 import { useProgressStore } from './stores/useProgress';
 import { useRunningStore } from './stores/useRunning';
+import { useGameStore } from './stores/useGameStore';
 
 const store = useProgressStore();
 store.listenForIpcEvents();
@@ -16,6 +17,9 @@ serverAddressStore.getServerAddress();
 
 const runningStore = useRunningStore();
 runningStore.init();
+
+const gameStore = useGameStore();
+gameStore.autoRefreshGames();
 
 onMounted(() => document.addEventListener("keyup", keyHandler));
 onUnmounted(() => document.removeEventListener("keyup", keyHandler));

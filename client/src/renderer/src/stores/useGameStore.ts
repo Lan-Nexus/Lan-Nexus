@@ -36,6 +36,15 @@ export const useGameStore = defineStore('game', {
       return this.games.find((game) => game.id === this.selectedGameId);
     },
 
+    autoRefreshGames() {
+      const refreshRate = 600 * 1000;
+      logger.log(`Auto-refreshing games every ${refreshRate / 1000} seconds`);
+      setInterval(() => {
+        logger.log('Refreshing games...');
+        this.loadGames();
+      }, refreshRate);
+    },
+
     reload() {
       this.loadGames();
     },

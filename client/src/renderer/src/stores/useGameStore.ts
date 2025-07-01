@@ -56,6 +56,7 @@ export const useGameStore = defineStore('game', {
           description += '<br>' + error.response.data.error.error;
         }
         alerts.showError({ title: 'Key Reservation Failed', description });
+        this.loading = false;
         throw error;
       }
     },
@@ -68,6 +69,7 @@ export const useGameStore = defineStore('game', {
       if (!game || !game.archives) {
         logger.error('Game not found or no archive available for installation.');
         alerts.showError({ title: 'Install Failed', description: 'Game not found or no archive available for installation.' });
+        this.loading = false;
         return;
       }
 

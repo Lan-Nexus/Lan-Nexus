@@ -73,7 +73,7 @@ export const useGameStore = defineStore('game', {
 
       game.gamekey = await this.reserveGameKey(game.id)
 
-      const safeName = game.name.replaceAll(' ', '-');
+      const safeName = game.gameID.replaceAll(' ', '-');
       const archiveFile = safeName + '.zip';
       const progressStore = useProgressStore();
       progressStore.active = true;
@@ -113,7 +113,7 @@ export const useGameStore = defineStore('game', {
         alerts.showError({ title: 'Uninstall Failed', description: 'Game not found for uninstall.' });
         return;
       }
-      const safeName = game.name.replaceAll(' ', '-');
+      const safeName = game.gameID.replaceAll(' ', '-');
       try {
         await functions.run(safeName, game.uninstall);
         await functions.removeGame(safeName);
@@ -157,7 +157,7 @@ export const useGameStore = defineStore('game', {
     async _addInstallStatusToGame(game: gameState): Promise<gameState> {
       let isInstalled = false;
       if (game.type === 'archive') {
-        const safeName = game.name.replaceAll(' ', '-');
+        const safeName = game.gameID.replaceAll(' ', '-');
         isInstalled = await functions.isGameInstalled(safeName);
         logger.log(`Game ${game.name} is installed: ${isInstalled}`);
       }
@@ -190,7 +190,7 @@ export const useGameStore = defineStore('game', {
       if (!game || game.type !== 'archive') {
         return;
       }
-      const safeName = game.name.replaceAll(' ', '-');
+      const safeName = game.gameID.replaceAll(' ', '-');
       // const progressStore = useProgressStore();
       this.openGameId = game.id;
       logger.log(`Preparing to play game: ${game.name}`);

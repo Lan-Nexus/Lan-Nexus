@@ -21,4 +21,5 @@ export type gameState = {
   uninstall: string;
   play: string;
   isInstalled?: boolean; // Added property
+  needsKey: boolean;
 };

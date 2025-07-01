@@ -14,6 +14,13 @@
     <label for="description" class="form-label">Description (HTML allowed)</label>
     <textarea class="form-control" id="description" name="description" rows="8" style="min-height: 180px;" required><%= data.description %></textarea>
   </div>
+  <dev class="mb-3">
+    <label for="needsKey" class="form-label">Needs Game Key</label>
+    <select class="form-select" id="needsKey" name="needsKey">
+      <option value="0" <% if (data.needsKey === 0) { %>selected<% } %>>No</option>
+      <option value="1" <% if (data.needsKey === 1) { %>selected<% } %>>Yes</option>
+    </select>
+  </dev>
   
   <div class="image-grid">
     <div class="mb-3">

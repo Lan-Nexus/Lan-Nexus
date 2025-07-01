@@ -73,7 +73,9 @@ export const useGameStore = defineStore('game', {
         return;
       }
 
-      game.gamekey = await this.reserveGameKey(game.id)
+      if(game.needsKey) {
+        game.gamekey = await this.reserveGameKey(game.id)
+      }
 
       const safeName = game.gameID.replaceAll(' ', '-');
       const archiveFile = safeName + '.zip';

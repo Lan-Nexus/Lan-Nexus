@@ -48,8 +48,11 @@
             <button type="submit" class="btn btn-success w-100">Add Key</button>
           </div>
         </form>
-        
-        <%- include('./_gameKeys', { gameKeys }) %>
+        <% if (data.needsKey) { %>
+          <%- include('./_gameKeys', { gameKeys }) %>
+        <% } else { %>
+          <div class="alert alert-info">This game does not require a key.</div>
+        <% } %>
       </div>
       <div class="mb-2">
         <strong>Description:</strong>

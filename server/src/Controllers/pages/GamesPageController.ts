@@ -40,6 +40,7 @@ export default class GamesPageController extends PageController {
 
   public mapRequestBody(body: any, req: Request, res: Response): any {
     body.id = Number(body.id);
+    body.needsKey = Number(body.needsKey);
     if (req.files) {
       const files = req.files as Record<string, Express.Multer.File[]>;
       const uploadDir = path.join(

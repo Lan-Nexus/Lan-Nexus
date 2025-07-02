@@ -24,85 +24,79 @@ function onCancel() {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center max-w-2xl mx-auto">
-    <form ref="form" class="w-full">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Game ID</legend>
-        <input
-          type="text"
-          class="input input-bordered w-full"
-          placeholder="Type here"
-        />
-        <p class="label"></p>
-      </fieldset>
+  <form ref="form" class="w-full">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Game ID</legend>
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="Type here"
+      />
+      <p class="label"></p>
+    </fieldset>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Name</legend>
-        <input
-          type="text"
-          class="input input-bordered w-full"
-          placeholder="Type here"
-        />
-        <p class="label"></p>
-      </fieldset>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Name</legend>
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="Type here"
+      />
+      <p class="label"></p>
+    </fieldset>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Executable</legend>
-        <input
-          type="text"
-          class="input input-bordered w-full"
-          placeholder="Type here"
-        />
-        <p class="label"></p>
-      </fieldset>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Executable</legend>
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="Type here"
+      />
+      <p class="label"></p>
+    </fieldset>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Description (HTML allowed)</legend>
-        <textarea
-          class="textarea textarea-bordered w-full"
-          placeholder="Type here"
-          rows="4"
-        ></textarea>
-        <p class="label"></p>
-      </fieldset>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Description (HTML allowed)</legend>
+      <textarea
+        class="textarea textarea-bordered w-full"
+        placeholder="Type here"
+        rows="4"
+      ></textarea>
+      <p class="label"></p>
+    </fieldset>
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Needs Game Key?</legend>
-        <select class="select select-bordered w-full">
-          <option value="">Select...</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-        <p class="label"></p>
-      </fieldset>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Needs Game Key?</legend>
+      <select class="select select-bordered w-full">
+        <option value="">Select...</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <p class="label"></p>
+    </fieldset>
 
-      <div class="flex flex-row gap-2 mt-4 w-full">
-        <UploadImageForm v-model="iconImage" title="Icon File" class="w-full" />
-        <UploadImageForm
-          v-model="headerImage"
-          title="Header Image File"
-          class="w-full"
-        />
-        <UploadImageForm v-model="Logo" title="Logo File" class="w-full" />
-        <UploadImageForm
-          v-model="imageCard"
-          title="Image Card File"
-          class="w-full"
-        />
-        <UploadImageForm
-          v-model="hero"
-          title="Hero Image File"
-          class="w-full"
-        />
-      </div>
-      <CodeEditor title="Install Script"></CodeEditor>
-      <CodeEditor title="Uninstall Script"></CodeEditor>
-      <CodeEditor title="Play Script"></CodeEditor>
+    <div class="flex flex-row gap-2 mt-4 w-full">
+      <UploadImageForm v-model="iconImage" title="Icon File" class="w-full" />
+      <UploadImageForm
+        v-model="headerImage"
+        title="Header Image File"
+        class="w-full"
+      />
+      <UploadImageForm v-model="Logo" title="Logo File" class="w-full" />
+      <UploadImageForm
+        v-model="imageCard"
+        title="Image Card File"
+        class="w-full"
+      />
+      <UploadImageForm v-model="hero" title="Hero Image File" class="w-full" />
+    </div>
+    <CodeEditor title="Install Script"></CodeEditor>
+    <CodeEditor title="Uninstall Script"></CodeEditor>
+    <CodeEditor title="Play Script"></CodeEditor>
 
-      <FileUpload class="mt-2"></FileUpload>
-      <div class="flex justify-end mt-4">
-        <button class="btn btn-primary ml-2">Create</button>
-      </div>
-    </form>
-  </div>
+    <FileUpload class="mt-2"></FileUpload>
+    <div class="flex justify-end mt-4">
+      <button class="btn btn-primary ml-2">Create</button>
+    </div>
+  </form>
 </template>

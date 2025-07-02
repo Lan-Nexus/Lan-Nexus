@@ -27,11 +27,15 @@ watch(model, (newFile) => {
     <div class="text-center">{{ props.title }}</div>
     <div>
       <template v-if="imageUrl">
-        <img
-          class="h-32 text-center rounded-lg flex items-center justify-center bg-base-200"
-          :src="imageUrl"
-          alt="Game Image"
-        />
+        <div
+          class="h-32 bg-base-200 border-2 border-dashed border-base-300 rounded-lg overflow-hidden"
+        >
+          <img
+            class="h-full rounded-lg mx-auto"
+            :src="imageUrl"
+            alt="Game Image"
+          />
+        </div>
       </template>
       <template v-else>
         <div

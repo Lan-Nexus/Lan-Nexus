@@ -8,15 +8,18 @@ const props = defineProps<{
 
 const model = defineModel<File | null>();
 const imageUrl = ref<string | null>(null);
+const processing = ref<boolean>(false);
 
 watch(model, (newFile) => {
   if (!newFile) {
     imageUrl.value = null;
   }
   const reader = new FileReader();
+  processing.value = true;
   reader.onload = (e) => {
     debugger;
     imageUrl.value = e.target?.result as string;
+    processing.value = false;
   };
   reader.readAsDataURL(newFile!);
 });
@@ -26,7 +29,14 @@ watch(model, (newFile) => {
   <div class="flex flex-col space-y-4">
     <div class="text-center">{{ props.title }}</div>
     <div>
-      <template v-if="imageUrl">
+      <template v-if="processing">
+        <div
+          class="h-32 bg-base-200 border-2 border-dashed border-base-300 rounded-lg overflow-hidden flex items-center justify-center"
+        >
+          <span class="loading loading-spinner loading-lg"></span>
+        </div>
+      </template>
+      <template v-else-if="imageUrl">
         <div
           class="h-32 bg-base-200 border-2 border-dashed border-base-300 rounded-lg overflow-hidden"
         >

@@ -7,5 +7,7 @@ import { RouterLink, RouterView } from "vue-router";
     <a class="btn btn-ghost text-xl">LanLauncher Server</a>
   </div>
 
-  <div class="container p-4"><RouterView /></div>
+  <div class="container p-4 mx-auto">
+    <RouterView />
+  </div>
 </template>

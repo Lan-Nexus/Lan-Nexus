@@ -9,7 +9,7 @@ const { game } = defineProps<{ game: GameType }>();
     <td><img width="32px" :src="game.icon" /></td>
     <td>{{ game.name }}</td>
     <td><img width="100px" :src="game.headerImage" /></td>
-    <td class="text-end">
+    <td class="text-end" style="min-width: 260px">
       <button class="btn m-1 btn-primary">View</button>
       <button class="btn m-1 btn-warning">Edit</button>
       <button class="btn m-1 btn-error">Delete</button>

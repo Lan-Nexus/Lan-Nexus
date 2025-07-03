@@ -23,9 +23,21 @@ function onDrop(event: DragEvent) {
       @dragover.prevent
       @drop.prevent="onDrop"
     >
-      <span class="text-base-content p-2 text-center">
-        Drag & drop or click to upload
-      </span>
+      <template v-if="model">
+        <span class="text-base-content p-2 text-center">
+          {{
+            model.name.length > 20
+              ? model.name.slice(0, 20) + "..."
+              : model.name
+          }}
+        </span>
+      </template>
+      <template v-else>
+        <span class="text-base-content p-2 text-center">
+          Drag and drop a file here or click to select
+        </span>
+      </template>
+
       <input
         ref="fileInput"
         type="file"

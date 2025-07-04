@@ -17,9 +17,11 @@
     "dev:renderer": "vite"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
     "@libsql/client": "^0.14.0",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.10.0",
+    "codemirror": "^6.0.2",
     "cors": "^2.8.5",
     "daisyui": "^5.0.43",
     "dotenv": "^16.4.7",

@@ -51,5 +51,12 @@ const notificationStore = useNotificationStore();
         </div>
       </div>
     </template>
+
+    <!-- force load in toast colors. -->
+    <div class="toast hidden">
+      <div class="alert-success alert-info alert-error alert-warning">
+        <span></span>
+      </div>
+    </div>
   </div>
 </template>

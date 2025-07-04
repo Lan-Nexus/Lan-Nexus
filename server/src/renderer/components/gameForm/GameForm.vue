@@ -91,15 +91,16 @@ const heroPath = ref<string>(props.game?.heroImage || "");
     ></textarea>
     <p class="label"></p>
   </fieldset>
-
-  <fieldset class="fieldset">
-    <legend class="fieldset-legend">Needs Game Key?</legend>
-    <select class="select select-bordered w-full" v-model="needsKey">
-      <option value="1">Yes</option>
-      <option selected value="0">No</option>
-    </select>
-    <p class="label"></p>
-  </fieldset>
+  <template v-if="type != 'steam'">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Needs Game Key?</legend>
+      <select class="select select-bordered w-full" v-model="needsKey">
+        <option value="1">Yes</option>
+        <option selected value="0">No</option>
+      </select>
+      <p class="label"></p>
+    </fieldset>
+  </template>
 
   <div class="flex flex-row gap-2 mt-4 w-full">
     <UploadImageForm
@@ -133,11 +134,13 @@ const heroPath = ref<string>(props.game?.heroImage || "");
       class="w-full"
     />
   </div>
-  <CodeEditor v-model="install" title="Install Script"></CodeEditor>
-  <CodeEditor v-model="uninstall" title="Uninstall Script"></CodeEditor>
-  <CodeEditor v-model="play" title="Play Script"></CodeEditor>
+  <template v-if="type != 'steam'">
+    <CodeEditor v-model="install" title="Install Script"></CodeEditor>
+    <CodeEditor v-model="uninstall" title="Uninstall Script"></CodeEditor>
+    <CodeEditor v-model="play" title="Play Script"></CodeEditor>
+    <FileUpload class="mt-10"></FileUpload>
+  </template>
 
-  <FileUpload class="mt-2"></FileUpload>
   <div class="flex justify-end mt-4">
     <button @click="onPressHandle" class="btn btn-primary ml-2">
       {{ props.primary }}

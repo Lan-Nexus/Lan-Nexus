@@ -44,6 +44,10 @@ watch(
     <div class="mb-2">
       {{ prop.title || "Code Editor" }}
     </div>
-    <div ref="editor" class="h-60 w-full bg-base-200 base rounded"></div>
+    <div
+      ref="editor"
+      class="h-60 w-full rounded"
+      style="background-color: #282a36"
+    ></div>
   </div>
 </template>

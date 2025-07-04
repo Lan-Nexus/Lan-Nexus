@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '../utls/api'
 
 export type getGameType = {
     id?: number,
@@ -57,13 +57,13 @@ export const useGamesStore = defineStore('games', {
     },
     actions: {
         async getGames() {
-            const response = await axios.get<{ data: getGameType[] }>('/api/games')
+            const response = await api.get<{ data: getGameType[] }>('/api/games')
             this.games = response.data.data
         },
 
         async deleteGame(gameId: number) {
             try {
-                await axios.delete(`/api/games/${gameId}`);
+                await api.delete(`/api/games/${gameId}`);
                 this.games = this.games.filter(game => game.id !== gameId);
             } catch (error) {
                 console.error("Error deleting game:", error);
@@ -80,7 +80,7 @@ export const useGamesStore = defineStore('games', {
                 }
             }
 
-            const response = await axios.post<{ data: postGameType }>('/api/games', formData, {
+            const response = await api.post<{ data: postGameType }>('/api/games', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Accept': 'application/json'
@@ -101,7 +101,7 @@ export const useGamesStore = defineStore('games', {
                 }
             }
 
-            const response = await axios.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
+            const response = await api.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Accept': 'application/json'

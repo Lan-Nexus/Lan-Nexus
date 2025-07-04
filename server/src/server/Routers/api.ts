@@ -7,8 +7,10 @@ import Router from './Router.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { jwtAuth} from '../jwt.js';
 
 const router = express.Router();
+router.use(jwtAuth);
 
 // Use disk storage for archive uploads
 const archiveStorage = multer.diskStorage({

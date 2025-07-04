@@ -3,9 +3,11 @@ import express from 'express';
 import ViteExpress from "vite-express";
 import cors from 'cors'
 
-import apiRouter from './Routers/api.js'
-import webRouter from './Routers/web.js'
-import './db.js'
+
+import apiRouter from './Routers/api.js';
+import authRouter from './Routers/auth.js';
+import webRouter from './Routers/web.js';
+import './db.js';
 import { Worker } from 'worker_threads';
 import path from 'path';
 import Ip from './ip.js';
@@ -44,7 +46,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
-app.use('/api', apiRouter)
+
+app.use('/auth', authRouter); 
+app.use('/api', apiRouter);
+
 
 app.get('/api/ip', (req, res) => {
   const ip = Ip(req, res);

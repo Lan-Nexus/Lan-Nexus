@@ -4,7 +4,6 @@ import router from "@/router";
 import { useGamesStore, type postGameType } from "@/stores/games";
 
 function createGame(game: postGameType) {
-  debugger;
   useGamesStore()
     .createGame({
       gameID: game.gameID,

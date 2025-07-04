@@ -40,6 +40,7 @@ function onDrop(event: DragEvent) {
   if (event.dataTransfer && event.dataTransfer.files.length > 0) {
     const file = event.dataTransfer.files[0];
     model.value = file;
+    isDragover.value = false;
   }
 }
 </script>
@@ -53,12 +54,17 @@ function onDrop(event: DragEvent) {
         'bg-base-300': isDragover,
       }"
       class="flex flex-col items-center justify-center w-full h-32 border-2 border-base-300 rounded-lg cursor-pointer hover:bg-base-300 transition-colors"
-      @dragover.prevent="isDragover = true"
+      @dragover="onDragover"
       @drop.prevent="onDrop"
       @dragenter="isDragover = true"
       @dragleave="isDragover = false"
     >
-      <template v-if="model">
+      <template v-if="isDragover">
+        <span class="text-base-content p-2 text-center pointer-events-none">
+          {{ quotes[Math.floor(Math.random() * quotes.length)] }}
+        </span>
+      </template>
+      <template v-else-if="model">
         <span class="text-base-content p-2 text-center pointer-events-none">
           {{
             model.name.length > 20
@@ -68,16 +74,9 @@ function onDrop(event: DragEvent) {
         </span>
       </template>
       <template v-else>
-        <template v-if="isDragover">
-          <span class="text-base-content p-2 text-center pointer-events-none">
-            {{ quotes[Math.floor(Math.random() * quotes.length)] }}
-          </span>
-        </template>
-        <template v-else>
-          <span class="text-base-content p-2 text-center pointer-events-none">
-            Drag and drop a file here or click to select
-          </span>
-        </template>
+        <span class="text-base-content p-2 text-center pointer-events-none">
+          Drag and drop a file here or click to select
+        </span>
       </template>
 
       <input

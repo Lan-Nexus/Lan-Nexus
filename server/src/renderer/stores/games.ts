@@ -94,7 +94,7 @@ export const useGamesStore = defineStore('games', {
 
         async updateGame(id: string, gameData: postGameType) {
 
-            debugger;
+
             const formData = new FormData();
 
             for (const key in gameData) {

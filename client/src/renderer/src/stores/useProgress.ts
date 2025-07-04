@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import Logger from '@renderer/utils/logger.js';
 // Use the progressAPI object exposed by the preload script
 const progressAPI = window.progressAPI;
-debugger;
 const logger = Logger('useProgressStore')
 
 export const useProgressStore = defineStore('progress', {

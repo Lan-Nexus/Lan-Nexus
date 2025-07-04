@@ -18,7 +18,6 @@ watch(model, (newFile) => {
   const reader = new FileReader();
   processing.value = true;
   reader.onload = (e) => {
-    debugger;
     imageUrl.value = e.target?.result as string;
     processing.value = false;
   };

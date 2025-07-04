@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+import { dracula } from "@uiw/codemirror-theme-dracula";
 
 const prop = defineProps<{
   title?: string;
@@ -18,10 +19,11 @@ onMounted(() => {
     extensions: [
       basicSetup,
       javascript(),
+      dracula,
       EditorView.updateListener.of((v) => {
-        if (!v.docChanged) return
+        if (!v.docChanged) return;
         model.value = v.state.doc.toString();
-      })
+      }),
     ],
   });
 });
@@ -31,7 +33,7 @@ watch(
   (val) => {
     if (!view || view.state.doc.toString() === val) return;
     view.dispatch({
-      changes: { from: 0, to: view.state.doc.length, insert: val || "" }
+      changes: { from: 0, to: view.state.doc.length, insert: val || "" },
     });
   }
 );

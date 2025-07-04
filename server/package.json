@@ -17,9 +17,11 @@
     "dev:renderer": "vite"
   },
   "dependencies": {
+    "@babel/runtime": "^7.27.6",
     "@codemirror/lang-javascript": "^6.2.4",
     "@libsql/client": "^0.14.0",
     "@tailwindcss/vite": "^4.1.11",
+    "@uiw/codemirror-theme-dracula": "^4.23.14",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "codemirror": "^6.0.2",

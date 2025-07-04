@@ -1,24 +1,21 @@
 <script setup lang="ts">
 import { useGamesStore, type getGameType } from "@/stores/games";
+import ConfirmPopup from "@/components/ConfirmPopup.vue";
 import { ref } from "vue";
 
 const { game } = defineProps<{ game: getGameType }>();
 
-const gamesStore = useGamesStore();
 const showDeleteModal = ref(false);
 
-const handleDelete = () => {
-  showDeleteModal.value = true;
-};
+const gamesStore = useGamesStore();
 
-const confirmDelete = () => {
+function deleteGame() {
   gamesStore.deleteGame(game.id!);
-  showDeleteModal.value = false;
-};
+}
 
-const cancelDelete = () => {
-  showDeleteModal.value = false;
-};
+function handleDelete() {
+  showDeleteModal.value = true;
+}
 </script>
 
 <template>
@@ -33,20 +30,20 @@ const cancelDelete = () => {
     </td>
   </tr>
 
-  <!-- Delete Confirmation Modal -->
-  <div class="modal" :class="{ 'modal-open': showDeleteModal }">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">Confirm Delete</h3>
-      <p class="py-4">
-        Are you sure you want to delete "<strong>{{ game.name }}</strong
-        >"?
-        <br />
-        This action cannot be undone.
-      </p>
-      <div class="modal-action">
-        <button @click="cancelDelete" class="btn">Cancel</button>
-        <button @click="confirmDelete" class="btn btn-error">Delete</button>
-      </div>
-    </div>
-  </div>
+  <ConfirmPopup
+    v-model="showDeleteModal"
+    primary="Delete"
+    secondary="Cancel"
+    @onPrimary="deleteGame"
+  >
+    <template #title>Confirm Delete</template>
+    <template #message>
+      Are you sure you want to delete "
+      <strong>{{ game.name }}</strong
+      >"?
+      <br />
+      This action cannot be undone.
+    </template>
+    <message> </message>
+  </ConfirmPopup>
 </template>

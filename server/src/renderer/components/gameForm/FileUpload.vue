@@ -59,7 +59,7 @@ function onDrop(event: DragEvent) {
       @dragleave="isDragover = false"
     >
       <template v-if="model">
-        <span class="text-base-content p-2 text-center">
+        <span class="text-base-content p-2 text-center pointer-events-none">
           {{
             model.name.length > 20
               ? model.name.slice(0, 20) + "..."
@@ -69,12 +69,12 @@ function onDrop(event: DragEvent) {
       </template>
       <template v-else>
         <template v-if="isDragover">
-          <span class="text-base-content p-2 text-center">
+          <span class="text-base-content p-2 text-center pointer-events-none">
             {{ quotes[Math.floor(Math.random() * quotes.length)] }}
           </span>
         </template>
         <template v-else>
-          <span class="text-base-content p-2 text-center">
+          <span class="text-base-content p-2 text-center pointer-events-none">
             Drag and drop a file here or click to select
           </span>
         </template>

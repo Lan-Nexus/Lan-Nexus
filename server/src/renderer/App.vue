@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from "vue-router";
   <div class="min-h-screen flex flex-col">
     <nav class="navbar bg-base-200">
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">Lan Launcher</a>
+        <RouterLink to="/games" class="btn btn-ghost text-xl">Lan Launcher</RouterLink>
       </div>
     </nav>
     <main class="container mx-auto flex-1 p-6 bg-base-100">

@@ -53,6 +53,9 @@ export const useGamesStore = defineStore('games', {
         getGameById: (state) => {
             const game = (id: number) => state.games.find(game => game.id === id);
             return game;
+        },
+        hasGame: (state) => (gameID: string) => {
+            return state.games.some(game => game.gameID == gameID);
         }
     },
     actions: {

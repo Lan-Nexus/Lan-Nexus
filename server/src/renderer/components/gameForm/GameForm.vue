@@ -3,14 +3,7 @@ import { ref } from "vue";
 import UploadImageForm from "./UploadImageForm.vue";
 import CodeEditor from "./CodeEditor.vue";
 import FileUpload from "./FileUpload.vue";
-import {
-  useGamesStore,
-  type getGameType,
-  type postGameType,
-} from "@/stores/games";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+import { type getGameType, type postGameType } from "@/stores/games";
 
 const props = defineProps<{
   game?: getGameType;
@@ -68,23 +61,13 @@ const heroPath = ref<string>(props.game?.heroImage || "");
 <template>
   <fieldset class="fieldset">
     <legend class="fieldset-legend">Game ID</legend>
-    <input
-      type="text"
-      v-model="gameID"
-      class="input input-bordered w-full"
-      placeholder="Type here"
-    />
+    <input type="text" v-model="gameID" class="input input-bordered w-full" />
     <p class="label"></p>
   </fieldset>
 
   <fieldset class="fieldset">
     <legend class="fieldset-legend">Name</legend>
-    <input
-      type="text"
-      v-model="name"
-      class="input input-bordered w-full"
-      placeholder="Type here"
-    />
+    <input type="text" v-model="name" class="input input-bordered w-full" />
     <p class="label"></p>
   </fieldset>
 
@@ -94,7 +77,7 @@ const heroPath = ref<string>(props.game?.heroImage || "");
       type="text"
       v-model="executable"
       class="input input-bordered w-full"
-      placeholder="Type here"
+      placeholder="e.g. game.exe"
     />
     <p class="label"></p>
   </fieldset>
@@ -104,7 +87,6 @@ const heroPath = ref<string>(props.game?.heroImage || "");
     <textarea
       v-model="description"
       class="textarea textarea-bordered w-full"
-      placeholder="Type here"
       rows="4"
     ></textarea>
     <p class="label"></p>
@@ -114,7 +96,7 @@ const heroPath = ref<string>(props.game?.heroImage || "");
     <legend class="fieldset-legend">Needs Game Key?</legend>
     <select class="select select-bordered w-full" v-model="needsKey">
       <option value="1">Yes</option>
-      <option value="0">No</option>
+      <option selected value="0">No</option>
     </select>
     <p class="label"></p>
   </fieldset>

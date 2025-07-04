@@ -42,6 +42,6 @@ function updateHandler(game: postGameType) {
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold mb-4">Edit Game</h1>
+  <h1 class="text-3xl font-bold mb-4 text-center">Update Game</h1>
   <GameForm @primary="updateHandler" primary="Update" :game="game" />
 </template>

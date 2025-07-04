@@ -44,7 +44,7 @@ const keys = ref([]);
     </div>
 
     <div class="mb-4">
-      <GameKeys :gameId="Number(game.id)"></GameKeys>
+      <GameKeys v-if="game.needsKey" :gameId="Number(game.id)"></GameKeys>
     </div>
   </template>
 </template>

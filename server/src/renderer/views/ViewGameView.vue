@@ -37,14 +37,15 @@ const keys = ref([]);
       </div>
     </div>
     
+    <div class="mb-4">
+      <GameKeys v-if="game.needsKey" :gameId="Number(game.id)"></GameKeys>
+    </div>
 
     <div class="mb-4">
       <h2 class="text-l font-semibold mb-2">Description:</h2>
       <p class="bg-base-200 p-2" v-html="game.description"></p>
     </div>
 
-    <div class="mb-4">
-      <GameKeys v-if="game.needsKey" :gameId="Number(game.id)"></GameKeys>
-    </div>
+    
   </template>
 </template>

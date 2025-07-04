@@ -61,6 +61,7 @@ new Router<steamController>(router)
   .post('/steam', steamController, 'create')
 
 new Router<GameKeyPageController>(router)
+  .get('/games/:gameId/keys', GameKeyPageController, 'list')
   .post('/games/:gameId/keys', GameKeyPageController, 'create')
   .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete')
   .post('/games/:gameId/keys/:id/release', GameKeyPageController, 'release')

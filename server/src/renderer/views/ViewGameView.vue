@@ -2,8 +2,11 @@
 import { useGamesStore } from "@/stores/games";
 import ActionButtons from "@/components/games/ActionButtons.vue";
 
+import GameKeys from "@/components/games/GameKeys.vue";
+
 import { useRoute } from "vue-router";
-import { ref, type Ref } from "vue";
+import { ref, type Ref, onMounted, watch } from "vue";
+import api from "@/utls/api";
 
 const route = useRoute();
 const gamesStore = useGamesStore();
@@ -11,9 +14,8 @@ const gamesStore = useGamesStore();
 const id = ref(route.params.id) as Ref<string>;
 let game = gamesStore.getGameById(Number(id.value));
 
-if (!game && gamesStore.games.length == 0) {
-  gamesStore.getGames();
-}
+const keys = ref([]);
+
 </script>
 
 <template>
@@ -34,10 +36,15 @@ if (!game && gamesStore.games.length == 0) {
         <ActionButtons :showView="false" :game="game"></ActionButtons>
       </div>
     </div>
+    
 
     <div class="mb-4">
       <h2 class="text-l font-semibold mb-2">Description:</h2>
       <p class="bg-base-200 p-2" v-html="game.description"></p>
+    </div>
+
+    <div class="mb-4">
+      <GameKeys :gameId="Number(game.id)"></GameKeys>
     </div>
   </template>
 </template>

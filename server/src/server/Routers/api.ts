@@ -45,7 +45,7 @@ new Router<gamesController>(router)
   .get('/games', gamesController, 'list')
   .get('/games/:id', gamesController, 'read')
   .post('/games', gamesController, 'create', upload.fields(archiveFields))
-  .put('/games/:id', gamesController, 'update')
+  .put('/games/:id', gamesController, 'update', upload.fields(archiveFields))
   .delete('/games/:id', gamesController, 'delete')
 
 new Router<gamesSearchController>(router)

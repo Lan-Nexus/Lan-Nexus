@@ -4,6 +4,7 @@ import { watch, ref } from "vue";
 
 const props = defineProps<{
   title: string;
+  path: string;
 }>();
 
 const model = defineModel<File | null>();
@@ -36,13 +37,13 @@ watch(model, (newFile) => {
           <span class="loading loading-spinner loading-lg"></span>
         </div>
       </template>
-      <template v-else-if="imageUrl">
+      <template v-else-if="imageUrl || props.path">
         <div
           class="h-32 bg-base-200 border-2 border-dashed border-base-300 rounded-lg overflow-hidden"
         >
           <img
             class="h-full rounded-lg mx-auto"
-            :src="imageUrl"
+            :src="imageUrl ?? props.path"
             alt="Game Image"
           />
         </div>

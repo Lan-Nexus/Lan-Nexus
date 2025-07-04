@@ -3,130 +3,162 @@ import { ref } from "vue";
 import UploadImageForm from "./UploadImageForm.vue";
 import CodeEditor from "./CodeEditor.vue";
 import FileUpload from "./FileUpload.vue";
-import { useGamesStore } from "@/stores/games";
+import {
+  useGamesStore,
+  type getGameType,
+  type postGameType,
+} from "@/stores/games";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const form = ref<HTMLFormElement | undefined>();
+const props = defineProps<{
+  game?: getGameType;
+  primary: string;
+}>();
+
+const emit = defineEmits<{
+  primary: [game: postGameType];
+}>();
+
+function onPressHandle() {
+  emit("primary", {
+    gameID: gameID.value,
+    name: name.value,
+    executable: executable.value,
+    description: description.value,
+    needsKey: needsKey.value,
+    icon: iconImage.value,
+    headerImage: headerImage.value,
+    logo: Logo.value,
+    imageCard: imageCard.value,
+    heroImage: hero.value,
+    install: install.value,
+    uninstall: uninstall.value,
+    play: play.value,
+    type: type.value,
+    status: status.value,
+    keys: [],
+  });
+}
+
+const gameID = ref<string>(props.game?.gameID || "");
+const name = ref<string>(props.game?.name || "");
+const executable = ref<string>(props.game?.executable || "");
+const description = ref<string>(props.game?.description || "");
+const needsKey = ref<string>(props.game?.needsKey || "0");
 const iconImage = ref<File | undefined>();
 const headerImage = ref<File | undefined>();
 const Logo = ref<File | undefined>();
 const imageCard = ref<File | undefined>();
 const hero = ref<File | undefined>();
+const install = ref<string>(props.game?.install || "");
+const uninstall = ref<string>(props.game?.uninstall || "");
+const play = ref<string>(props.game?.play || "");
+const type = ref<string>(props.game?.type || "archive");
+const status = ref<string>(props.game?.status || "Draft");
 
-function createGame() {
-  if (!form.value) return;
-  const formData = new FormData(form.value);
-
-  const needKeys = formData.get("needsKey") as string | undefined;
-
-  useGamesStore()
-    .createGame({
-      gameID: (formData.get("gameId") as string | undefined) ?? "",
-      name: (formData.get("name") as string | undefined) ?? "",
-      executable: (formData.get("executable") as string | undefined) ?? "",
-      description: (formData.get("description") as string | undefined) ?? "",
-      needsKey: needKeys ?? "0",
-      icon: iconImage.value,
-      headerImage: headerImage.value,
-      logo: Logo.value,
-      imageCard: imageCard.value,
-      heroImage: hero.value,
-      install: "", // Placeholder for install script
-      uninstall: "", // Placeholder for uninstall script
-      play: "",
-      type: "",
-      status: "Draft",
-      keys: [],
-    })
-    .then(() => {
-      router.push({ name: "home" });
-    })
-    .catch((error) => {
-      console.error("Error creating game:", error);
-    });
-}
+const iconPath = ref<string>(props.game?.icon || "");
+const headerPath = ref<string>(props.game?.headerImage || "");
+const logoPath = ref<string>(props.game?.logo || "");
+const imageCardPath = ref<string>(props.game?.imageCard || "");
+const heroPath = ref<string>(props.game?.heroImage || "");
 </script>
 
 <template>
-  <form ref="form" class="w-full" @submit.prevent="createGame">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Game ID</legend>
-      <input
-        type="text"
-        name="gameId"
-        class="input input-bordered w-full"
-        placeholder="Type here"
-      />
-      <p class="label"></p>
-    </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Game ID</legend>
+    <input
+      type="text"
+      v-model="gameID"
+      class="input input-bordered w-full"
+      placeholder="Type here"
+    />
+    <p class="label"></p>
+  </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Name</legend>
-      <input
-        type="text"
-        name="name"
-        class="input input-bordered w-full"
-        placeholder="Type here"
-      />
-      <p class="label"></p>
-    </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Name</legend>
+    <input
+      type="text"
+      v-model="name"
+      class="input input-bordered w-full"
+      placeholder="Type here"
+    />
+    <p class="label"></p>
+  </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Executable</legend>
-      <input
-        type="text"
-        name="executable"
-        class="input input-bordered w-full"
-        placeholder="Type here"
-      />
-      <p class="label"></p>
-    </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Executable</legend>
+    <input
+      type="text"
+      v-model="executable"
+      class="input input-bordered w-full"
+      placeholder="Type here"
+    />
+    <p class="label"></p>
+  </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Description (HTML allowed)</legend>
-      <textarea
-        name="description"
-        class="textarea textarea-bordered w-full"
-        placeholder="Type here"
-        rows="4"
-      ></textarea>
-      <p class="label"></p>
-    </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Description (HTML allowed)</legend>
+    <textarea
+      v-model="description"
+      class="textarea textarea-bordered w-full"
+      placeholder="Type here"
+      rows="4"
+    ></textarea>
+    <p class="label"></p>
+  </fieldset>
 
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Needs Game Key?</legend>
-      <select class="select select-bordered w-full" name="needsKey">
-        <option value="">Select...</option>
-        <option value="1">Yes</option>
-        <option value="0">No</option>
-      </select>
-      <p class="label"></p>
-    </fieldset>
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Needs Game Key?</legend>
+    <select class="select select-bordered w-full" v-model="needsKey">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+    <p class="label"></p>
+  </fieldset>
 
-    <div class="flex flex-row gap-2 mt-4 w-full">
-      <UploadImageForm v-model="iconImage" title="Icon File" class="w-full" />
-      <UploadImageForm
-        v-model="headerImage"
-        title="Header Image File"
-        class="w-full"
-      />
-      <UploadImageForm v-model="Logo" title="Logo File" class="w-full" />
-      <UploadImageForm
-        v-model="imageCard"
-        title="Image Card File"
-        class="w-full"
-      />
-      <UploadImageForm v-model="hero" title="Hero Image File" class="w-full" />
-    </div>
-    <CodeEditor title="Install Script"></CodeEditor>
-    <CodeEditor title="Uninstall Script"></CodeEditor>
-    <CodeEditor title="Play Script"></CodeEditor>
+  <div class="flex flex-row gap-2 mt-4 w-full">
+    <UploadImageForm
+      :path="iconPath"
+      v-model="iconImage"
+      title="Icon File"
+      class="w-full"
+    />
+    <UploadImageForm
+      v-model="headerImage"
+      :path="headerPath"
+      title="Header Image File"
+      class="w-full"
+    />
+    <UploadImageForm
+      :path="logoPath"
+      v-model="Logo"
+      title="Logo File"
+      class="w-full"
+    />
+    <UploadImageForm
+      :path="imageCardPath"
+      v-model="imageCard"
+      title="Image Card File"
+      class="w-full"
+    />
+    <UploadImageForm
+      :path="heroPath"
+      v-model="hero"
+      title="Hero Image File"
+      class="w-full"
+    />
+  </div>
+  <CodeEditor v-model="install" title="Install Script"></CodeEditor>
+  <CodeEditor v-model="uninstall" title="Uninstall Script"></CodeEditor>
+  <CodeEditor v-model="play" title="Play Script"></CodeEditor>
 
-    <FileUpload class="mt-2"></FileUpload>
-    <div class="flex justify-end mt-4">
-      <button class="btn btn-primary ml-2">Create</button>
-    </div>
-  </form>
+  <FileUpload class="mt-2"></FileUpload>
+  <div class="flex justify-end mt-4">
+    <button @click="onPressHandle" class="btn btn-primary ml-2">
+      {{ props.primary }}
+    </button>
+  </div>
 </template>

@@ -48,6 +48,13 @@ export const useGamesStore = defineStore('games', {
     state: () => ({
         games: [] as getGameType[],
     }),
+
+    getters: {
+        getGameById: (state) => {
+            const game = (id: number) => state.games.find(game => game.id === id);
+            return game;
+        }
+    },
     actions: {
         async getGames() {
             const response = await axios.get<{ data: getGameType[] }>('/api/games')
@@ -74,6 +81,27 @@ export const useGamesStore = defineStore('games', {
             }
 
             const response = await axios.post<{ data: postGameType }>('/api/games', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json'
+                }
+            });
+            this.games.push(response.data.data as getGameType)
+        },
+
+        async updateGame(id: string, gameData: postGameType) {
+
+            debugger;
+            const formData = new FormData();
+
+            for (const key in gameData) {
+                const typedKey = key as keyof postGameType;
+                if (gameData[typedKey] !== undefined) {
+                    formData.append(key, gameData[typedKey] as any);
+                }
+            }
+
+            const response = await axios.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Accept': 'application/json'

@@ -2,7 +2,11 @@
 import { defineSlots, defineProps } from "vue";
 
 const showDeleteModal = defineModel();
-const emit = defineEmits(["onPrimary", "onSecondary"]);
+
+const emit = defineEmits<{
+  primary: [];
+  secondary: [];
+}>();
 
 const props = defineProps<{
   primary?: string;
@@ -14,18 +18,14 @@ defineSlots<{
   message(): undefined;
 }>();
 
-const handleDelete = () => {
-  showDeleteModal.value = true;
-};
-
 const onPrimary = () => {
   showDeleteModal.value = false;
-  emit("onPrimary");
+  emit("primary");
 };
 
 const onSecondary = () => {
   showDeleteModal.value = false;
-  emit("onSecondary");
+  emit("secondary");
 };
 </script>
 

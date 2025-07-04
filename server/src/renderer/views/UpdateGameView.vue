@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import GameForm from "@/components/gameForm/GameForm.vue";
-import router from "@/router";
 import { useGamesStore, type postGameType } from "@/stores/games";
 
-function createGame(game: postGameType) {
-  debugger;
-  useGamesStore()
-    .createGame({
+import { useRoute } from "vue-router";
+import { ref, type Ref } from "vue";
+import router from "@/router";
+
+const route = useRoute();
+const gamesStore = useGamesStore();
+
+const id = ref(route.params.id) as Ref<string>;
+const game = gamesStore.getGameById(Number(id.value));
+
+function updateHandler(game: postGameType) {
+  gamesStore
+    .updateGame(id.value, {
       gameID: game.gameID,
       name: game.name,
       executable: game.executable,
@@ -17,12 +25,12 @@ function createGame(game: postGameType) {
       logo: game.logo,
       imageCard: game.imageCard,
       heroImage: game.heroImage,
-      install: game.install, // Placeholder for install script
-      uninstall: game.uninstall, // Placeholder for uninstall script
+      install: game.install,
+      uninstall: game.uninstall,
       play: game.play,
       type: game.type,
       status: game.status,
-      keys: game.keys,
+      keys: [],
     })
     .then(() => {
       router.push({ name: "home" });
@@ -34,6 +42,6 @@ function createGame(game: postGameType) {
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold mb-4">Create Game</h1>
-  <GameForm @primary="createGame" primary="Create" />
+  <h1 class="text-3xl font-bold mb-4">Edit Game</h1>
+  <GameForm @primary="updateHandler" primary="Update" :game="game" />
 </template>

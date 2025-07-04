@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import CreateGameView from '@/views/CreateGameView.vue'
-
+import EditGameView from '@/views/UpdateGameView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +14,11 @@ const router = createRouter({
       path: '/game/create',
       name: 'createGame',
       component: CreateGameView,
+    },
+    {
+      path: '/game/edit/:id',
+      name: 'editGame',
+      component: EditGameView,
     }
   ],
 })

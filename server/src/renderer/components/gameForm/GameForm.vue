@@ -47,7 +47,7 @@ const imageCard = ref<File | undefined>();
 const hero = ref<File | undefined>();
 const install = ref<string>(props.game?.install || "");
 const uninstall = ref<string>(props.game?.uninstall || "");
-const play = ref<string>(props.game?.play || "");
+const play = ref<string>(props.game?.play || "await run(GAME_EXECUTABLE);");
 const type = ref<string>(props.game?.type || "archive");
 const status = ref<string>(props.game?.status || "Draft");
 

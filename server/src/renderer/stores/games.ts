@@ -90,6 +90,7 @@ export const useGamesStore = defineStore('games', {
                 }
             });
             this.games.push(response.data.data as getGameType)
+            return response.data.data as getGameType;
         },
 
         async updateGame(id: string, gameData: postGameType) {

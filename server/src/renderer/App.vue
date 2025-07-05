@@ -20,7 +20,7 @@ const notificationStore = useNotificationStore();
               <summary class="bg-base-100">Create Game</summary>
               <ul class="bg-base-300 rounded-t-none p-2">
                 <li>
-                  <router-link :to="{ name: 'home' }">Find Game</router-link>
+                  <router-link :to="{ name: 'findGame' }">Find Game</router-link>
                 </li>
                 <li>
                   <router-link :to="{ name: 'createGameSteam' }"

@@ -43,6 +43,7 @@ new Router<gamesController>(router)
   .delete('/games/:id', gamesController, 'delete')
 
 new Router<gamesSearchController>(router)
+  .get('/games/search/:id', gamesSearchController, 'read')
   .get('/games/search', gamesSearchController, 'list')
   .post('/games/search', gamesSearchController, 'search')
   .post('/search/create', gamesSearchController, 'create')

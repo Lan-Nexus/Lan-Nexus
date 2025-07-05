@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { signJwt } from '../jwt.js';
+import roles from '../roles.js';
+import { permission } from 'process';
 
 const router = Router();
 
@@ -15,7 +17,8 @@ router.post('/login', (req: Request, res: Response) => {
   if (username !== username || !bcrypt.compareSync(password, passwordHash)) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  const token = signJwt({ username });
+  const token = signJwt({ username, role: 'admin' });
+
   res.json({ token });
 });
 

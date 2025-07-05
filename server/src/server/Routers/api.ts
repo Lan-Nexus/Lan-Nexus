@@ -44,6 +44,13 @@ const archiveFields = [
 
 
 new Router<gamesController>(router)
+  .Permissions({
+    list: 'games:list',
+    read: 'games:read',
+    create: 'games:create',
+    update: 'games:update',
+    delete: 'games:delete'
+  })
   .get('/games', gamesController, 'list')
   .get('/games/:id', gamesController, 'read')
   .post('/games', gamesController, 'create', upload.fields(archiveFields))

@@ -6,15 +6,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
 export function jwtAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No token provided' });
+  if (!token) return next();
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
+  jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, user: object | undefined) => {
+    if (err) return next();
     (req as any).user = user;
     next();
   });
 }
 
-export function signJwt(payload: object) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+export function signJwt(payload: object): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h'});
 }

@@ -54,7 +54,7 @@ watch(model, (newFile) => {
           No image
         </div>
       </template>
-      <FileUpload v-model="model" class="mt-2"></FileUpload>
+      <FileUpload accept="image/*" v-model="model" class="mt-2"></FileUpload>
     </div>
   </div>
 </template>

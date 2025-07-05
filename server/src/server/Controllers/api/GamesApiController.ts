@@ -11,9 +11,29 @@ import Ip from "../../ip.js";
 import path from "path";
 import fs from "fs";
 
+
+function uploadFiles(body: any, location: string, fields: string[], files: Record<string, Express.Multer.File[]>) {
+  const uploadDir = path.join(process.cwd(), location);
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  for (const field of fields) {
+    const fileArray = files[field];
+    if (fileArray && fileArray[0]) {
+      const file = fileArray[0];
+      const ext = path.extname(file.originalname) || ".png";
+      const fileName = `${field}-${Date.now()}${ext}`;
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, file.buffer);
+      // Save relative path for use in frontend/static serving
+      body[field] = `/${location.replace(/^public\//, "")}/${fileName}`;
+    }
+  }
+  return body;
+}
+
 export default class GamesController extends PageController {
-
-
   constructor() {
     super(GameModel, gamesSelectSchema, gamesInsertSchema, gamesUpdateSchema);
   }
@@ -34,36 +54,21 @@ export default class GamesController extends PageController {
 
     body.needsKey = Number(body.needsKey);
     if (req.files) {
-      const files = req.files as Record<string, Express.Multer.File[]>;
-      const uploadDir = path.join(
-        process.cwd(),
-        "public",
-        "games",
-        "images",
-        "uploads"
+      body = uploadFiles(
+        body,
+        path.join("public", "games", "images", "uploads"),
+        ["icon", "logo", "headerImage", "imageCard", "heroImage"],
+        req.files as Record<string, Express.Multer.File[]>
       );
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      const imageFields = [
-        "icon",
-        "logo",
-        "headerImage",
-        "imageCard",
-        "heroImage",
-      ];
-      for (const field of imageFields) {
-        if (files[field] && files[field][0]) {
-          const file = files[field][0];
-          const ext = path.extname(file.originalname) || ".png";
-          const fileName = `${field}-${Date.now()}${ext}`;
-          const filePath = path.join(uploadDir, fileName);
-          fs.writeFileSync(filePath, file.buffer);
-          // Save relative path for use in frontend/static serving
-          body[field] = `/games/images/uploads/${fileName}`;
-        }
-      }
+
+      body = uploadFiles(
+        body,
+        path.join("public", "games", "archives"),
+        ["archives"],
+        req.files as Record<string, Express.Multer.File[]>
+      );
+
+      return body;
     }
-    return body;
   }
 }

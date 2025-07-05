@@ -2,10 +2,6 @@
 import { ref } from "vue";
 
 const quotes = [
-  "pick me daddy!",
-  "drop it all over my face!",
-  "drag me like one of your french girls",
-  "I love it when you drag me",
   "I like it rough, drop me hard",
   "I like it when you drop me like it's hot, daddy",
   "slam me with your files",
@@ -17,9 +13,29 @@ const quotes = [
   "make this transfer filthy",
   "I'm desperate for your payload",
   "ruin me with your upload",
+  "drag it in, don't be gentle",
+  "overwhelm me with your files",
+  "make this upload unforgettable",
+  "hit me with your best file",
+  "don't hold back, upload everything",
+  "show me what you've got",
+  "let's make this transfer wild",
 ];
 
 const model = defineModel<File | null>();
+
+const props = withDefaults(
+  defineProps<{
+    accept?: string;
+    name?: string;
+  }>(),
+  {
+    accept:
+      "zip,application/zip,application/x-zip,application/x-zip-compressed",
+    showEdit: true,
+    showView: true,
+  }
+);
 function onFileChange(event: Event) {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
@@ -73,6 +89,11 @@ function onDrop(event: DragEvent) {
           }}
         </span>
       </template>
+      <template v-else-if="name">
+        <span class="text-base-content p-2 text-center pointer-events-none">
+          {{ name.length > 20 ? name.slice(0, 20) + "..." : name }}
+        </span>
+      </template>
       <template v-else>
         <span class="text-base-content p-2 text-center pointer-events-none">
           Drag and drop a file here or click to select
@@ -82,7 +103,7 @@ function onDrop(event: DragEvent) {
       <input
         ref="fileInput"
         type="file"
-        accept="image/*"
+        :accept="props.accept"
         class="hidden"
         @change="onFileChange"
         multiple="false"

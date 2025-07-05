@@ -31,6 +31,7 @@ function onPressHandle() {
     play: play.value,
     type: type.value,
     status: status.value,
+    archives: fileUpload.value,
     keys: [],
   });
 }
@@ -45,6 +46,7 @@ const headerImage = ref<File | undefined>();
 const Logo = ref<File | undefined>();
 const imageCard = ref<File | undefined>();
 const hero = ref<File | undefined>();
+const fileUpload = ref<File | undefined>();
 const install = ref<string>(props.game?.install || "");
 const uninstall = ref<string>(props.game?.uninstall || "");
 const play = ref<string>(props.game?.play || "await run(GAME_EXECUTABLE);");
@@ -56,6 +58,9 @@ const headerPath = ref<string>(props.game?.headerImage || "");
 const logoPath = ref<string>(props.game?.logo || "");
 const imageCardPath = ref<string>(props.game?.imageCard || "");
 const heroPath = ref<string>(props.game?.heroImage || "");
+const archivePath = ref<string>(
+  props.game?.archives ? props.game.archives.split(/[\\/]/).pop() || "" : ""
+);
 </script>
 
 <template>
@@ -138,7 +143,11 @@ const heroPath = ref<string>(props.game?.heroImage || "");
     <CodeEditor v-model="install" title="Install Script"></CodeEditor>
     <CodeEditor v-model="uninstall" title="Uninstall Script"></CodeEditor>
     <CodeEditor v-model="play" title="Play Script"></CodeEditor>
-    <FileUpload class="mt-10"></FileUpload>
+    <FileUpload
+      v-model="fileUpload"
+      :name="archivePath"
+      class="mt-10"
+    ></FileUpload>
   </template>
 
   <div class="flex justify-end mt-4">

@@ -30,6 +30,7 @@ function updateHandler(game: postGameType) {
       play: game.play,
       type: game.type,
       status: game.status,
+      archives: game.archives,
       keys: [],
     })
     .then(() => {

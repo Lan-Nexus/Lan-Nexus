@@ -14,6 +14,7 @@
     "generate:undo": "drizzle-kit drop",
     "migrate": "drizzle-kit migrate",
     "dev": "nodemon -w src/server -x tsx src/server/index.ts",
+    "dev:info": "tsx src/server/info.ts",
     "dev:renderer": "vite"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "@uiw/codemirror-theme-dracula": "^4.23.14",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
+    "cli-table3": "^0.6.5",
     "codemirror": "^6.0.2",
     "cors": "^2.8.5",
     "daisyui": "^5.0.43",

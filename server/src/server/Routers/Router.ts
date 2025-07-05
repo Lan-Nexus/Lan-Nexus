@@ -8,15 +8,21 @@ type routerHandlerPost = 'create' | 'release' | 'reserve' | 'search' | 'uploadAr
 type routerHandlerPut = 'update';
 type routerHandlerDelete = 'delete';
 
+export const info: Router<any>[] = [];
+
 export default class Router<T extends PageController> {
   #router: ExpressRouter;
   #objects: Record<string, T>;
   _permissions: Record<string, string>;
+  routes: { method: string; path: string, name: string }[];
 
   constructor(router: ExpressRouter) {
     this.#router = router;
     this.#objects = {};
     this._permissions = {};
+    this.routes = [];
+
+    info.push(this);
   }
 
   #makeOrFindObject(ObjectClass: new () => T) {
@@ -57,6 +63,7 @@ export default class Router<T extends PageController> {
     } else {
       this.#router.get(path, handler);
     }
+    this.routes.push({ method: 'GET', path , name: requestHandler });
     return this;
   }
 
@@ -68,6 +75,7 @@ export default class Router<T extends PageController> {
     } else {
       this.#router.post(path, handler);
     }
+    this.routes.push({ method: 'POST', path , name: requestHandler });
     return this;
   }
 
@@ -79,6 +87,7 @@ export default class Router<T extends PageController> {
     } else {
       this.#router.put(path, handler);
     }
+    this.routes.push({ method: 'PUT', path , name: requestHandler });
     return this;
   }
 
@@ -90,6 +99,7 @@ export default class Router<T extends PageController> {
     } else {
       this.#router.delete(path, handler);
     }
+    this.routes.push({ method: 'DELETE', path , name: requestHandler });
     return this;
   }
 
@@ -99,7 +109,6 @@ export default class Router<T extends PageController> {
   }
 
   public Permissions(permissions: Record<string, string>) {
-    console.log('Setting permissions:', permissions);
     this._permissions = permissions;
     return this;
   }

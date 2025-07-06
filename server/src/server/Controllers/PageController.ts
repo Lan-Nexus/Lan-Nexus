@@ -106,7 +106,7 @@ export abstract class PageController {
   public async create(req: Request, res: Response) {
     try {
       await this.preCreate(req, res);
-      const body = this.mapRequestBody(req.body, req, res);
+      const body = await this.mapRequestBody(req.body, req, res);
       const data = await this.InsertSchema.parseAsync(body)
       const results = await this.model.create(data);
       const finalResults = await this.postCreate?.(req, res, results) ?? results;
@@ -146,7 +146,7 @@ export abstract class PageController {
 
   public async update(req: Request, res: Response) {
     await this.preUpdate(req, res);
-    const body = this.mapRequestBody(req.body, req, res);
+    const body = await this.mapRequestBody(req.body, req, res);
     try {
       const data = await this.UpdateSchema.parseAsync({
         ...body,

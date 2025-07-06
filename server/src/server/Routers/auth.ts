@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { signJwt } from '../jwt.js';
 import roles from '../roles.js';
 import { permission } from 'process';
+import dayjs from 'dayjs';
 
 const router = Router();
 
@@ -17,9 +18,13 @@ router.post('/login', (req: Request, res: Response) => {
   if (username !== username || !bcrypt.compareSync(password, passwordHash)) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  const token = signJwt({ username, role: 'admin' });
 
-  res.json({ token });
+  const authTime = Number(process.env.AUTH_TIME) || 1;
+  const expires = dayjs().add(authTime, 'hour');
+  const expiresIn = expires.diff(dayjs(), 'seconds');
+  const token = signJwt({ username, role: 'admin' }, expiresIn);
+
+  res.json({ token, expires: expires.toISOString(), role: 'admin' });
 });
 
 export default router;

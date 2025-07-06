@@ -15,6 +15,6 @@ export function jwtAuth(req: Request, res: Response, next: NextFunction) {
   });
 }
 
-export function signJwt(payload: object): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h'});
+export function signJwt(payload: object,expiresIn:number): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn});
 }

@@ -43,6 +43,8 @@ const login = async () => {
     });
     const token = res.data.token;
     localStorage.setItem('token', token);
+    localStorage.setItem('token_expires', res.data.expires);
+    localStorage.setItem('token_role', res.data.role);
     // Redirect to home or dashboard
     router.push('/');
   } catch (e: any) {

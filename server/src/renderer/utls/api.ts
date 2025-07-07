@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '../router';
 
 // Optionally, get token from localStorage or a Pinia store
 function getAuthToken() {
@@ -25,10 +26,10 @@ api.interceptors.response.use(
         if (
             error.response &&
             error.response.status === 403 &&
-            window.location.pathname !== '/login'
+            router.currentRoute.value.path !== '/login'
         ) {
-            // Redirect to login page
-            window.location.href = '/login';
+            const currentPath = router.currentRoute.value.fullPath;
+            router.push({ path: '/login', query: { redirect: currentPath } });
         }
         return Promise.reject(error);
     }

@@ -27,12 +27,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import api from '../utls/api';
-import { useRouter } from 'vue-router';
+
+import { useRouter, useRoute } from 'vue-router';
 
 const username = ref('');
 const password = ref('');
 const error = ref('');
 const router = useRouter();
+const route = useRoute();
 
 const login = async () => {
   try {
@@ -45,8 +47,7 @@ const login = async () => {
     localStorage.setItem('token', token);
     localStorage.setItem('token_expires', res.data.expires);
     localStorage.setItem('token_role', res.data.role);
-    // Redirect to home or dashboard
-    router.push('/');
+    router.push((route.query.redirect as string) || '/');
   } catch (e: any) {
     if (e.response && e.response.data && e.response.data.error) {
       error.value = e.response.data.error;

@@ -44,6 +44,18 @@ export type postGameType = {
     keys: string[]
 };
 
+function setFormData(gameData: postGameType): FormData {
+    const formData = new FormData();
+
+    for (const key in gameData) {
+        const typedKey = key as keyof postGameType;
+        if (gameData[typedKey] !== undefined) {
+            formData.append(key, gameData[typedKey] as any);
+        }
+    }
+    return formData;
+}
+
 export const useGamesStore = defineStore('games', {
     state: () => ({
         games: [] as getGameType[],
@@ -74,14 +86,8 @@ export const useGamesStore = defineStore('games', {
         },
 
         async createGame(gameData: postGameType) {
-            const formData = new FormData();
 
-            for (const key in gameData) {
-                const typedKey = key as keyof postGameType;
-                if (gameData[typedKey] !== undefined) {
-                    formData.append(key, gameData[typedKey] as any);
-                }
-            }
+            const formData = setFormData(gameData);
 
             const response = await api.post<{ data: postGameType }>('/api/games', formData, {
                 headers: {
@@ -95,15 +101,7 @@ export const useGamesStore = defineStore('games', {
 
         async updateGame(id: string, gameData: postGameType) {
 
-
-            const formData = new FormData();
-
-            for (const key in gameData) {
-                const typedKey = key as keyof postGameType;
-                if (gameData[typedKey] !== undefined) {
-                    formData.append(key, gameData[typedKey] as any);
-                }
-            }
+            const formData = setFormData(gameData);
 
             const response = await api.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
                 headers: {

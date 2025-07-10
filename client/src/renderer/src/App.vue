@@ -24,7 +24,7 @@ gameStore.autoRefreshGames();
 onMounted(() => document.addEventListener("keyup", keyHandler));
 onUnmounted(() => document.removeEventListener("keyup", keyHandler));
 
-const newIpAddress = ref('')
+const newIpAddress = ref(localStorage.getItem('serverAddress') || '');
 const modalRef = ref<HTMLDialogElement | null>(null)
 
 function keyHandler(event: KeyboardEvent) {
@@ -41,6 +41,7 @@ function addServerAddress() {
     }
 
     serverAddressStore.setServerAddress(newIpAddress.value);
+    localStorage.setItem('serverAddress', newIpAddress.value);
     modalRef.value?.close();
   }
 }

@@ -1,5 +1,5 @@
 import path from "path";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 
 export default function ({ _gameDir }) {
   return {
@@ -15,8 +15,13 @@ export default function ({ _gameDir }) {
     ],
     action(cmdPath) {
       return new Promise((resolve, reject) => {
-        const fullPath = path.join(_gameDir, cmdPath);
-        exec(fullPath, { cwd: _gameDir }, (error, stdout, stderr) => {
+        // Split cmdPath into directory and file
+        const dir = path.dirname(cmdPath);
+        const file = path.basename(cmdPath);
+        const runDir = path.join(_gameDir, dir);
+        const fullPath = path.join(runDir, file);
+        console.log(`Running command: ${fullPath} in directory: ${runDir}`);
+        execFile(fullPath, { cwd: runDir }, (error, stdout, stderr) => {
           if (error) {
             reject(error);
           } else {

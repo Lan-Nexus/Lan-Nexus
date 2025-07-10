@@ -12,7 +12,7 @@ import path from "path";
 import fs from "fs";
 
 
-function uploadFiles(body: any, location: string, fields: string[], files: Record<string, Express.Multer.File[]>) {
+async function uploadFiles(body: any, location: string, fields: string[], files: Record<string, Express.Multer.File[]>) {
   const uploadDir = path.join(process.cwd(), location);
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -25,7 +25,7 @@ function uploadFiles(body: any, location: string, fields: string[], files: Recor
       const ext = path.extname(file.originalname) || ".png";
       const fileName = `${field}-${Date.now()}${ext}`;
       const filePath = path.join(uploadDir, fileName);
-      fs.writeFileSync(filePath, file.buffer);
+      await fs.promises.writeFile(filePath, file.buffer);
       // Save relative path for use in frontend/static serving
       body[field] = `/${location.replace(/^public\//, "")}/${fileName}`;
     }
@@ -46,7 +46,7 @@ export default class GamesController extends PageController {
       }
     }
   }
-  
+
 
   public async mapRequestBody(body: any, req: Request, res: Response): any {
     if (body.id) {
@@ -60,17 +60,17 @@ export default class GamesController extends PageController {
         body[field] = await this.downloadImage(body[field], field);
       }
     }
-    
+
     body.needsKey = Number(body.needsKey);
     if (req.files) {
-      body = uploadFiles(
+      body = await uploadFiles(
         body,
         path.join("public", "games", "images", "uploads"),
         ["icon", "logo", "headerImage", "imageCard", "heroImage"],
         req.files as Record<string, Express.Multer.File[]>
       );
 
-      body = uploadFiles(
+      body = await uploadFiles(
         body,
         path.join("public", "games", "archives"),
         ["archives"],
@@ -81,7 +81,7 @@ export default class GamesController extends PageController {
     }
   }
 
-  private async downloadImage(url: string,type:string): Promise<string> {
+  private async downloadImage(url: string, type: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       if (!url) {
         reject(new Error("No URL provided for image download"));

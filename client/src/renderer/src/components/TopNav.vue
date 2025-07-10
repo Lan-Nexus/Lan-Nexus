@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCog, faArrowsRotate, faHome, faGamepad } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faArrowsRotate, faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 import { useGameStore } from '../stores/useGameStore.js';
 import { useAvatarStore } from '@renderer/stores/useAvatarStore.js';

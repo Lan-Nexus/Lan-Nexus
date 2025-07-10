@@ -6,12 +6,12 @@ const colors = [
   "b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf", "c2f5b5", "f7f7b6", "f7c6b6", "e0bb95", "f1c27d", "ffdbac", "d1a17b", "a87554", "6f4e37", "f5e6da", "f7cac9", "b5ead7", "ffb7b2", "b28dff", "f7b267", "f4845f", "f27059", "b8b8ff", "b5ead7", "c7ceea"
 ];
 
-function getLocalStorage(key: string, defaultValue: string = ''): string {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(key) || defaultValue;
-  }
-  return defaultValue;
-}
+// function getLocalStorage(key: string, defaultValue: string = ''): string {
+//   if (typeof window !== 'undefined') {
+//     return localStorage.getItem(key) || defaultValue;
+//   }
+//   return defaultValue;
+// }
 
 function setLocalStorage(key: string, value: string) {
   if (typeof window !== 'undefined') {

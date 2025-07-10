@@ -63,7 +63,7 @@ function updateShadow() {
         </button>
         <button
           class="btn btn-error w-24"
-          @click="gameStore.uninstallArchive"
+          @click="gameStore.uninstallArchive()"
           :disabled="!isInstalled || isloading || isIngame"
         >
           Uninstall

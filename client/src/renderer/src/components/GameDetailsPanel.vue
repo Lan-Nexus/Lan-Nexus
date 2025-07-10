@@ -4,7 +4,6 @@ import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
 
 import { useServerAddressStore } from '../stores/useServerAddress.js';
 import { gameState } from '@renderer/types';
-import ActivePlayers from './ActivePlayers.vue';
 const serverAddressStore = useServerAddressStore();
 
 const { game } = defineProps<{ game: gameState }>();

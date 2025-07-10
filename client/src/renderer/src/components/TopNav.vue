@@ -10,7 +10,7 @@ const gameStore = useGameStore();
 </script>
 <template>
   <div
-    class="flex justify-between items-center bg-base-content shadow-lg absolute w-full pe-4 gap-4"
+    class="flex justify-between items-center shadow-lg absolute w-full pe-4 gap-4"
   >
     <h1 class="text-4xl font-bold text-center p-4 text-primary-content">LanLauncher</h1>
     <div class="flex-grow"></div>

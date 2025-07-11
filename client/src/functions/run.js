@@ -25,6 +25,7 @@ export default async function(gameName, code, args = []) {
   
   const util = {
     gameName,
+    GAME_DIR: gameDir,
     ...args,
     ...functions,
     progress: progressCallback,

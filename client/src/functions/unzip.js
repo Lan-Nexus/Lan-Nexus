@@ -84,6 +84,8 @@ export default async function unzip(filename, gameName) {
           log.warn('Some files were skipped:', skippedFiles);
         }
         
+        zipfile.close();
+        
         resolve({
           extractedFiles,
           skippedFiles,

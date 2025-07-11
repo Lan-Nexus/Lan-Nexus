@@ -13,15 +13,15 @@ export default function ({ _gameDir }) {
         required: true,
       },
     ],
-    action(cmdPath) {
+    action(cmdPath, params) {
       return new Promise((resolve, reject) => {
         // Split cmdPath into directory and file
         const dir = path.dirname(cmdPath);
         const file = path.basename(cmdPath);
         const runDir = path.join(_gameDir, dir);
         const fullPath = path.join(runDir, file);
-        console.log(`Running command: ${fullPath} in directory: ${runDir}`);
-        execFile(fullPath, { cwd: runDir }, (error, stdout, stderr) => {
+        console.log(`Running command: ${fullPath} in directory: ${runDir} with params:`, params);
+        execFile(fullPath, params, { cwd: runDir, execArgs: params }, (error, stdout, stderr) => {
           if (error) {
             reject(error);
           } else {

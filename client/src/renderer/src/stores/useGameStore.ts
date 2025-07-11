@@ -93,13 +93,14 @@ export const useGameStore = defineStore('game', {
         const url = serverAddressStore.serverAddress + game.archives
         await functions.download(url, archiveFile);
         await functions.unzip(archiveFile, safeName);
-        await functions.run(safeName, game.install, { GAME_KEY: game.gamekey?.key ?? '' });
+        await functions.run(safeName, game.install, { GAME_KEY: game.gamekey?.key ?? '', GAME_ID: String(game.gameID), GAME_NAME: game.name, GAME_EXECUTABLE: game.executable || '' });
         await functions.clearTemp();
         game.isInstalled = true;
         alerts.showSuccess({ title: 'Install Success', description: 'Game installed successfully!' });
       } catch (error) {
         logger.error(error);
-        this.uninstallArchive(true);
+        //this.uninstallArchive(true);
+        //await functions.clearTemp();
         alerts.showError({ title: 'Install Failed', description: 'Failed to install game.<br>' + (error instanceof Error ? error.message : '') });
       } finally {
         progressStore.active = false;

@@ -8,7 +8,7 @@ export const useProgressStore = defineStore('progress', {
   state: () => {
     return {
       active: false,
-      progress: 0,
+      progress: null as number | null,
       message: 'Loading...',
     };
   },
@@ -16,10 +16,16 @@ export const useProgressStore = defineStore('progress', {
     setActive(active: boolean) {
       this.active = active;
     },
+    loading() {
+      this.active = true;
+      this.progress = null;
+      this.message = 'Loading...';
+      logger.log('Progress cleared');
+    },
     setProgress(amount: string, msg: string) {
       this.active = true;
       logger.log('Setting progress:', amount);
-      logger.log('Setting message:', msg);
+      logger.log ('Setting message:', msg);
       this.progress = Number(amount);
 
       if (this.progress < 0 || this.progress > 100) {
@@ -40,6 +46,10 @@ export const useProgressStore = defineStore('progress', {
       progressAPI.onProgressActive((state) => {
         logger.log('Setting active from api :', state);
         this.setActive(state);
+      });
+      progressAPI.onProgressLoading(() => {
+        logger.log('Loading from api');
+        this.loading();
       });
       logger.log('Progress api loaded')
     },

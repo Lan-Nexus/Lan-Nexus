@@ -18,6 +18,10 @@ const progressAPI = {
     console.log('progressActive')
     ipcRenderer.on('progressActive', (_event, state) => callback(state));
   },
+  onProgressLoading: (callback: () => void) => {
+    console.log('progressLoading')
+    ipcRenderer.on('progressLoading', () => callback());
+  }
 };
 
 if (process.contextIsolated) {

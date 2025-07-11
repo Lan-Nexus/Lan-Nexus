@@ -1,6 +1,6 @@
 import path from 'path';
 import runUtils from './../../../runUtils/index.js';
-import { progressCallback, progressActive } from './utils.js';
+import { progressCallback, progressActive,progressLoading } from './utils.js';
 
 /**
  * Executes user-provided async code in the context of a specific game directory.
@@ -29,6 +29,9 @@ export default async function(gameName, code, args = []) {
     ...args,
     ...functions,
     progress: progressCallback,
+    progressLoading: () => {
+        progressLoading();
+    },
     showProgress: () => {
         progressActive(true);
     },

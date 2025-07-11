@@ -15,6 +15,7 @@ declare global {
     progressAPI: {
       onProgress: (callback: (amount: string, name: string) => void) => void;
       onProgressActive: (callback: (state: boolean) => void) => void;
+      onProgressLoading: (callback: () => void) => void;
     }
     api: {
       function: (...args: any[]) => Promise<any>

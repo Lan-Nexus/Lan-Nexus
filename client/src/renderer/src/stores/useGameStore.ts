@@ -99,8 +99,8 @@ export const useGameStore = defineStore('game', {
         alerts.showSuccess({ title: 'Install Success', description: 'Game installed successfully!' });
       } catch (error) {
         logger.error(error);
-        //this.uninstallArchive(true);
-        //await functions.clearTemp();
+        this.uninstallArchive(true);
+        await functions.clearTemp();
         alerts.showError({ title: 'Install Failed', description: 'Failed to install game.<br>' + (error instanceof Error ? error.message : '') });
       } finally {
         progressStore.active = false;

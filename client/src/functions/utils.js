@@ -23,3 +23,12 @@ export const progressActive = (state) => {
     Logger('progressActive').log('mainWindow not set!');
   }
 };
+
+export const progressLoading = () => {
+  Logger('progressLoading').log('Loading...');
+  if (mainWindow) {
+    mainWindow.webContents.send('progressLoading');
+  } else {
+    Logger('progressLoading').log('mainWindow not set!');
+  }
+}

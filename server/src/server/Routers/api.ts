@@ -12,7 +12,8 @@ import { jwtAuth } from '../jwt.js';
 const router = express.Router();
 router.use(jwtAuth as express.RequestHandler);
 
-const upload = multer({ storage: multer.memoryStorage() });
+console.log(path.join(process.cwd(), 'public', 'games', 'archives', 'temp'));
+const upload = multer({ dest: path.join(process.cwd(), 'public', 'games', 'temp') }); // for images
 
 const fileUploadFields = [
   { name: 'icon', maxCount: 1 },

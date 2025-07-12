@@ -25,7 +25,7 @@ async function uploadFiles(body: any, location: string, fields: string[], files:
       const ext = path.extname(file.originalname) || ".png";
       const fileName = `${field}-${Date.now()}${ext}`;
       const filePath = path.join(uploadDir, fileName);
-      await fs.promises.writeFile(filePath, file.buffer);
+      await fs.promises.rename(file.path, filePath);
       // Save relative path for use in frontend/static serving
       body[field] = `/${location.replace(/^public\//, "")}/${fileName}`;
     }
@@ -48,7 +48,7 @@ export default class GamesController extends PageController {
   }
 
 
-  public async mapRequestBody(body: any, req: Request, res: Response): any {
+  public async mapRequestBody(body: any, req: Request, res: Response) {
     if (body.id) {
       body.id = Number(body.id);
     }

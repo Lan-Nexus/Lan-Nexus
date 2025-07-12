@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import api from '../utls/api'
+import type { AxiosProgressEvent } from 'axios';
 
 export type getGameType = {
     id?: number,
@@ -59,6 +60,8 @@ function setFormData(gameData: postGameType): FormData {
 export const useGamesStore = defineStore('games', {
     state: () => ({
         games: [] as getGameType[],
+        uploadProgress: void 0 as number | undefined,
+        isProcessing: false
     }),
 
     getters: {
@@ -100,16 +103,30 @@ export const useGamesStore = defineStore('games', {
         },
 
         async updateGame(id: string, gameData: postGameType) {
-
-            const formData = setFormData(gameData);
-
-            const response = await api.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Accept': 'application/json'
-                }
-            });
-            this.games.push(response.data.data as getGameType)
+            this.isProcessing = true;
+            try {
+                const formData = setFormData(gameData);
+                const response = await api.put<{ data: postGameType }>(`/api/games/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Accept': 'application/json'
+                    },
+                    onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+                        console.log(progressEvent.lengthComputable);
+                        if (progressEvent.lengthComputable) {
+                            console.log(progressEvent);
+                            const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 0));
+                            // You can emit or handle percentCompleted here as needed
+                            console.log(`Upload progress: ${percentCompleted}%`);
+                            this.uploadProgress = percentCompleted;
+                        }
+                    }
+                });
+                this.games.push(response.data.data as getGameType)
+            } finally {
+                this.isProcessing = false;
+                this.uploadProgress = void 0; // Reset progress after upload
+            }
         }
     }
 });

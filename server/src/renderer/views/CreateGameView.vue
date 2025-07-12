@@ -3,8 +3,10 @@ import GameForm from "@/components/gameForm/GameForm.vue";
 import router from "@/router";
 import { useGamesStore, type postGameType } from "@/stores/games";
 
+const gamesStore = useGamesStore();
+
 function createGame(game: postGameType) {
-  useGamesStore()
+  gamesStore
     .createGame({
       gameID: game.gameID,
       name: game.name,
@@ -34,5 +36,10 @@ function createGame(game: postGameType) {
 
 <template>
   <h1 class="text-3xl font-bold mb-4">Create Game</h1>
-  <GameForm @primary="createGame" primary="Create" />
+  <GameForm
+    @primary="createGame"
+    primary="Create"
+    :isProgressing="gamesStore.isProcessing"
+    :progressLevel="gamesStore.uploadProgress"
+  />
 </template>

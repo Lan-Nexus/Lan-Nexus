@@ -8,6 +8,8 @@ import { type getGameType, type postGameType } from "@/stores/games";
 const props = defineProps<{
   game?: getGameType;
   primary: string;
+  isProgressing: boolean;
+  progressLevel?: number;
 }>();
 
 const emit = defineEmits<{
@@ -151,8 +153,18 @@ const archivePath = ref<string>(
   </template>
 
   <div class="flex justify-end mt-4">
-    <button @click="onPressHandle" class="btn btn-primary ml-2">
-      {{ props.primary }}
+    <button
+      @click="onPressHandle"
+      class="btn btn-primary ml-2"
+      :disabled="props.isProgressing"
+    >
+      <template v-if="props.isProgressing">
+        <span class="loading loading-spinner"></span>
+        {{ props.progressLevel ? props.progressLevel + "%" : "Processing..." }}
+      </template>
+      <template v-else>
+        {{ props.primary }}
+      </template>
     </button>
   </div>
 </template>

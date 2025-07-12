@@ -44,5 +44,11 @@ function updateHandler(game: postGameType) {
 
 <template>
   <h1 class="text-3xl font-bold mb-4 text-center">Update Game</h1>
-  <GameForm @primary="updateHandler" primary="Update" :game="game" />
+  <GameForm
+    @primary="updateHandler"
+    primary="Update"
+    :game="game"
+    :isProgressing="gamesStore.isProcessing"
+    :progressLevel="gamesStore.uploadProgress"
+  />
 </template>

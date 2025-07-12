@@ -17,11 +17,13 @@ export default function () {
       { name: 'VALUE', description: 'The string value to set as the default value', required: true },
     ],
     async action(hive, key, nameVar, subkey, value) {
-      const logger = Logger('updateRegistry');
+      const logger = Logger('updateRegistryAdmin');
       const setItemCommand = buildSetItemCommand(hive, key, nameVar, subkey, value);
       logger.log('Preparing PowerShell admin command:', setItemCommand);
       try {
-        const adminCommand = `Start-Process powershell.exe -Verb RunAs -WindowStyle Minimized -ArgumentList '-NoProfile -Command \"${setItemCommand}\"'`;
+        // Use a more reliable approach for admin execution
+        const escapedCommand = setItemCommand.replace(/'/g, "''");
+        const adminCommand = `Start-Process powershell.exe -Verb RunAs -Wait -WindowStyle Hidden -ArgumentList '-NoProfile','-Command','${escapedCommand}'`;
         logger.log('Running as admin with PowerShell:', adminCommand);
         await execFileAsync('powershell.exe', ['-NoProfile', '-Command', adminCommand]);
         logger.log('Registry value updated successfully (admin)');
@@ -35,8 +37,12 @@ export default function () {
 
 function buildSetItemCommand(hive, key, nameVar, subkey, value) {
   const psHive = hive + ':';
-  const psKey = key.replace(/\\/g, '\\');
-  const psSubkey = subkey.replace(/\\/g, '\\');
-  const psPath = `${psHive}\\${psKey}\\${psSubkey}`;
-  return `Set-ItemProperty -Path \"${psPath}\" -Name \"${nameVar}\" -Value \"${value}\"`;
+  // Don't double-escape backslashes - PowerShell handles single backslashes fine in quoted strings
+  const psPath = `${psHive}\\${key}\\${subkey}`;
+  
+  // Escape single quotes in the value to prevent command injection
+  const escapedValue = value.replace(/'/g, "''");
+  
+  // Command to create the path if it doesn't exist and then set the property
+  return `if (-not (Test-Path '${psPath}')) { New-Item -Path '${psPath}' -Force | Out-Null }; Set-ItemProperty -Path '${psPath}' -Name '${nameVar}' -Value '${escapedValue}'`;
 }

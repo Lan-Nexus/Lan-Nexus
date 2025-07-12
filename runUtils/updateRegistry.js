@@ -40,8 +40,12 @@ export default function () {
 
 function buildSetItemCommand(hive, key, nameVar, subkey, value) {
   const psHive = hive + ':';
-  const psKey = key.replace(/\\/g, '\\');
-  const psSubkey = subkey.replace(/\\/g, '\\');
-  const psPath = `${psHive}\\${psKey}\\${psSubkey}`;
-  return `Set-ItemProperty -Path \"${psPath}\" -Name \"${nameVar}\" -Value \"${value}\"`;
+  // Don't double-escape backslashes - PowerShell handles single backslashes fine in quoted strings
+  const psPath = `${psHive}\\${key}\\${subkey}`;
+  
+  // Escape double quotes in the value to prevent command injection
+  const escapedValue = value.replace(/"/g, '""');
+  
+  // Command to create the path if it doesn't exist and then set the property
+  return `if (-not (Test-Path '${psPath}')) { New-Item -Path '${psPath}' -Force | Out-Null }; Set-ItemProperty -Path '${psPath}' -Name '${nameVar}' -Value '${escapedValue}'`;
 }

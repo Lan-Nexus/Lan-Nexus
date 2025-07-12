@@ -136,7 +136,9 @@ export const useGameStore = defineStore('game', {
         } 
       } catch (error) {
         logger.error(error);
-        alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });
+        if(!hideAlerts){
+          alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });
+        }
       } finally {
         progressStore.active = false;
         this.loading = false;

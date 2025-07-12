@@ -15,7 +15,7 @@ const progressStore = useProgressStore();
       <progress
         v-if="progressStore.active"
         class="progress progress-primary w-full h-4"
-        :value="progressStore.progress"
+        :value="progressStore.progress ?? 0"
         max="100"
       />
     </div>

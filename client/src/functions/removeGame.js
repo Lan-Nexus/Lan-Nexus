@@ -4,6 +4,10 @@ import { progressCallback } from './utils.js'
 
 export default async (gameName) => {
 
+  if (!gameName) {
+    throw new Error('Game name is required to remove a game.');
+  }
+
   progressCallback(0);
 
   let gameDir = path.join(__dirname, '../../games');

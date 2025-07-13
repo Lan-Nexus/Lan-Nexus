@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,7 +50,14 @@ jobs:
           git config --local user.name "GitHub Action"
           git add client/package.json
           git commit -m "Update version to ${{ steps.get_version.outputs.version }}" || exit 0
-          git push
+          
+          # Get the branch that contains this tag
+          $branch = git branch -r --contains HEAD | Where-Object { $_ -notmatch 'HEAD' } | ForEach-Object { $_.Trim() -replace '^origin/', '' } | Select-Object -First 1
+          if (-not $branch) {
+            $branch = "main"
+          }
+          echo "Pushing to branch: $branch"
+          git push origin HEAD:$branch
         
       - name: Install dependencies
         working-directory: ./client

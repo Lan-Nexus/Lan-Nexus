@@ -24,6 +24,31 @@ jobs:
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
           
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          $tagName = "${{ github.ref_name }}"
+          $version = $tagName -replace '^v', ''
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "Extracted version: $version"
+        
+      - name: Update package.json version
+        working-directory: ./client
+        run: |
+          $version = "${{ steps.get_version.outputs.version }}"
+          $packageJson = Get-Content package.json | ConvertFrom-Json
+          $packageJson.version = $version
+          $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
+          echo "Updated package.json version to: $version"
+        
+      - name: Commit version update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add client/package.json
+          git commit -m "Update version to ${{ steps.get_version.outputs.version }}" || exit 0
+          git push
+        
       - name: Install dependencies
         working-directory: ./client
         run: npm ci

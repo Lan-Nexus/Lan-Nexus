@@ -1,0 +1,191 @@
+
+<% if (data) { %>
+    <div x-data="searchGamesComponent()">
+        <template x-if="showHero">
+            <div>
+                <h1>Select Hero</h1>
+                <div class="row">
+                    <% for( let index = 0; index < data.hero.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedHero('<%= data.hero[index].url %>')" class="card-img-top p-2" src="<%= data.hero[index].thumb %>">
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="showGrid">
+            <div>
+                <h1>Select Grid</h1>
+                <div class="row">
+                    <% for( let index=0; index < data.grid.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedGrid('<%= data.grid[index].url %>')" class="card-img-top p-2"
+                                    src="<%= data.grid[index].thumb %>">
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="showIcon">
+            <div>
+                <h1>Select Icon</h1>
+                <div class="row">
+                    <% for( let index=0; index < data.icon.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedIcon('<%= data.icon[index].url %>')" class="card-img-top p-2"
+                                    src="<%= data.icon[index].thumb %>">
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </template>
+        
+        <template x-if="showLogo">
+            <div>
+                <h1>Select Logo</h1>
+
+                <div class="row">
+                    <% for( let index=0; index < data.logo.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedLogo('<%= data.logo[index].url %>')" class="card-img-top p-2"
+                                    src="<%= data.logo[index].thumb %>">
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="showHeaderCard">
+            <div>
+                <h1>Select Header Card</h1>
+        
+                <div class="row">
+                    <% for( let index=0; index < data.card.length; index++ ) { %>
+                        <div class="col-auto mb-3">
+                            <div class="card hero-select-box" style="cursor: pointer;" data-index="<%= index %>">
+                                <img height="200" @click="selectedHeaderCard('<%= data.card[index].url %>')" class="card-img-top p-2"
+                                    src="<%= data.card[index].thumb %>">
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="processing">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </template>
+    </div>
+    <style>
+        .hero-select-box {
+            transition: box-shadow 0.2s, border-color 0.2s;
+            border: 0px solid transparent;
+            background: rgba(0, 0, 0, 0.2);
+        }
+    
+        .hero-select-box:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
+            background: rgba(13, 110, 253, 0.2);
+        }
+    
+        .hero-select-box.border-primary {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .5);
+        }
+    </style>
+    <script>
+        function searchGamesComponent() {
+                return {
+                    showHero: true,
+                    showGrid: false,
+                    showIcon: false,
+                    showLogo: false,
+                    showHeaderCard: false,
+                    processing: false,
+
+                    selectedHero: null,
+                    selectedGrid: null,
+                    selectedIcon: null,
+                    selectedLogo: null,
+                    selectedHeaderCard: null,
+
+                    selectedHero(url) {
+                        this.selectedHero = url.split('/').pop();
+                        this.showGrid = true;
+                        this.showHero = false;
+                    },
+
+                    selectedGrid(url) {
+                        this.selectedGrid = url.split('/').pop();
+                        this.showIcon = true;
+                        this.showGrid = false;
+                    },
+
+                    selectedIcon(url) {
+                        this.selectedIcon = url.split('/').pop();
+                        this.showLogo = true;
+                        this.showIcon = false;
+                    },
+
+                    selectedLogo(url) {
+                        this.selectedLogo = url.split('/').pop();
+                        this.showLogo = false;
+                        this.showHeaderCard = true;
+                    },
+
+                    selectedHeaderCard(url) {
+                        this.showHeaderCard = false;
+                        this.selectedHeaderCard = url.split('/').pop();
+                        this.processRequest();
+                    },
+
+                   async processRequest(){
+                        this.processing = true;    
+
+    
+                        axios.post('/api/search/create', {
+                            gameID: '<%= data.game.id %>',
+                            name: '<%= data.game.name %>',
+                            hero: this.selectedHero,
+                            grid: this.selectedGrid,
+                            icon: this.selectedIcon,
+                            logo: this.selectedLogo,
+                            card: this.selectedHeaderCard,
+                            type: 'archive',
+                            description: ''
+                        }).then(response => {
+                            if (response.status == 200) {
+                                window.location.href = '/games/' + response.data.data.id +'/edit';
+                            } else {
+                                alert('Error: ' + response.data.message);
+                            }
+                        }).catch(error => {
+                            console.error(error);
+                            alert('An error occurred while processing your request.');
+                        }).finally(() => {
+                            this.processing = false;
+                        });
+                    
+                    }
+                }
+            }
+        
+    </script>
+<% } %>
+
+

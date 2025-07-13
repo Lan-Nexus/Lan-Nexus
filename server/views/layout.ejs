@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= 'Games App' %></title>
+  <link href="/assets/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/games">Games App</a>
+    </div>
+  </nav>
+  <div class="container">
+    <%- body %>
+  </div>
+  <script src="/assets/htmx.org@1.9.12.js"></script>
+  <script src="/assets/bootstrap.js"></script>
+  <script defer src="/assets/alpinejs@3.x.x.js"></script>
+  <script src="/assets/axios@1.10.0.js"></script>
+</body>
+</html>

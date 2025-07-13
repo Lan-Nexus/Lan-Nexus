@@ -6,6 +6,12 @@ import GameDetailsPanel from '@renderer/components/GameDetailsPanel.vue';
 
 const gameStore = useGameStore();
 gameStore.loadGames();
+
+function onSelectGame(game) {
+  if (game && game.id !== undefined) {
+    gameStore.selectGame(game.id);
+  }
+}
 </script>
 
 <template>
@@ -13,7 +19,8 @@ gameStore.loadGames();
     <SideNav />
     <template v-if="gameStore.selectedGame">
       <GameDetailsPanel
-        v-model="gameStore.selectedGame"
+        :game="gameStore.selectedGame"
+        @select-game="onSelectGame"
         class="flex flex-col flex-1"
         style="height: 88vh; overflow: overlay"
       ></GameDetailsPanel>

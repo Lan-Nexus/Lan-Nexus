@@ -1,10 +1,27 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, computed } from 'vue';
 import { useGameStore } from '../stores/useGameStore.js';
+import { useRunningStore } from '../stores/useRunning.js';
 
 const actionBarPanel = useTemplateRef<HTMLElement>('actionBarPanel');
 const gameStore = useGameStore();
+const runningStore = useRunningStore();
 const height = 72;
+
+const isInstalled = computed(() => {
+  return gameStore.selectedGame?.isInstalled ?? false;
+});
+
+const isloading = computed(() => {
+  return gameStore.loading ?? false;
+});
+
+const isIngame = computed(() => {
+  const game = gameStore.selectedGame;
+  if (!game || !game.executable) return false;
+  return runningStore.isRunning(game.executable); 
+});
+
 
 onMounted(() => {
   if (actionBarPanel.value) {
@@ -35,44 +52,44 @@ function updateShadow() {
     ref="actionBarPanel"
     class="flex flex-row gap-4 border-2 border-base-200 p-4 justify-between items-center sticky top-0 z-10"
   >
-    <select
-      v-if="gameStore.selectedGame?.type === 'zip'"
-      v-model="gameStore.selectedGame.selectedArchive"
-      class="select select-bordered w-64"
-    >
-      <option disabled value="">Select an archive</option>
-      <option
-        v-for="archive in gameStore.selectedGame?.archives"
-        :key="archive.id"
-        :value="archive.id"
-      >
-        {{ archive.name }} => {{ archive.version }} ({{ archive.os }})
-      </option>
-    </select>
-    <div v-if="gameStore.selectedGame?.type !== 'zip'"></div>
-    <button
-      v-if="gameStore.selectedGame?.type !== 'zip'"
-      class="btn btn-warning"
-      @click="gameStore.play"
-    >
-      Launch in {{ gameStore.selectedGame?.type }}
-    </button>
-
-    <div v-if="gameStore.selectedGame?.type === 'zip'" class="flex gap-2">
-      <button
-        v-if="gameStore.selectedArchive?.isInstalled"
-        class="btn btn-error w-24"
-        @click="gameStore.uninstallArchive"
-      >
-        Uninstall
-      </button>
-      <button v-else class="btn btn-primary w-24" @click="gameStore.installArchive">Install</button>
+    <div v-if="gameStore.selectedGame?.type === 'archive'" class="flex gap-2 items-center w-full">
+      <div class="flex gap-2 flex-1">
+        <button
+          class="btn btn-primary w-24"
+          @click="gameStore.installArchive"
+          :disabled="isInstalled || isloading || isIngame"
+        >
+          Install
+        </button>
+        <button
+          class="btn btn-error w-24"
+          @click="gameStore.uninstallArchive()"
+          :disabled="!isInstalled || isloading || isIngame"
+        >
+          Uninstall
+        </button>
+        <button
+          class="btn btn-warning"
+          @click="gameStore.play"
+          :disabled="!isInstalled || isloading || isIngame"
+        >
+          Play
+        </button>
+        
+      </div>
+      <div class="badge badge-accent ml-4" v-if="isIngame">
+          In Game
+      </div>
+      <div class="badge badge-secondary ml-4" v-if="gameStore.selectedGame?.needsKey">
+        {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key' }}
+      </div>
+    </div>
+    <div v-else>
       <button
         class="btn btn-warning"
-        :disabled="!gameStore.selectedArchive?.isInstalled"
         @click="gameStore.play"
       >
-        Play
+        Launch in {{ gameStore.selectedGame?.type }}
       </button>
     </div>
   </div>

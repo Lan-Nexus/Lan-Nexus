@@ -1,0 +1,77 @@
+<div class="container py-4">
+  <h1 class="mb-4 text-center">Game Details</h1>
+  <div class="card shadow mb-5">
+    <div class="card-body">
+      <div class="d-flex justify-content-end mb-3 gap-2">
+        <a href="/games/<%= data.id %>/edit" class="btn btn-warning">Edit</a>
+        <button 
+          class="btn btn-danger" 
+          hx-delete="/games/<%= data.id %>" 
+          hx-confirm="Are you sure you want to delete this game?" 
+          hx-target="body" 
+          hx-swap="outerHTML">
+          Delete
+        </button>
+        <a href="/games" class="btn btn-secondary">Back to List</a>
+      </div>
+      <div class="row align-items-center mb-4">
+        <div class="col-auto">
+          <% if (data.icon) { %>
+            <img src="<%= data.icon %>" alt="icon" class="rounded shadow-sm border" style="width:60px;height:60px;object-fit:cover;" />
+          <% } %>
+        </div>
+        <div class="col">
+          <h2 class="card-title mb-0"><%= data.name %></h2>
+          <% if (data.executable) { %>
+            <div class="text-muted small mt-1">
+              <strong>Executable:</strong> <code><%= data.executable %></code>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <% if (data.headerImage) { %>
+        <div class="mb-4 text-center">
+          <strong>Header Image:</strong><br>
+          <img src="<%= data.headerImage %>" alt="header" class="img-fluid rounded shadow-sm border" style="width:200px;height:80px;object-fit:cover;" />
+        </div>
+      <% } %>
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <strong>Game Keys</strong>
+        </div>
+        <% if (data.needsKey) { %>
+        <form 
+          method="POST" 
+          class="row g-2 mb-3 align-items-end"
+          hx-post="/api/games/<%= data.id %>/keys"
+          hx-target="#game-keys-table"
+          hx-swap="outerHTML"
+        >
+          <input type="hidden" name="gameId" value="<%= data.id %>" />
+          <div class="col-md-4">
+            <input type="text" name="key" class="form-control" placeholder="Enter new key" required />
+          </div>
+          <div class="col-md-3">
+            <input type="text" name="ipAddress" class="form-control" placeholder="IP Address (optional)" />
+          </div>
+          <div class="col-md-3">
+            <input type="text" name="clientId" class="form-control" placeholder="Client ID (optional)" />
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Add Key</button>
+          </div>
+        </form>
+          <div id="game-keys-table">
+            <%- include('./_gameKeys', { gameKeys }) %>
+          </div>
+        <% } else { %>
+          <div class="alert alert-info">This game does not require a key.</div>
+        <% } %>
+      </div>
+      <div class="mb-2">
+        <strong>Description:</strong>
+        <div class="bg-light p-3 rounded border"><%- data.description %></div>
+      </div>
+    </div>
+  </div>
+</div>

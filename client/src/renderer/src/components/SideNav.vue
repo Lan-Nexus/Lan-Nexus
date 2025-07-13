@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { useGameStore } from '../stores/useGameStore.js';
-import { serverBaseAddress } from '../utils/server.js';
+import { useServerAddressStore } from '../stores/useServerAddress.js';
+import { useRunningStore } from '@renderer/stores/useRunning.js';
 
 const gameStore = useGameStore();
+const serverAddressStore = useServerAddressStore();
+const runningStore = useRunningStore();
 
 const isSelectedGame = (gameId: number): boolean => {
   return gameStore.selectedGame?.id === gameId;
+};
+
+const isGameRunning = (executable: string): boolean => {
+  return runningStore.isRunning(executable);
 };
 </script>
 
@@ -22,7 +29,7 @@ const isSelectedGame = (gameId: number): boolean => {
     >
       <img
         v-if="game.icon"
-        :src="serverBaseAddress + game.icon"
+        :src="serverAddressStore.serverAddress + game.icon"
         alt="game image"
         class="h-12 w-12"
       />
@@ -37,9 +44,17 @@ const isSelectedGame = (gameId: number): boolean => {
         >
           {{ game.name }}
         </h2>
-        <span class="badge" :class="game.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
-          {{ game.type }}</span
-        >
+        <div class="flex gap-2 mt-1">
+          <span class="badge" :class="game.type === 'archive' ? 'badge-secondary' : 'badge-primary'">
+            {{ game.type }}
+          </span>
+          <span
+            v-if="isGameRunning(game.executable)"
+            class="badge badge-accent"
+          >
+            In Game
+          </span>
+        </div>
       </div>
     </div>
   </div>

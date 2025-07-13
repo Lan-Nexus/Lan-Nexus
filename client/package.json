@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "lan nexus is a cross-platform LAN game launcher that allows you to play games with your friends over a local network.",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "SamDems & TerryTel",
   "homepage": "https://electron-vite.org",
   "type": "module",
   "scripts": {
@@ -22,6 +22,8 @@
     "build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -29,6 +31,7 @@
     "@tailwindcss/vite": "^4.0.14",
     "axios": "^1.8.2",
     "electron-updater": "^6.3.9",
+    "is-elevated": "^4.0.0",
     "pinia": "^3.0.1",
     "tailwindcss": "^4.0.9",
     "vite-plugin-vue-devtools": "^7.7.2",

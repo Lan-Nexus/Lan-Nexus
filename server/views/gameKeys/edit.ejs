@@ -1,0 +1,14 @@
+<h1>Edit Game Key for <%= game.name %></h1>
+<!-- Include htmx if not already included -->
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<div id="edit-key-form-container">
+  <form id="edit-key-form" 
+        hx-put="/games/<%= game.id %>/keys/<%= key.id %>" 
+        hx-target="#edit-key-form-container" 
+        hx-swap="outerHTML">
+    <label>Key: <input type="text" name="key" value="<%= key.key %>" required></label><br>
+    <label>IP Address: <input type="text" name="ipAddress" value="<%= key.ipAddress %>"></label><br>
+    <button type="submit">Update Key</button>
+  </form>
+</div>
+<a href="/games/<%= game.id %>/keys">Back to Keys</a>

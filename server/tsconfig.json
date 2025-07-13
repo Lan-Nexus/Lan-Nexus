@@ -1,14 +1,17 @@
 {
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.server.json"
+    }
+  ],
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "module": "node16",
-    "moduleResolution": "node16",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-  },
-  "include": [
-    "src"
-  ]
+    "module": "NodeNext"
+  }
 }

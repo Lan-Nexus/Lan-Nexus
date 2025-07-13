@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import type { gameState } from '@renderer/stores/useGameStore';
 import ActionBar from '../components/ActionBar.vue';
 import { onMounted, onUnmounted, onUpdated, ref, useTemplateRef } from 'vue';
-import { serverBaseAddress } from '../utils/server.js';
 
-const model = defineModel<gameState>();
+import { useServerAddressStore } from '../stores/useServerAddress.js';
+import { gameState } from '@renderer/types';
+const serverAddressStore = useServerAddressStore();
+
+const { game } = defineProps<{ game: gameState }>();
+defineEmits(['select-game']);
 const height = ref('0px');
 const widthOrHeight = ref<string>();
 const logoElement = useTemplateRef<HTMLElement>('logoElement');
@@ -40,52 +43,56 @@ onUpdated(() => {
 });
 
 onUnmounted(() => {
-  window.addEventListener('resize', updateHeight);
+  window.removeEventListener('resize', updateHeight);
 });
 </script>
 
 <template>
-  <template v-if="model">
+  <template v-if="game">
     <div class="parallax relative">
       <div class="parallax__layer parallax__layer--back">
         <div ref="heroImageElement" class="w-full bg-error">
           <img
-            v-if="model.heroImage"
+            v-if="game.heroImage"
             :onload="updateHeight"
-            :src="serverBaseAddress + model.heroImage"
+            :src="serverAddressStore.serverAddress + game.heroImage"
             alt="game"
             class="w-full"
           />
           <img
-            v-else-if="model.headerImage"
-            :src="serverBaseAddress + model.headerImage"
+            v-else-if="game.headerImage"
+            :src="serverAddressStore.serverAddress + game.headerImage"
             alt="game"
             class="w-full"
           />
-          <div v-else class="w-full h-150 bg-violet-500"></div>
+            <div
+            v-else
+            class="w-full bg-violet-500"
+            :style="{ aspectRatio: '16 / 5.1'}"
+            ></div>
         </div>
       </div>
       <div ref="logoElement" class="relative w-full logo">
         <img
-          v-if="model.logo"
+          v-if="game.logo"
           :onload="getLogoSize"
-          :src="serverBaseAddress + model.logo"
+          :src="serverAddressStore.serverAddress + game.logo"
           :class="widthOrHeight"
           class="absolute -bottom-1/5 left-5"
         />
         <div
-          v-else-if="!model.headerImage"
+          v-else-if="!game.headerImage"
           style="text-shadow: 2px 2px 2px black"
           class="absolute -bottom-1/5 left-5 text-5xl text-white"
         >
-          {{ model.name }}
+          {{ game.name }}
         </div>
       </div>
       <div class="parallax__layer parallax__layer--base">
         <div class="my-[32%] bg-base-200">
           <ActionBar class="bg-base-200" />
           <div class="mt-4 flex flex-row gap-4 px-5">
-            <div v-html="model?.description"></div>
+            <div v-html="game?.description"></div>
           </div>
         </div>
       </div>

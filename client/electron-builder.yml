@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: client
+appId: com.LanLauncher.app
+productName: LanLauncher
 directories:
   buildResources: build
 files:
@@ -12,7 +12,8 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: client
+  executableName: LanLauncher
+  icon: resources/icon.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -31,13 +32,14 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: SamDems & TerryTel
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: samdems
+  repo: Lan-Launcher
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

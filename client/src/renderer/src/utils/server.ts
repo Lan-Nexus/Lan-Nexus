@@ -1,1 +1,0 @@
-export const serverBaseAddress = 'http://localhost:3000';

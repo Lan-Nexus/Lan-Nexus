@@ -1,0 +1,15 @@
+{
+    "extends": "@tsconfig/node20/tsconfig.json",
+    "include": [
+        "src/server/**/*",
+    ],
+    "compilerOptions": {
+        "noEmit": false,
+        "outDir": "dist",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "types": [
+            "node"
+        ]
+    }
+}

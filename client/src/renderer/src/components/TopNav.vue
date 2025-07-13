@@ -26,7 +26,7 @@ const gameStore = useGameStore();
 
     <button
       class="btn"
-      :class="{ 'btn-primary': $route.fullPath === '/' }"
+      :class="{ 'btn-secondary': $route.fullPath === '/' }"
       @click="$router.push('/')"
     >
       <FontAwesomeIcon :icon="faGamepad" class="text-2xl" />
@@ -34,7 +34,7 @@ const gameStore = useGameStore();
 
     <button
       class="btn"
-      :class="{ 'btn-primary': $route.fullPath === '/settings' }"
+      :class="{ 'btn-secondary': $route.fullPath === '/settings' }"
       @click="$router.push('/settings')"
     >
       <FontAwesomeIcon :icon="faCog" class="text-2xl" />

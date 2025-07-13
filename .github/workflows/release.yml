@@ -44,8 +44,12 @@ jobs:
           $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
           echo "Updated package.json version to: $version (temporary for build only)"
 
-      - name: Install dependencies
+      - name: Install client dependencies
         working-directory: ./client
+        run: npm ci
+
+      - name: Install server dependencies
+        working-directory: ./server
         run: npm ci
 
       - name: Build Electron app

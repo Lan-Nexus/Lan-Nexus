@@ -10,7 +10,7 @@ const notificationStore = useNotificationStore();
     <nav class="navbar sticky top-0 z-50 bg-primary text-primary-content">
       <div class="flex-1">
         <RouterLink :to="{ name: 'home' }" class="btn btn-ghost text-xl">
-          <img src="../assets/logo.svg" alt="Lan Exus Logo" class="h-16" />
+          <img src="@/assets/logo-white.svg" alt="Lan Exus Logo" class="h-16" />
         </RouterLink>
       </div>
       <div class="flex-none">

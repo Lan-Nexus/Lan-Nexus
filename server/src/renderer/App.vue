@@ -1,16 +1,30 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import { useNotificationStore } from "@/stores/notification";
+import logo from "@/assets/logo.svg";
+import logoWhite from "@/assets/logo-white.svg";
+import { ref } from "vue";
 
 const notificationStore = useNotificationStore();
+
+const isHovered = ref(false);
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col bg-se">
-    <nav class="navbar sticky top-0 z-50 bg-secondary">
+    <nav class="navbar sticky top-0 z-50 bg-primary text-primary-content">
       <div class="flex-1">
-        <RouterLink :to="{ name: 'home' }" class="btn btn-ghost text-xl">
-          <img src="../assets/logo.svg" alt="Lan Exus Logo" class="h-16" />
+        <RouterLink
+          :to="{ name: 'home' }"
+          class="btn btn-ghost text-xl"
+          @mouseenter="isHovered = true"
+          @mouseleave="isHovered = false"
+        >
+          <img
+            :src="isHovered ? logo : logoWhite"
+            alt="Lan Exus Logo"
+            class="h-16"
+          />
         </RouterLink>
       </div>
       <div class="flex-none">
@@ -20,7 +34,9 @@ const notificationStore = useNotificationStore();
               <summary class="bg-base-100">Create Game</summary>
               <ul class="bg-base-300 rounded-t-none p-2">
                 <li>
-                  <router-link :to="{ name: 'findGame' }">Find Game</router-link>
+                  <router-link :to="{ name: 'findGame' }"
+                    >Find Game</router-link
+                  >
                 </li>
                 <li>
                   <router-link :to="{ name: 'createGameSteam' }"

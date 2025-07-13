@@ -23,6 +23,11 @@ export default class GameKeyApiController extends PageController {
     super(GameKeyModel, gameKeysSelectSchema, gameKeysInsertSchema, gameKeysUpdateSchema);
   }
 
+  public async list(req: Request, res: Response): Promise<void> {
+    const gamekeys = await GameKeyModel.listByGame(Number(req.params.gameId));
+    return res.json(gamekeys);
+  }
+
   public async postCreate(req: Request, res: Response): Promise<void> {
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
   }

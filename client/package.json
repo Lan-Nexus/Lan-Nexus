@@ -1,7 +1,7 @@
 {
-  "name": "lan-launcher",
+  "name": "lan-nexus",
   "version": "0.1.0",
-  "description": "LanLauncher",
+  "description": "lan nexus is a cross-platform LAN game launcher that allows you to play games with your friends over a local network.",
   "main": "./out/main/index.js",
   "author": "SamDems & TerryTel",
   "homepage": "https://electron-vite.org",

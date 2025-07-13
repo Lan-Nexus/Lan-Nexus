@@ -12,7 +12,9 @@ const gameStore = useGameStore();
   <div
     class="flex justify-between items-center shadow-lg absolute w-full pe-4 gap-4"
   >
-    <h1 class="text-4xl font-bold text-center p-4 text-primary-content">LanLauncher</h1>
+    <div class="flex items-center pl-6">
+      <img src="../assets/logo.svg" alt="Lan Exus Logo" class="h-16" />
+    </div>
     <div class="flex-grow"></div>
     <!-- <button
       class="btn"

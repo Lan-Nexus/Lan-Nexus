@@ -1,4 +1,45 @@
 @import "tailwindcss";
+
+/* Disable text selection globally */
+* {
+  user-select: none;
+}
+
+
+@plugin "daisyui/theme" {
+  name: "lan-dark";
+  default: true;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(14% 0.005 285.823);
+  --color-base-200: oklch(21% 0.006 285.885);
+  --color-base-300: oklch(27% 0.006 286.033);
+  --color-base-content: oklch(96% 0.001 286.375);
+  --color-primary: #ff1493;
+  --color-primary-content: oklch(98% 0.031 120.757);
+  --color-secondary: #6c5ce7;
+  --color-secondary-content: oklch(98% 0.022 95.277);
+  --color-accent: #00d4ff;
+  --color-accent-content: oklch(97% 0.014 254.604);
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: #4a90e2;
+  --color-info-content: oklch(28% 0.091 267.935);
+  --color-success: #27ae60;
+  --color-success-content: oklch(26% 0.065 152.934);
+  --color-warning: #f39c12;
+  --color-warning-content: oklch(27% 0.077 45.635);
+  --color-error: #e74c3c;
+  --color-error-content: oklch(25% 0.092 26.042);
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 1;
+}
 @plugin "daisyui" {
-  themes: dark --default, dark --prefersdark, cupcake;
+  themes: lan-dark --default, lan-dark --prefersdark;
 }

@@ -25,7 +25,7 @@ export default class GameKeyApiController extends PageController {
 
   public async list(req: Request, res: Response): Promise<void> {
     const gamekeys = await GameKeyModel.listByGame(Number(req.params.gameId));
-    return res.json(gamekeys);
+    res.json({ data: gamekeys });
   }
 
   public async postCreate(req: Request, res: Response): Promise<void> {
@@ -36,7 +36,7 @@ export default class GameKeyApiController extends PageController {
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
   }
 
-  public async release (req: Request, res: Response): Promise<void> {
+  public async release(req: Request, res: Response): Promise<void> {
     const KeyId = Number(req.params.id);
     await GameKeyModel.release(KeyId);
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
@@ -44,13 +44,13 @@ export default class GameKeyApiController extends PageController {
   }
 
   public async reserve(req: Request, res: Response): Promise<void> {
-    let KeyId = Number(req.params.id); 
+    let KeyId = Number(req.params.id);
 
     const ip = Ip(req, res);
     let nextKey;
-  
-    if(isNaN(KeyId)) {
-      try{
+
+    if (isNaN(KeyId)) {
+      try {
         nextKey = await GameKeyModel.getNextAvailableKey(Number(req.params.gameId));
       } catch (error) {
         this.errorRenderWithViews(res, 'reserve', { error: 'No available keys for this game.' });
@@ -60,10 +60,10 @@ export default class GameKeyApiController extends PageController {
       KeyId = nextKey.id;
     }
 
-    await GameKeyModel.reserve(KeyId,ip, req.body.clientId);
+    await GameKeyModel.reserve(KeyId, ip, req.body.clientId);
     this.otherData.gameKeys = await GameKeyModel.listByGame(Number(req.params.gameId));
     const gamekey = await GameKeyModel.read(KeyId);
-    this.renderWithViews(res, 'reserve', {...gamekey, ipAddress: ip});
+    this.renderWithViews(res, 'reserve', { ...gamekey, ipAddress: ip });
   }
 
   public mapRequestBody(body: any, req: Request, res: Response): any {

@@ -3,13 +3,11 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import logger from '../main/logger';
-import { app } from 'electron';
 
 const log = logger('download');
-let tempDir = app.getPath('temp');
-tempDir = path.join(tempDir, 'Lan-Launcher');
+const tempDir = FileLocation.getTempDir();
 
-import { progressCallback } from './utils.js'
+import { FileLocation, progressCallback } from './utils.js'
 
 export default async function download(url, filename) {
   progressCallback(0, 'Downloading');

@@ -1,4 +1,6 @@
 import Logger from '../main/logger.js';
+import { app } from 'electron';
+import path from 'path';
 
 let mainWindow = null;
 
@@ -30,5 +32,16 @@ export const progressLoading = () => {
     mainWindow.webContents.send('progressLoading');
   } else {
     Logger('progressLoading').log('mainWindow not set!');
+  }
+}
+
+export class FileLocation {
+
+  static getGameDir() {
+    return path.join(app.getPath('appData'), 'lan-launcher', 'games');
+  }
+
+  static getTempDir() {
+    return path.join(app.getPath('temp'), 'lan-launcher');
   }
 }

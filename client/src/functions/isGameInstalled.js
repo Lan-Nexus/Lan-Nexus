@@ -1,14 +1,15 @@
 import { promises as fs } from 'fs'
 import path from 'path';
 import logger from '../main/logger';
-import { app } from 'electron';
+import { FileLocation } from './utils';
+
 
 const log = logger('isGameInstalled');
 
 export default async function isGameInstalled(gameName) {
   log.info('Checking if game is installed:', gameName);
-  const gameDir = path.join(app.getAppPath(), 'games', gameName);
-  
+  const gameDir = path.join(FileLocation.getGameDir(), gameName);
+
   log.log(`Checking if game is installed at ${gameDir}`);
 
   return fs.access(gameDir).then(() => {

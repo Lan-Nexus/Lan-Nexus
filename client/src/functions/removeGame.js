@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { progressCallback } from './utils.js'
-import { app } from 'electron';
+import { FileLocation, progressCallback } from './utils.js'
 export default async (gameName) => {
 
   if (!gameName) {
@@ -10,7 +9,7 @@ export default async (gameName) => {
 
   progressCallback(0);
 
-  const gameDir = path.join(app.getAppPath(), 'games', gameName);
+  const gameDir = path.join(FileLocation.getGameDir(), gameName);
 
   console.log('Removing ' + gameDir);
 

@@ -3,15 +3,13 @@ import fs from 'fs';
 import path from 'path';
 import { pipeline } from 'stream/promises';
 import logger from '../main/logger';
-import { progressCallback } from './utils.js';
-import { app } from 'electron';
+import { FileLocation, progressCallback } from './utils.js';
+
 const log = logger('unzip');
 
 export default async function unzip(filename, gameName) {
-  let tempDir = app.getPath('temp');
-  tempDir = path.join(tempDir, 'Lan-Launcher');
-
-  const gameDir = path.join(app.getAppPath(), 'games', gameName);
+  const tempDir = FileLocation.getTempDir();
+  const gameDir = path.join(FileLocation.getGameDir(), gameName);
 
   log.log(`Unzipping ${path.join(tempDir, filename)} for ${gameName}`);
   log.log(`Extracting to ${gameDir}`);
@@ -26,7 +24,7 @@ export default async function unzip(filename, gameName) {
 
       let processedEntries = 0;
       let totalEntries = zipfile.entryCount || 0;
-      
+
       progressCallback(0, 'Extracting');
       log.log('Total entries:', totalEntries);
 
@@ -81,13 +79,13 @@ export default async function unzip(filename, gameName) {
         log.log('Extraction complete');
         log.log('Extracted files:', extractedFiles.length);
         log.log('Skipped files:', skippedFiles.length);
-        
+
         if (skippedFiles.length > 0) {
           log.warn('Some files were skipped:', skippedFiles);
         }
-        
+
         zipfile.close();
-        
+
         resolve({
           extractedFiles,
           skippedFiles,
@@ -108,10 +106,10 @@ export default async function unzip(filename, gameName) {
 async function extractFile(zipfile, entry, gameDir) {
   const outputPath = path.join(gameDir, entry.fileName);
   const dir = path.dirname(outputPath);
-  
+
   // Create directory if it doesn't exist
   await fs.promises.mkdir(dir, { recursive: true });
-  
+
   // Check if file already exists and remove it
   try {
     await fs.promises.access(outputPath);
@@ -124,7 +122,7 @@ async function extractFile(zipfile, entry, gameDir) {
   // Special handling for .asar files and other problematic files
   const fileExt = path.extname(entry.fileName).toLowerCase();
   const problematicExts = ['.asar', '.exe', '.dll', '.app'];
-  
+
   if (problematicExts.includes(fileExt)) {
     return await extractFileChunked(zipfile, entry, outputPath);
   } else {
@@ -141,7 +139,7 @@ async function extractFileStream(zipfile, entry, outputPath) {
   });
 
   const writeStream = fs.createWriteStream(outputPath);
-  
+
   try {
     await pipeline(readStream, writeStream);
   } catch (err) {
@@ -165,12 +163,12 @@ async function extractFileChunked(zipfile, entry, outputPath) {
 
   // Read the entire file into memory first, then write it
   const chunks = [];
-  
+
   return new Promise((resolve, reject) => {
     readStream.on('data', (chunk) => {
       chunks.push(chunk);
     });
-    
+
     readStream.on('end', async () => {
       try {
         const buffer = Buffer.concat(chunks);
@@ -180,7 +178,7 @@ async function extractFileChunked(zipfile, entry, outputPath) {
         reject(err);
       }
     });
-    
+
     readStream.on('error', (err) => {
       reject(err);
     });

@@ -35,29 +35,14 @@ jobs:
           echo "version=$version" >> $env:GITHUB_OUTPUT
           echo "Extracted version: $version"
         
-      - name: Update package.json version
+      - name: Update package.json version (temporary for build)
         working-directory: ./client
         run: |
           $version = "${{ steps.get_version.outputs.version }}"
           $packageJson = Get-Content package.json | ConvertFrom-Json
           $packageJson.version = $version
           $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
-          echo "Updated package.json version to: $version"
-        
-      - name: Commit version update
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add client/package.json
-          git commit -m "Update version to ${{ steps.get_version.outputs.version }}" || exit 0
-          
-          # Get the branch that contains this tag
-          $branch = git branch -r --contains HEAD | Where-Object { $_ -notmatch 'HEAD' } | ForEach-Object { $_.Trim() -replace '^origin/', '' } | Select-Object -First 1
-          if (-not $branch) {
-            $branch = "main"
-          }
-          echo "Pushing to branch: $branch"
-          git push origin HEAD:$branch
+          echo "Updated package.json version to: $version (temporary for build only)"
         
       - name: Install dependencies
         working-directory: ./client

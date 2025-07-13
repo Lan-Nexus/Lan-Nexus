@@ -9,9 +9,9 @@ const notificationStore = useNotificationStore();
   <div class="min-h-screen flex flex-col bg-se">
     <nav class="navbar sticky top-0 z-50 bg-secondary">
       <div class="flex-1">
-        <RouterLink :to="{ name: 'home' }" class="btn btn-ghost text-xl"
-          >Lan Launcher</RouterLink
-        >
+        <RouterLink :to="{ name: 'home' }" class="btn btn-ghost text-xl">
+          <img src="../assets/logo.svg" alt="Lan Exus Logo" class="h-16" />
+        </RouterLink>
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">

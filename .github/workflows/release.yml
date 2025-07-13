@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "npm"
           cache-dependency-path: client/package-lock.json
 
@@ -64,12 +64,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Zip Client Build
+        run: |
+          Compress-Archive -Path client/dist/*.exe,client/dist/*.yml -DestinationPath client-build.zip
+
+      - name: Zip Server Build
+        run: |
+          Compress-Archive -Path server/dist/* -DestinationPath server-build.zip
+
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            client-build.zip
+            server-build.zip
             client/dist/*.exe
             client/dist/*.yml
-            client/server/dist/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

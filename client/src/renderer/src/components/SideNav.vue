@@ -45,7 +45,7 @@ const isGameRunning = (executable: string): boolean => {
           {{ game.name }}
         </h2>
         <div class="flex gap-2 mt-1">
-          <span class="badge" :class="game.type === 'zip' ? 'badge-primary' : 'badge-secondary'">
+          <span class="badge" :class="game.type === 'archive' ? 'badge-secondary' : 'badge-primary'">
             {{ game.type }}
           </span>
           <span

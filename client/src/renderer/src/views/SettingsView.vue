@@ -1,7 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen w-full bg-base-200 ">
-    <h1 class="text-3xl font-bold mb-12">Settings</h1>
-    <div class="flex flex-col gap-6 w-full max-w-3xl p-6 bg-base-100 rounded-lg shadow-lg">
+    <div class="flex flex-col gap-6 p-6 mb-30 w-full bg-base-100 rounded-lg shadow-lg overflow-scroll">
       <!-- App Version & Updates Section -->
       <div class="flex flex-col">
         <span class="text-lg mb-2">App Version:</span>
@@ -68,7 +66,6 @@
         </pre>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -186,7 +183,7 @@ onMounted(async () => {
 
   // Poll logger history every 500ms
   pollInterval = setInterval(async () => {
-    logHistory.value = [...history]
+    logHistory.value = [...history].length > 100 ? history.slice(-100) : history
     await nextTick()
   }, 500)
 })

@@ -39,11 +39,11 @@ Lan Nexus is designed to facilitate LAN gaming by providing:
 ## Prerequisites
 
 ### Client
-- Node.js 18 or higher
+- Node.js v22.17.0 or higher
 - npm or yarn
 
 ### Server
-- Node.js 18 or higher
+- Node.js v22.17.0 or higher
 - MySQL 8.0 or higher
 - Steam API Key (optional, for Steam integration)
 - SteamGridDB API Key (optional, for game artwork)

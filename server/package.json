@@ -9,7 +9,10 @@
   "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.server.json",
+    "build": "run-p build:server type-check \"build-only {@}\" --",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --force",
     "generate": "drizzle-kit generate",
     "generate:undo": "drizzle-kit drop",
     "migrate": "drizzle-kit migrate",

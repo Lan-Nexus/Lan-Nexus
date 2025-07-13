@@ -8,13 +8,13 @@ export function jwtAuth(req: Request, res: Response, next: NextFunction) {
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return next();
 
-  jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, user: object | undefined) => {
+  jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return next();
     (req as any).user = user;
     next();
   });
 }
 
-export function signJwt(payload: object,expiresIn:number): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn});
+export function signJwt(payload: object, expiresIn: number): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }

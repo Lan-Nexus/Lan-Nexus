@@ -1,27 +1,15 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 import Logger from './logger.js'
 import { screen } from 'electron';
 import './function.js'
 
 const logger = Logger('main');
 
-// Dynamic import for electron-updater to handle CommonJS compatibility
-let autoUpdater;
-(async () => {
-  try {
-    const updaterModule = await import('electron-updater');
-    autoUpdater = updaterModule.autoUpdater;
-    setupAutoUpdater();
-  } catch (error) {
-    logger.error('Failed to load electron-updater:', error);
-  }
-})();
-
 function setupAutoUpdater() {
-  if (!autoUpdater) return;
-  
   // Configure auto-updater
   if (!is.dev) {
     autoUpdater.checkForUpdatesAndNotify();
@@ -139,6 +127,9 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
+  // Initialize auto-updater
+  setupAutoUpdater();
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -155,9 +146,6 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle('check-for-updates', async () => {
-    if (!autoUpdater) {
-      throw new Error('Auto-updater not available');
-    }
     try {
       return await autoUpdater.checkForUpdates();
     } catch (error) {
@@ -166,11 +154,13 @@ app.whenReady().then(() => {
     }
   });
 
-  ipcMain.handle('quit-and-install', () => {
-    if (!autoUpdater) {
-      throw new Error('Auto-updater not available');
+  ipcMain.handle('quit-and-install', async () => {
+    try {
+      autoUpdater.quitAndInstall();
+    } catch (error) {
+      logger.error('Failed to quit and install:', error);
+      throw error;
     }
-    autoUpdater.quitAndInstall();
   });
 
   createWindow();

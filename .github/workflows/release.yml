@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*.*.*'  # Triggers on version tags like v1.0.0, v1.2.3, etc.
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build-and-release:
     runs-on: windows-latest
@@ -31,7 +35,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Upload release assets
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             client/dist/*.exe

@@ -24,11 +24,34 @@ const progressAPI = {
   }
 };
 
+// Auto-updater API
+const updaterAPI = {
+  getVersion: () => ipcRenderer.invoke('app-version'),
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  quitAndInstall: () => ipcRenderer.invoke('quit-and-install'),
+  onUpdateAvailable: (callback: (info: any) => void) => {
+    ipcRenderer.on('update-available', (_event, info) => callback(info));
+  },
+  onUpdateNotAvailable: (callback: (info: any) => void) => {
+    ipcRenderer.on('update-not-available', (_event, info) => callback(info));
+  },
+  onUpdateDownloaded: (callback: (info: any) => void) => {
+    ipcRenderer.on('update-downloaded', (_event, info) => callback(info));
+  },
+  onDownloadProgress: (callback: (progress: any) => void) => {
+    ipcRenderer.on('download-progress', (_event, progress) => callback(progress));
+  },
+  onError: (callback: (error: any) => void) => {
+    ipcRenderer.on('updater-error', (_event, error) => callback(error));
+  }
+};
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('progressAPI', progressAPI)
+    contextBridge.exposeInMainWorld('updaterAPI', updaterAPI)
   } catch (error) {
     console.error(error)
   }
@@ -39,4 +62,6 @@ if (process.contextIsolated) {
   window.api = {}
   // @ts-ignore (define in dts)
   window.progressAPI = progressAPI
+  // @ts-ignore (define in dts)
+  window.updaterAPI = updaterAPI
 }

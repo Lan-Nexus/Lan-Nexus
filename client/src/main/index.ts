@@ -7,6 +7,76 @@ import './function.js'
 
 const logger = Logger('main');
 
+// Dynamic import for electron-updater to handle CommonJS compatibility
+let autoUpdater;
+(async () => {
+  try {
+    const updaterModule = await import('electron-updater');
+    autoUpdater = updaterModule.autoUpdater;
+    setupAutoUpdater();
+  } catch (error) {
+    logger.error('Failed to load electron-updater:', error);
+  }
+})();
+
+function setupAutoUpdater() {
+  if (!autoUpdater) return;
+  
+  // Configure auto-updater
+  if (!is.dev) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+  autoUpdater.logger = logger;
+
+  // Auto-updater events
+  autoUpdater.on('checking-for-update', () => {
+    logger.log('Checking for update...');
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    logger.log('Update available.', info);
+    // Send to all windows
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send('update-available', info);
+    });
+  });
+
+  autoUpdater.on('update-not-available', (info) => {
+    logger.log('Update not available.', info);
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send('update-not-available', info);
+    });
+  });
+
+  autoUpdater.on('error', (err) => {
+    logger.error('Error in auto-updater. ' + err);
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send('updater-error', err);
+    });
+  });
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    logger.log(log_message);
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send('download-progress', progressObj);
+    });
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    logger.log('Update downloaded', info);
+    BrowserWindow.getAllWindows().forEach(window => {
+      window.webContents.send('update-downloaded', info);
+    });
+    // Auto-install after 5 seconds
+    setTimeout(() => {
+      autoUpdater.quitAndInstall();
+    }, 5000);
+  });
+}
+
 let iconPath: Promise<string>;
 if (process.platform == 'linux') {
   iconPath = import('../../resources/icon.png?asset').then((module) => module.default);
@@ -78,6 +148,30 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'));
+
+  // Auto-updater IPC handlers
+  ipcMain.handle('app-version', () => {
+    return app.getVersion();
+  });
+
+  ipcMain.handle('check-for-updates', async () => {
+    if (!autoUpdater) {
+      throw new Error('Auto-updater not available');
+    }
+    try {
+      return await autoUpdater.checkForUpdates();
+    } catch (error) {
+      logger.error('Failed to check for updates:', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('quit-and-install', () => {
+    if (!autoUpdater) {
+      throw new Error('Auto-updater not available');
+    }
+    autoUpdater.quitAndInstall();
+  });
 
   createWindow();
 

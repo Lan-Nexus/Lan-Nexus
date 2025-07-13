@@ -1,7 +1,7 @@
 import path from 'path';
 import runUtils from './../../../runUtils/index.js';
 import { progressCallback, progressActive,progressLoading } from './utils.js';
-
+import { app } from 'electron';
 /**
  * Executes user-provided async code in the context of a specific game directory.
  *
@@ -18,7 +18,8 @@ import { progressCallback, progressActive,progressLoading } from './utils.js';
  */
 export default async function(gameName, code, args = []) {
   console.log(`Running code for game: ${gameName} with args:`, args);
-  let gameDir = path.join(__dirname, '../../games', gameName);
+  const gameDir = path.join(app.getAppPath(), 'games', gameName);
+
   const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
   console.log(`Executing code for game: ${gameName} in directory: ${gameDir}`);
   const functions = await runUtils({ _gameDir: gameDir });

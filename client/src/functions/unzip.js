@@ -4,12 +4,14 @@ import path from 'path';
 import { pipeline } from 'stream/promises';
 import logger from '../main/logger';
 import { progressCallback } from './utils.js';
-
+import { app } from 'electron';
 const log = logger('unzip');
 
 export default async function unzip(filename, gameName) {
-  const tempDir = path.join(__dirname, '../../temp');
-  const gameDir = path.join(__dirname, '../../games', gameName);
+  let tempDir = app.getPath('temp');
+  tempDir = path.join(tempDir, 'Lan-Launcher');
+
+  const gameDir = path.join(app.getAppPath(), 'games', gameName);
 
   log.log(`Unzipping ${path.join(tempDir, filename)} for ${gameName}`);
   log.log(`Extracting to ${gameDir}`);

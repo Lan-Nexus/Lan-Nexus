@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v1.2.3, etc.
+      - "v*.*.*" # Triggers on version tags like v1.0.0, v1.2.3, etc.
 
 permissions:
   contents: write
@@ -12,21 +12,21 @@ permissions:
 jobs:
   build-and-release:
     runs-on: windows-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: client/package-lock.json
-          
+
       - name: Extract version from tag
         id: get_version
         run: |
@@ -34,7 +34,7 @@ jobs:
           $version = $tagName -replace '^v', ''
           echo "version=$version" >> $env:GITHUB_OUTPUT
           echo "Extracted version: $version"
-        
+
       - name: Update package.json version (temporary for build)
         working-directory: ./client
         run: |
@@ -43,22 +43,29 @@ jobs:
           $packageJson.version = $version
           $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
           echo "Updated package.json version to: $version (temporary for build only)"
-        
+
       - name: Install dependencies
         working-directory: ./client
         run: npm ci
-        
+
       - name: Build Electron app
         working-directory: ./client
         run: npm run build:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
+      - name: Build Server
+        working-directory: ./server
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             client/dist/*.exe
             client/dist/*.yml
+            client/server/dist/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

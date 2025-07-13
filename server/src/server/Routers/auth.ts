@@ -1,16 +1,14 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { signJwt } from '../jwt.js';
-import roles from '../roles.js';
-import { permission } from 'process';
 import dayjs from 'dayjs';
 
 const router = Router();
 
-const username = process.env.ADMIN_USERNAME || 'admin';
+// const username = process.env.ADMIN_USERNAME || 'admin';
 const passwordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'password', 10);
 
-router.post('/login', (req: Request, res: Response) => {
+router.post('/login', (req: any, res: any) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password required' });

@@ -70,7 +70,7 @@ function setupAutoUpdater() {
     
     // Use the normal progress system
     import('../functions/utils.js').then(({ progressCallback }) => {
-      progressCallback(progressObj.percent + '%', 'Downloading Update');
+      progressCallback(progressObj.percent, 'Downloading Update');
     });
     
     BrowserWindow.getAllWindows().forEach(window => {

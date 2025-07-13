@@ -1,7 +1,8 @@
 import path from 'path';
 import runUtils from './../../../runUtils/index.js';
-import { progressCallback, progressActive,progressLoading } from './utils.js';
-import { app } from 'electron';
+import { progressCallback, progressActive, progressLoading, FileLocation } from './utils.js';
+
+
 /**
  * Executes user-provided async code in the context of a specific game directory.
  *
@@ -16,14 +17,14 @@ import { app } from 'electron';
  * @note This function dynamically executes arbitrary code, which is generally a terrible idea for security reasons.
  *       Please don't let your users run wild with this!
  */
-export default async function(gameName, code, args = []) {
+export default async function (gameName, code, args = []) {
   console.log(`Running code for game: ${gameName} with args:`, args);
-  const gameDir = path.join(app.getAppPath(), 'games', gameName);
+  const gameDir = path.join(FileLocation.getGameDir(), gameName);
 
-  const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+  const AsyncFunction = Object.getPrototypeOf(async function () { }).constructor;
   console.log(`Executing code for game: ${gameName} in directory: ${gameDir}`);
   const functions = await runUtils({ _gameDir: gameDir });
-  
+
   const util = {
     gameName,
     GAME_DIR: gameDir,
@@ -31,16 +32,16 @@ export default async function(gameName, code, args = []) {
     ...functions,
     progress: progressCallback,
     progressLoading: () => {
-        progressLoading();
+      progressLoading();
     },
     showProgress: () => {
-        progressActive(true);
+      progressActive(true);
     },
     hideProgress: () => {
-        progressActive(false);
+      progressActive(false);
     },
     error: (message) => {
-        throw new Error(message);
+      throw new Error(message);
     },
   };
 

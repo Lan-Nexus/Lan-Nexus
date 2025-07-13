@@ -20,11 +20,11 @@ export default function ({ _gameDir }) {
         const file = path.basename(cmdPath);
         const runDir = path.join(_gameDir, dir);
         const fullPath = path.join(runDir, file);
-        console.log(`Running command: ${fullPath} in directory: ${runDir} with params:`, params);
+        console.log(`Running command: ${file} in directory: ${runDir} with params:`, params);
         execFile(fullPath, params, { cwd: runDir }, (error, stdout, stderr) => {
           const exitCode = error ? error.code : 0;
           console.log(`Process exited with code: ${exitCode}`);
-          
+
           if (error && error.code !== 0) {
             reject({ error, exitCode, stdout, stderr });
           } else {

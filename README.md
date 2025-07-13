@@ -288,11 +288,6 @@ git push origin v1.0.1
 
 This project is licensed under the MIT License.
 
-## Authors
-
-- **SamDems** - Lead Developer
-- **TerryTel** - Co-Developer
-
 ## Support
 
 For issues and support:

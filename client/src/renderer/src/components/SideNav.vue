@@ -14,6 +14,22 @@ const isSelectedGame = (gameId: number): boolean => {
 const isGameRunning = (executable: string): boolean => {
   return runningStore.isRunning(executable);
 };
+
+const isGameReady = (game: any): boolean => {
+  // For Steam games, assume they're ready if it's a steam game
+  // In the future, we could add Steam installation detection
+  if (game.type === 'steam') {
+    return true; // Could be enhanced to check if Steam is installed
+  }
+  
+  // For archive games, check if they're installed
+  if (game.type === 'archive') {
+    return game.isInstalled === true;
+  }
+  
+  // For other types, assume ready by default
+  return true;
+};
 </script>
 
 <template>
@@ -24,6 +40,7 @@ const isGameRunning = (executable: string): boolean => {
       class="flex gap-4 p-4 cursor-pointer"
       :class="{
         'bg-base-200': isSelectedGame(game.id),
+        'opacity-50': !isGameReady(game),
       }"
       @click="gameStore.selectGame(game.id)"
     >
@@ -32,6 +49,9 @@ const isGameRunning = (executable: string): boolean => {
         :src="serverAddressStore.serverAddress + game.icon"
         alt="game image"
         class="h-12 w-12"
+        :class="{
+          'grayscale': !isGameReady(game),
+        }"
       />
       <div v-else class="h-12 w-12"></div>
 
@@ -40,6 +60,7 @@ const isGameRunning = (executable: string): boolean => {
           class="font-bold"
           :class="{
             'text-primary': isSelectedGame(game.id),
+            'text-gray-400': !isGameReady(game),
           }"
         >
           {{ game.name }}
@@ -47,6 +68,12 @@ const isGameRunning = (executable: string): boolean => {
         <div class="flex gap-2 mt-1">
           <span class="badge" :class="game.type === 'archive' ? 'badge-secondary' : 'badge-primary'">
             {{ game.type }}
+          </span>
+          <span
+            v-if="!isGameReady(game)"
+            class="badge badge-warning"
+          >
+            Not Installed
           </span>
           <span
             v-if="isGameRunning(game.executable)"

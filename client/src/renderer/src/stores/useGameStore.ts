@@ -175,6 +175,11 @@ export const useGameStore = defineStore('game', {
         const safeName = game.gameID.replaceAll(' ', '-');
         isInstalled = await functions.isGameInstalled(safeName);
         logger.log(`Game ${game.name} is installed: ${isInstalled}`);
+      } else if (game.type === 'steam') {
+        // For Steam games, assume they're ready to play if Steam is available
+        // This could be enhanced to check if Steam is actually installed
+        isInstalled = true; 
+        logger.log(`Steam game ${game.name} assumed ready: ${isInstalled}`);
       }
       return { ...game, isInstalled };
     },

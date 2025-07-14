@@ -38,10 +38,10 @@ export const progressLoading = () => {
 export class FileLocation {
 
   static getGameDir() {
-    return path.join(app.getPath('appData'), 'lan-launcher', 'games');
+    return path.join(app.getPath('appData'), 'lan-nexus', 'games');
   }
 
   static getTempDir() {
-    return path.join(app.getPath('temp'), 'lan-launcher');
+    return path.join(app.getPath('temp'), 'lan-nexus');
   }
 }

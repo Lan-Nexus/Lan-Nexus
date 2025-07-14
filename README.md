@@ -76,7 +76,7 @@ PROTOCOL=http
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/samdems/Lan-Launcher.git
+   git clone https://github.com/samdems/Lan-Nexus.git
    cd Lan-Nexus
    ```
 
@@ -291,7 +291,7 @@ This project is licensed under the MIT License.
 ## Support
 
 For issues and support:
-1. Check the [GitHub Issues](https://github.com/samdems/Lan-Launcher/issues)
+1. Check the [GitHub Issues](https://github.com/samdems/Lan-Nexus/issues)
 2. Create a new issue with detailed information
 3. Include logs and system information when reporting bugs
 

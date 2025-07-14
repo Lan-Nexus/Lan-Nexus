@@ -1,5 +1,5 @@
-appId: com.LanLauncher.app
-productName: LanLauncher
+appId: com.lan-nexus.app
+productName: Lan Nexus
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: LanLauncher
+  executableName: Lan Nexus
   icon: resources/icon.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -40,6 +40,6 @@ npmRebuild: false
 publish:
   provider: github
   owner: samdems
-  repo: Lan-Launcher
+  repo: Lan-Nexus
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

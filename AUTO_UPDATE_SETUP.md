@@ -10,7 +10,7 @@ Updated the publish configuration to use GitHub releases:
 publish:
   provider: github
   owner: samdems
-  repo: Lan-Launcher
+  repo: Lan-Nexus
 ```
 
 ### 2. Main Process (src/main/index.ts)
@@ -40,7 +40,8 @@ publish:
 ## Setting up GitHub Releases
 
 ### 1. Repository Setup
-1. Ensure your repository `https://github.com/samdems/Lan-Launcher` is **public**
+
+1. Ensure your repository `https://github.com/samdems/Lan-Nexus` is **public**
 2. Go to **Settings** → **Actions** → **General** and enable "Allow all actions and reusable workflows"
 
 ### 2. Set up GitHub Actions (Recommended)

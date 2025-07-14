@@ -11,7 +11,8 @@ const logger = Logger('main');
 
 function setupAutoUpdater() {
   // Configure auto-updater
-  if (!is.dev) {
+  console.log(!is.dev && app.getVersion() != '0.0.0');
+  if (!is.dev && app.getVersion() != '0.0.0') {
     autoUpdater.checkForUpdatesAndNotify();
   }
   autoUpdater.logger = logger;
@@ -23,13 +24,13 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-available', (info) => {
     logger.log('Update available.', info);
-    
+
     // Show progress bar for update download
     import('../functions/utils.js').then(({ progressActive, progressLoading }) => {
       progressActive(true);
       progressLoading();
     });
-    
+
     // Send to all windows
     BrowserWindow.getAllWindows().forEach(window => {
       window.webContents.send('update-available', info);
@@ -38,12 +39,12 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-not-available', (info) => {
     logger.log('Update not available.', info);
-    
+
     // Hide progress bar if no update available
     import('../functions/utils.js').then(({ progressActive }) => {
       progressActive(false);
     });
-    
+
     BrowserWindow.getAllWindows().forEach(window => {
       window.webContents.send('update-not-available', info);
     });
@@ -51,12 +52,12 @@ function setupAutoUpdater() {
 
   autoUpdater.on('error', (err) => {
     logger.error('Error in auto-updater. ' + err);
-    
+
     // Hide progress bar on error
     import('../functions/utils.js').then(({ progressActive }) => {
       progressActive(false);
     });
-    
+
     BrowserWindow.getAllWindows().forEach(window => {
       window.webContents.send('updater-error', err);
     });
@@ -67,12 +68,12 @@ function setupAutoUpdater() {
     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     logger.log(log_message);
-    
+
     // Use the normal progress system
     import('../functions/utils.js').then(({ progressCallback }) => {
       progressCallback(progressObj.percent, 'Downloading Update');
     });
-    
+
     BrowserWindow.getAllWindows().forEach(window => {
       window.webContents.send('download-progress', progressObj);
     });
@@ -80,7 +81,7 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-downloaded', (info) => {
     logger.log('Update downloaded', info);
-    
+
     // Hide progress bar when download is complete
     import('../functions/utils.js').then(({ progressActive, progressCallback }) => {
       progressCallback('100%', 'Update Ready');
@@ -88,7 +89,7 @@ function setupAutoUpdater() {
         progressActive(false);
       }, 1000);
     });
-    
+
     BrowserWindow.getAllWindows().forEach(window => {
       window.webContents.send('update-downloaded', info);
     });
@@ -161,8 +162,11 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
+
   // Initialize auto-updater
   setupAutoUpdater();
+
+
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

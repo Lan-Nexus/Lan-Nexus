@@ -81,7 +81,7 @@ export const useGameStore = defineStore('game', {
         return;
       }
 
-      if(game.needsKey) {
+      if (game.needsKey) {
         game.gamekey = await this.reserveGameKey(game.id)
       }
 
@@ -131,12 +131,12 @@ export const useGameStore = defineStore('game', {
         await functions.run(safeName, game.uninstall);
         await functions.removeGame(safeName);
         game.isInstalled = false;
-        if(!hideAlerts) {
+        if (!hideAlerts) {
           alerts.showSuccess({ title: 'Uninstall Success', description: 'Game uninstalled successfully!' });
-        } 
+        }
       } catch (error) {
         logger.error(error);
-        if(!hideAlerts){
+        if (!hideAlerts) {
           alerts.showError({ title: 'Uninstall Failed', description: 'Failed to uninstall game.' });
         }
       } finally {
@@ -182,6 +182,21 @@ export const useGameStore = defineStore('game', {
         logger.log(`Steam game ${game.name} assumed ready: ${isInstalled}`);
       }
       return { ...game, isInstalled };
+    },
+
+    async openFileLocation() {
+      const game = this._findSelectedGame();
+      if (!game) {
+        logger.error('No game selected to open file location.');
+        return;
+      }
+      const safeName = game.gameID.replaceAll(' ', '-');
+      try {
+        debugger;
+        await functions.openFileLocation(safeName);
+      } catch (error) {
+        logger.error('Failed to open file location:', error);
+      }
     },
 
     async play() {

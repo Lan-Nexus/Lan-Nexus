@@ -70,12 +70,6 @@ const isGameReady = (game: any): boolean => {
             {{ game.type }}
           </span>
           <span
-            v-if="!isGameReady(game)"
-            class="badge badge-warning"
-          >
-            Not Installed
-          </span>
-          <span
             v-if="isGameRunning(game.executable)"
             class="badge badge-accent"
           >

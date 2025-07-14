@@ -8,7 +8,7 @@ type bridgeArgs = {
   args: any
 }
 
-ipcMain.handle('bridge', async (_event, {functionName, args}: bridgeArgs): Promise<any> => {
+ipcMain.handle('bridge', async (_event, { functionName, args }: bridgeArgs): Promise<any> => {
 
   const safeFunctionName = functionName.replace(/[^a-zA-Z0-9]/g, '');
 
@@ -20,7 +20,7 @@ ipcMain.handle('bridge', async (_event, {functionName, args}: bridgeArgs): Promi
     throw new Error('Invalid function name');
   }
 
-  logger.log('function called', safeFunctionName,  args);
+  logger.log('function called', safeFunctionName, args);
 
   let importedFunc;
   try {
@@ -45,7 +45,7 @@ ipcMain.handle('bridge', async (_event, {functionName, args}: bridgeArgs): Promi
     })
     const result = await func(...args);
 
-    logger.log('function result', result);
+    // logger.log('function result', result);
     return result;
   } catch (e) {
     logger.error(e);

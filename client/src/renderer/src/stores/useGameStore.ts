@@ -11,11 +11,11 @@ import { reserveGameKey, releaseGameKey, loadGames as apiLoadGames } from '../ut
 const logger = Logger('useGameStore');
 
 import type { gameState } from '@renderer/types.js';
-
 export const useGameStore = defineStore('game', {
   state: () => ({
     games: [] as gameState[],
     selectedGameId: -1,
+    gameRunning: void 0 as gameState | undefined,
     loading: false,
   }),
   getters: {
@@ -42,11 +42,49 @@ export const useGameStore = defineStore('game', {
       setInterval(() => {
         logger.log('Refreshing games...');
         this.loadGames();
+
+
       }, refreshRate);
     },
 
     reload() {
       this.loadGames();
+    },
+
+    async watchIfGameStopped() {
+      if (!this.gameRunning || this.gameRunning.type !== 'archive') return;
+      try {
+        const programs = await functions.getRunningPrograms();
+
+        const isRunning = programs.includes(this.gameRunning.executable);
+        if (!isRunning) {
+          if (this.gameRunning.needsKey && this.gameRunning.gamekey?.id != null) {
+            await this.releaseGameKey(this.gameRunning.id);
+          }
+          this.gameRunning = void 0;
+        }
+      } catch (error) {
+        logger.error('Failed to check if game has stopped:', error);
+      }
+    },
+
+    async releaseGameKey(gameId: number) {
+      const serverAddressStore = useServerAddressStore();
+      const alerts = useAlerts();
+      try {
+        if (this.selectedGame?.gamekey?.id != void 0) {
+          await releaseGameKey(serverAddressStore.serverAddress!, gameId, this.selectedGame.gamekey.id);
+          logger.log('Game key released successfully');
+        }
+
+      } catch (error) {
+        logger.error('Failed to release game key:', error);
+        let description = 'Failed to release game key.';
+        if (axios.isAxiosError(error) && error.response?.data?.error?.error) {
+          description += '<br>' + error.response.data.error.error;
+        }
+        alerts.showError({ title: 'Key Release Failed', description });
+      }
     },
 
     async reserveGameKey(gameId: number) {
@@ -81,10 +119,6 @@ export const useGameStore = defineStore('game', {
         return;
       }
 
-      if (game.needsKey) {
-        game.gamekey = await this.reserveGameKey(game.id)
-      }
-
       const safeName = game.gameID.replaceAll(' ', '-');
       const archiveFile = safeName + '.zip';
       const progressStore = useProgressStore();
@@ -110,15 +144,9 @@ export const useGameStore = defineStore('game', {
 
     async uninstallArchive(hideAlerts = false) {
       this.loading = true;
-      const serverAddressStore = useServerAddressStore();
+
       const alerts = useAlerts();
-      const keyid = this.selectedGame?.gamekey?.id;
-      if (keyid) {
-        logger.log('Releasing game key:', keyid);
-        await releaseGameKey(serverAddressStore.serverAddress!, this.selectedGameId, keyid);
-        this.selectedGame.gamekey = void 0;
-        logger.log('Game key released:', keyid);
-      }
+
       const progressStore = useProgressStore();
       progressStore.active = false;
       const game = this._findSelectedGame();
@@ -178,7 +206,7 @@ export const useGameStore = defineStore('game', {
       } else if (game.type === 'steam') {
         // For Steam games, assume they're ready to play if Steam is available
         // This could be enhanced to check if Steam is actually installed
-        isInstalled = true; 
+        isInstalled = true;
         logger.log(`Steam game ${game.name} assumed ready: ${isInstalled}`);
       }
       return { ...game, isInstalled };
@@ -208,6 +236,11 @@ export const useGameStore = defineStore('game', {
         return;
       }
       if (selectedGame.type === 'archive') {
+        const game = this._findSelectedGame();
+        if (game && game.needsKey) {
+          game.gamekey = await this.reserveGameKey(game.id)
+        }
+        this.gameRunning = selectedGame;
         await this.playArchive();
         return;
       }
@@ -239,3 +272,9 @@ export const useGameStore = defineStore('game', {
     },
   },
 });
+
+setInterval(() => {
+  useGameStore().watchIfGameStopped();
+}, 1000);
+
+

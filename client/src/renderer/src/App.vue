@@ -15,6 +15,9 @@ store.listenForIpcEvents();
 const serverAddressStore = useServerAddressStore();
 serverAddressStore.getServerAddress();
 
+
+
+
 const runningStore = useRunningStore();
 runningStore.init();
 
@@ -54,9 +57,20 @@ function addServerAddress() {
 </script>
 <template>
 
-<template v-if="serverAddressStore.serverAddress == void 0">
-    <Loading title="Getting Server Address" />
-    <dialog id="my_modal_1" class="modal" ref="modalRef">
+  <template v-if="serverAddressStore.serverAddress == void 0">
+      <Loading title="Getting Server Address" />
+  </template>
+  <template v-else>
+    <div class="flex flex-col h-full w-full overflow-hidden">
+      <TopNav />
+      <Alert />
+      <div class="flex h-full w-full mt-18 bg-base-100">
+        <router-view />
+      </div>
+      <Progress />
+    </div>
+  </template>
+     <dialog id="my_modal_1" class="modal" ref="modalRef">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Server Address</h3>
         <input  type="text" v-model="newIpAddress" class="input input-bordered w-full max-w-xs mt-4 mb-4" placeholder="Enter server address" />
@@ -69,17 +83,6 @@ function addServerAddress() {
         </div>
       </div>
     </dialog>
-  </template>
-  <template v-else>
-    <div class="flex flex-col h-full w-full overflow-hidden">
-      <TopNav />
-      <Alert />
-      <div class="flex h-full w-full mt-18 bg-base-100">
-        <router-view />
-      </div>
-      <Progress />
-    </div>
-  </template>
 </template>
 <style>
 /* Works on Firefox */

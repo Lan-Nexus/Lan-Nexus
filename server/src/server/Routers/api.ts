@@ -44,17 +44,35 @@ new Router<gamesController>(router)
   .delete('/games/:id', gamesController, 'delete')
 
 new Router<gamesSearchController>(router)
+  .Permissions({
+    list: 'games:search:list',
+    read: 'games:search:read',
+    create: 'games:search:create',
+    search: 'games:search:search'
+  })
   .get('/games/search/:id', gamesSearchController, 'read')
   .get('/games/search', gamesSearchController, 'list')
   .post('/games/search', gamesSearchController, 'search')
   .post('/search/create', gamesSearchController, 'create')
 
 new Router<steamController>(router)
+  .Permissions({
+    list: 'steam:list',
+    read: 'steam:read',
+    create: 'steam:create'
+  })
   .get('/steam', steamController, 'list')
   .get('/steam/:id', steamController, 'read')
   .post('/steam', steamController, 'create')
 
 new Router<GameKeyPageController>(router)
+  .Permissions({
+    list: 'games:keys:list',
+    create: 'games:keys:create',
+    delete: 'games:keys:delete',
+    release: 'games:keys:release',
+    reserve: 'games:keys:reserve'
+  })
   .get('/games/:gameId/keys', GameKeyPageController, 'list')
   .post('/games/:gameId/keys', GameKeyPageController, 'create')
   .delete('/games/:gameId/keys/:id', GameKeyPageController, 'delete')

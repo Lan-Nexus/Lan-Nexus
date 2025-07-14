@@ -85,7 +85,7 @@ function updateShadow() {
                 <a @click="gameStore.openFileLocation">Open File location</a>
               </li>
               <li>
-                <a @click="gameStore.uninstallArchive">Uninstall</a>
+                <a @click="gameStore.uninstallArchive()">Uninstall</a>
               </li>
           </ul>
         </div> 

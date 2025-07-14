@@ -2,6 +2,8 @@
 import { onMounted, onUnmounted, useTemplateRef, computed } from 'vue';
 import { useGameStore } from '../stores/useGameStore.js';
 import { useRunningStore } from '../stores/useRunning.js';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
+
 
 const actionBarPanel = useTemplateRef<HTMLElement>('actionBarPanel');
 const gameStore = useGameStore();
@@ -54,35 +56,40 @@ function updateShadow() {
   >
     <div v-if="gameStore.selectedGame?.type === 'archive'" class="flex gap-2 items-center w-full">
       <div class="flex gap-2 flex-1">
-        <button
+        <template v-if="!isInstalled">
+                  <button
           class="btn btn-primary w-24"
           @click="gameStore.installArchive"
-          :disabled="isInstalled || isloading || isIngame"
+          :disabled="isloading || isIngame"
         >
           Install
         </button>
-        <button
-          class="btn btn-error w-24"
-          @click="gameStore.uninstallArchive()"
-          :disabled="!isInstalled || isloading || isIngame"
-        >
-          Uninstall
-        </button>
+        </template>
+        <template v-else>
         <button
           class="btn btn-warning"
           @click="gameStore.play"
-          :disabled="!isInstalled || isloading || isIngame"
+          :disabled="isloading || isIngame"
         >
           Play
         </button>
-        
+        </template>
+
+
       </div>
-      <div class="badge badge-accent ml-4" v-if="isIngame">
-          In Game
-      </div>
-      <div class="badge badge-secondary ml-4" v-if="gameStore.selectedGame?.needsKey">
-        {{ gameStore.selectedGame?.gamekey?.key || 'No Game Key' }}
-      </div>
+       <template v-if="isInstalled">
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-xs p-1"><FontAwesomeIcon :icon="faCog" class="text-lg" /></label>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li>
+                <a @click="gameStore.openFileLocation">Open File location</a>
+              </li>
+              <li>
+                <a @click="gameStore.uninstallArchive">Uninstall</a>
+              </li>
+          </ul>
+        </div> 
+      </template>
     </div>
     <div v-else>
       <button

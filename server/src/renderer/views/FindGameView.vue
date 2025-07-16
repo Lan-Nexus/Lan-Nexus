@@ -1,35 +1,10 @@
-<template>
-  <div class="container mx-auto p-4">
-    <div class="flex justify-center mb-8">
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search games..."
-        class="input input-bordered w-full max-w-md"
-      />
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div v-for="game in games" :key="game.id" class="card bg-base-200">
-        <div class="card-body">
-          <h2 class="card-title">{{ game.name }}</h2>
-          <p>{{ game.description }}</p>
-          <div class="card-actions justify-end">
-            <router-link
-              :to="`/game/find/add/${game.id}`"
-              class="btn btn-secondary"
-              >add</router-link
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, watch } from "vue";
 import api from "../utls/api";
+import AddGameItem from "@/components/games/AddGameItem.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const searchQuery = ref("");
 const games = ref([]);
 
@@ -43,4 +18,31 @@ watch(searchQuery, (newQuery) => {
     games.value = response.data.results || [];
   }, 300); // 300ms debounce
 });
+
+function handle(game) {
+  router.push(`/game/find/add/${game.id}`);
+}
 </script>
+
+<template>
+  <div class="flex justify-center mb-8">
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search games..."
+      class="input input-bordered w-full max-w-md"
+    />
+  </div>
+  <div class="flex flex-wrap gap-4 justify-center">
+    <template v-for="game in games" :key="game.id">
+      <AddGameItem
+        :gameId="game.id"
+        :name="game.name"
+        :image="game.image"
+        :hasGame="game.hasGame"
+        :isProcessing="false"
+        @handleAddGame="handle(game)"
+      ></AddGameItem>
+    </template>
+  </div>
+</template>

@@ -1,3 +1,6 @@
 [submodule "runUtil"]
 	path = runUtil
 	url = git@github.com:Lan-Nexus/runUtil.git
+[submodule "client"]
+	path = client
+	url = https://github.com/Lan-Nexus/client

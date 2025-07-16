@@ -1,0 +1,59 @@
+name: Build and Release Server
+
+on:
+  push:
+    tags:
+      - "server-v*.*.*" # Triggers on server version tags like server-v1.0.0
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build-and-release-server:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          $tagName = "${{ github.ref_name }}"
+          $version = $tagName -replace '^server-v', ''
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "Extracted version: $version"
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Build Server
+        working-directory: ./server
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Zip Server Build
+        run: |
+          Compress-Archive -Path server/dist/* -DestinationPath server-build.zip
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            server-build.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
